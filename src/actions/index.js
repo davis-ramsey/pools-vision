@@ -12,7 +12,7 @@ export const fetchPrice = (address) => async (dispatch) => {
 	dispatch({ type: 'FETCH_PRICE', payload: response.data });
 };
 
-export const fetchSwaps = (pool) => async (dispatch) => {
+export const fetchSwaps = () => async (dispatch) => {
 	const response = await balancerSwaps;
 	dispatch({ type: 'FETCH_SWAPS', payload: response.data.data.pools });
 };
