@@ -40,17 +40,51 @@ class Pools extends React.Component {
 		} else return <td data-label="Total Liquidity">Loading...</td>;
 	}
 
+	renderVolume(pool, index) {
+		if (this.props.pools && this.props.prices && this.props.swaps) {
+			let total = 0;
+			const swaps = this.props.swaps[index].swaps;
+			for (let swap of swaps) {
+				if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
+					const price = this.props.prices[swap.tokenIn].usd;
+					const amount = parseFloat(swap.tokenAmountIn);
+					total += price * amount;
+				}
+			}
+
+			return <td data-label="24h Trading Volume">${Number(total.toFixed(2)).toLocaleString()}</td>;
+		} else return <td data-label="24h Trading Volume">Loading...</td>;
+	}
+
+	renderFees(pool, index) {
+		if (this.props.pools && this.props.prices && this.props.swaps) {
+			let total = 0;
+			const swaps = this.props.swaps[index].swaps;
+			const swapFee = this.props.pools[index].swapFee;
+			console.log(swapFee);
+			for (let swap of swaps) {
+				if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
+					const price = this.props.prices[swap.tokenIn].usd;
+					const amount = parseFloat(swap.tokenAmountIn);
+					total += price * amount * swapFee;
+				}
+			}
+
+			return <td data-label="24h Fees">${Number(total.toFixed(2)).toLocaleString()}</td>;
+		} else return <td data-label="24h Fees">Loading...</td>;
+	}
+
 	renderTable() {
 		if (this.props.pools)
-			return this.props.pools.map((pool) => {
+			return this.props.pools.map((pool, index) => {
 				return (
 					<tr key={pool.id}>
 						<td data-label="Pool Address">{pool.id}</td>
 						{this.renderAssets(pool)}
 						<td data-label="Swap Fee">{pool.swapFee * 100}%</td>
 						{this.renderTotalLiquidity(pool)}
-						<td data-label="24h Trading Volume">$50,000</td>
-						<td data-label="24h fees">$500</td>
+						{this.renderVolume(pool, index)}
+						{this.renderFees(pool, index)}
 					</tr>
 				);
 			});
@@ -81,7 +115,8 @@ class Pools extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		pools: state.balancer.pools,
-		prices: state.coingecko.prices
+		prices: state.coingecko.prices,
+		swaps: state.balancer.swaps
 	};
 };
 export default connect(mapStateToProps, { fetchPools, fetchPrice, fetchSwaps })(Pools);
