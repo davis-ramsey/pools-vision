@@ -3,9 +3,15 @@ import { connect } from 'react-redux';
 import { fetchPools, fetchPrice } from '../actions';
 
 class Pools extends React.Component {
-	componentDidMount() {
-		this.props.fetchPrice('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
-		this.props.fetchPools();
+	async componentDidMount() {
+		await this.props.fetchPools();
+		const addresses = [];
+		for (let pool of this.props.pools) {
+			for (let token of pool.tokens) {
+				addresses.push(token.address);
+			}
+		}
+		await this.props.fetchPrice(addresses.join(','));
 	}
 
 	renderAssets(pool) {
@@ -13,9 +19,16 @@ class Pools extends React.Component {
 			const assets = [];
 			for (let token of pool.tokens) {
 				const weight = token.denormWeight / pool.totalWeight;
-				assets.push(weight.toFixed(4) * 100 + '% ' + token.symbol);
+				const percentage = (weight * 100).toFixed(2) + '%';
+				assets.push(percentage + ' ' + token.symbol);
 			}
 			return <td data-label="Assets">{assets.join(' ')}</td>;
+		}
+	}
+
+	renderTotalLiquidity(pool) {
+		if (this.props.pools) {
+			return <td data-label="Total Liquidity">0</td>;
 		}
 	}
 
@@ -27,7 +40,7 @@ class Pools extends React.Component {
 						<td data-label="Pool Address">{pool.id}</td>
 						{this.renderAssets(pool)}
 						<td data-label="Swap Fee">{pool.swapFee * 100}%</td>
-						<td data-label="Total Liquidity">$900,000</td>
+						{this.renderTotalLiquidity(pool)}
 						<td data-label="24h Trading Volume">$50,000</td>
 						<td data-label="24h fees">$500</td>
 					</tr>

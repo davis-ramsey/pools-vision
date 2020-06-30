@@ -5,7 +5,7 @@ export default axios({
 	method: 'post',
 	data: {
 		query: `{
-            pools(first: 1000, where: {publicSwap: true}) {
+            pools(first: 25, where: {publicSwap: true}) {
               id
               swapFee
               totalWeight

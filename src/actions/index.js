@@ -6,7 +6,7 @@ export const fetchPools = () => async (dispatch) => {
 	dispatch({ type: 'FETCH_POOLS', payload: response.data });
 };
 
-export const fetchPrice = (tokenAddress) => async (dispatch) => {
-	const response = await coingecko.get(`${tokenAddress.toLowerCase()}`);
+export const fetchPrice = (address) => async (dispatch) => {
+	const response = await coingecko.get(`/ethereum?contract_addresses=${address}&vs_currencies=usd`);
 	dispatch({ type: 'FETCH_PRICE', payload: response.data });
 };
