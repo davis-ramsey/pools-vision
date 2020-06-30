@@ -23,13 +23,20 @@ class Pools extends React.Component {
 				assets.push(percentage + ' ' + token.symbol);
 			}
 			return <td data-label="Assets">{assets.join(' ')}</td>;
-		}
+		} else return <td data-label="Assets">Loading...</td>;
 	}
 
 	renderTotalLiquidity(pool) {
-		if (this.props.pools) {
-			return <td data-label="Total Liquidity">0</td>;
-		}
+		if (this.props.pools && this.props.prices) {
+			let total = 0;
+			for (let token of pool.tokens) {
+				const address = token.address;
+				const price = this.props.prices[address].usd;
+				const balance = parseFloat(token.balance);
+				total += price * balance;
+			}
+			return <td data-label="Total Liquidity">${Number(total.toFixed(2)).toLocaleString()}</td>;
+		} else return <td data-label="Total Liquidity">Loading...</td>;
 	}
 
 	renderTable() {
@@ -72,7 +79,8 @@ class Pools extends React.Component {
 
 const mapStateToProps = (state) => {
 	return {
-		pools: state.balancer.pools
+		pools: state.balancer.pools,
+		prices: state.coingecko.prices
 	};
 };
 export default connect(mapStateToProps, { fetchPools, fetchPrice })(Pools);
