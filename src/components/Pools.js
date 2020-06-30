@@ -7,11 +7,13 @@ class Pools extends React.Component {
 		await this.props.fetchPools();
 		const addresses = [];
 		for (let pool of this.props.pools) {
-			await this.props.fetchSwaps(pool.id);
+			await this.props.fetchSwaps();
 			for (let token of pool.tokens) {
-				addresses.push(token.address);
+				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
 			}
 		}
+		console.log(addresses.length);
+
 		await this.props.fetchPrice(addresses.join(','));
 	}
 
