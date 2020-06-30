@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchPools, fetchPrice } from '../actions';
+import { fetchPools, fetchPrice, fetchSwaps } from '../actions';
 
 class Pools extends React.Component {
 	async componentDidMount() {
 		await this.props.fetchPools();
 		const addresses = [];
 		for (let pool of this.props.pools) {
+			await this.props.fetchSwaps(pool.id);
 			for (let token of pool.tokens) {
 				addresses.push(token.address);
 			}
@@ -83,4 +84,4 @@ const mapStateToProps = (state) => {
 		prices: state.coingecko.prices
 	};
 };
-export default connect(mapStateToProps, { fetchPools, fetchPrice })(Pools);
+export default connect(mapStateToProps, { fetchPools, fetchPrice, fetchSwaps })(Pools);
