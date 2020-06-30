@@ -16,78 +16,66 @@ class Pools extends React.Component {
 	}
 
 	renderAssets(pool) {
-		if (this.props.pools) {
-			const assets = [];
-			for (let token of pool.tokens) {
-				const weight = token.denormWeight / pool.totalWeight;
-				const percentage = (weight * 100).toFixed(2) + '%';
-				assets.push(percentage + ' ' + token.symbol);
-			}
-			return <td data-label="Assets">{assets.join(' ')}</td>;
-		} else return <td data-label="Assets">Loading...</td>;
+		const assets = [];
+		for (let token of pool.tokens) {
+			const weight = token.denormWeight / pool.totalWeight;
+			const percentage = (weight * 100).toFixed(2) + '%';
+			assets.push(percentage + ' ' + token.symbol);
+		}
+		return <td data-label="Assets">{assets.join(' ')}</td>;
 	}
 
 	renderTotalLiquidity(pool) {
-		if (this.props.pools && this.props.prices) {
-			let total = 0;
-			for (let token of pool.tokens) {
-				const address = token.address;
-				const price = this.props.prices[address].usd;
-				const balance = parseFloat(token.balance);
-				total += price * balance;
-			}
-			return <td data-label="Total Liquidity">${Number(total.toFixed(2)).toLocaleString()}</td>;
-		} else return <td data-label="Total Liquidity">Loading...</td>;
+		let total = 0;
+		for (let token of pool.tokens) {
+			const address = token.address;
+			const price = this.props.prices[address].usd;
+			const balance = parseFloat(token.balance);
+			total += price * balance;
+		}
+		return <td data-label="Total Liquidity">${Number(total.toFixed(2)).toLocaleString()}</td>;
 	}
 
 	renderVolume(pool, index) {
-		if (this.props.pools && this.props.prices && this.props.swaps) {
-			let total = 0;
-			const swaps = this.props.swaps[index].swaps;
-			for (let swap of swaps) {
-				if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
-					const price = this.props.prices[swap.tokenIn].usd;
-					const amount = parseFloat(swap.tokenAmountIn);
-					total += price * amount;
-				}
+		let total = 0;
+		const swaps = this.props.swaps[index].swaps;
+		for (let swap of swaps) {
+			if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
+				const price = this.props.prices[swap.tokenIn].usd;
+				const amount = parseFloat(swap.tokenAmountIn);
+				total += price * amount;
 			}
-
-			return <td data-label="24h Trading Volume">${Number(total.toFixed(2)).toLocaleString()}</td>;
-		} else return <td data-label="24h Trading Volume">Loading...</td>;
+		}
+		return <td data-label="24h Trading Volume">${Number(total.toFixed(2)).toLocaleString()}</td>;
 	}
 
 	renderFees(pool, index) {
-		if (this.props.pools && this.props.prices && this.props.swaps) {
-			let total = 0;
-			const swaps = this.props.swaps[index].swaps;
-			const swapFee = this.props.pools[index].swapFee;
-			for (let swap of swaps) {
-				if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
-					const price = this.props.prices[swap.tokenIn].usd;
-					const amount = parseFloat(swap.tokenAmountIn);
-					total += price * amount * swapFee;
-				}
+		let total = 0;
+		const swaps = this.props.swaps[index].swaps;
+		const swapFee = this.props.pools[index].swapFee;
+		for (let swap of swaps) {
+			if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
+				const price = this.props.prices[swap.tokenIn].usd;
+				const amount = parseFloat(swap.tokenAmountIn);
+				total += price * amount * swapFee;
 			}
-
-			return <td data-label="24h Fees">${Number(total.toFixed(2)).toLocaleString()}</td>;
-		} else return <td data-label="24h Fees">Loading...</td>;
+		}
+		return <td data-label="24h Fees">${Number(total.toFixed(2)).toLocaleString()}</td>;
 	}
 
 	checkLiquidity(pool) {
-		if (this.props.pools && this.props.prices) {
-			let total = 0;
-			for (let token of pool.tokens) {
-				const address = token.address;
-				const price = this.props.prices[address].usd;
-				const balance = parseFloat(token.balance);
-				total += price * balance;
-			}
-			return Number(total.toFixed(2)).toLocaleString();
+		let total = 0;
+		for (let token of pool.tokens) {
+			const address = token.address;
+			const price = this.props.prices[address].usd;
+			const balance = parseFloat(token.balance);
+			total += price * balance;
 		}
+		return Number(total.toFixed(2)).toLocaleString();
 	}
 
 	renderTable() {
-		if (this.props.pools && this.props.prices)
+		if (this.props.pools && this.props.prices && this.props.swaps)
 			return this.props.pools.map((pool, index) => {
 				const check = parseInt(this.checkLiquidity(pool));
 				if (check !== 0) {
@@ -101,7 +89,7 @@ class Pools extends React.Component {
 							{this.renderFees(pool, index)}
 						</tr>
 					);
-				} else return;
+				}
 			});
 	}
 
