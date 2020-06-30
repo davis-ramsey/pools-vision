@@ -12,8 +12,6 @@ class Pools extends React.Component {
 				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
 			}
 		}
-		console.log(addresses.length);
-
 		await this.props.fetchPrice(addresses.join(','));
 	}
 
