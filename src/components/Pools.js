@@ -61,7 +61,6 @@ class Pools extends React.Component {
 			let total = 0;
 			const swaps = this.props.swaps[index].swaps;
 			const swapFee = this.props.pools[index].swapFee;
-			console.log(swapFee);
 			for (let swap of swaps) {
 				if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
 					const price = this.props.prices[swap.tokenIn].usd;
@@ -74,19 +73,35 @@ class Pools extends React.Component {
 		} else return <td data-label="24h Fees">Loading...</td>;
 	}
 
+	checkLiquidity(pool) {
+		if (this.props.pools && this.props.prices) {
+			let total = 0;
+			for (let token of pool.tokens) {
+				const address = token.address;
+				const price = this.props.prices[address].usd;
+				const balance = parseFloat(token.balance);
+				total += price * balance;
+			}
+			return Number(total.toFixed(2)).toLocaleString();
+		}
+	}
+
 	renderTable() {
-		if (this.props.pools)
+		if (this.props.pools && this.props.prices)
 			return this.props.pools.map((pool, index) => {
-				return (
-					<tr key={pool.id}>
-						<td data-label="Pool Address">{pool.id}</td>
-						{this.renderAssets(pool)}
-						<td data-label="Swap Fee">{pool.swapFee * 100}%</td>
-						{this.renderTotalLiquidity(pool)}
-						{this.renderVolume(pool, index)}
-						{this.renderFees(pool, index)}
-					</tr>
-				);
+				const check = parseInt(this.checkLiquidity(pool));
+				if (check !== 0) {
+					return (
+						<tr key={pool.id}>
+							<td data-label="Pool Address">{pool.id}</td>
+							{this.renderAssets(pool)}
+							<td data-label="Swap Fee">{(pool.swapFee * 100).toFixed(2)}%</td>
+							{this.renderTotalLiquidity(pool)}
+							{this.renderVolume(pool, index)}
+							{this.renderFees(pool, index)}
+						</tr>
+					);
+				} else return;
 			});
 	}
 

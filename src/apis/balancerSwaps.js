@@ -5,8 +5,8 @@ export default axios({
 	method: 'post',
 	data: {
 		query: `{
-  pools(first: 5) {
-    swaps(first: 5, skip: 0, orderBy: timestamp, orderDirection: desc) {
+  pools(first: 1000) {
+    swaps(first: 1000, skip: 0, orderBy: timestamp, orderDirection: desc) {
         timestamp
         tokenIn
         tokenInSym
