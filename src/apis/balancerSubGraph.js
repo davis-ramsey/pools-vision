@@ -7,11 +7,8 @@ export default axios({
 		query: `{
             pools(first: 1000, where: {publicSwap: true}) {
               id
-              finalized
-              publicSwap
               swapFee
               totalWeight
-              tokensList
               tokens {
                 id
                 address
