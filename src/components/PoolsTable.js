@@ -53,7 +53,8 @@ class PoolsTable extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		pools: state.balancer.pools,
-		prices: state.coingecko.prices
+		prices: state.coingecko.prices,
+		portfolio: state.portfolio
 	};
 };
 
