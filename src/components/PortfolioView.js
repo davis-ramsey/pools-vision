@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { fetchPool } from '../actions';
 
 class PortfolioView extends React.Component {
 	componentDidMount() {
-		console.log(this.props);
+		console.log(this.props.portfolio);
+		this.props.fetchPool(this.props.portfolio);
 	}
 	render() {
 		return (
@@ -44,4 +46,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps)(PortfolioView);
+export default connect(mapStateToProps, { fetchPool })(PortfolioView);

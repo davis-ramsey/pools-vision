@@ -1,6 +1,7 @@
 import balancerPools from '../apis/balancerPools';
 import coingecko from '../apis/coingecko';
 import balancerSwaps from '../apis/balancerSwaps';
+import axios from 'axios';
 
 export const fetchPools = () => async (dispatch) => {
 	const response = await balancerPools;
@@ -19,4 +20,33 @@ export const fetchSwaps = () => async (dispatch) => {
 
 export const selectPool = (pool) => (dispatch) => {
 	dispatch({ type: 'SELECT_POOL', payload: pool });
+};
+
+export const fetchPool = (id) => async (dispatch) => {
+	const response = await axios({
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
+		method: 'post',
+		data: {
+			query: `{
+          pools (where: {id: "${id.toLowerCase()}"}, orderBy: liquidity, orderDirection: desc) {
+            id
+           swapFee
+           totalWeight
+           totalSwapVolume
+           tokens {
+             id
+             address
+             balance
+             decimals
+             symbol
+             denormWeight
+           }
+           swaps (first: 1,orderBy: timestamp,orderDirection: desc, where: {timestamp_lt: 1593517968}) {
+             poolTotalSwapVolume
+           }
+         }
+       }`
+		}
+	});
+	dispatch({ type: 'FETCH_POOL', payload: response.data });
 };
