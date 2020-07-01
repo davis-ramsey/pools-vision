@@ -40,8 +40,6 @@ class PortfolioView extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		pools: state.balancer.pools,
-		prices: state.coingecko.prices,
 		portfolio: ownProps.match.params.portfolio
 	};
 };
