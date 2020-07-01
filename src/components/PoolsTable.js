@@ -41,7 +41,12 @@ class PoolsTable extends React.Component {
 				}
 				return null;
 			});
-		else return null;
+		else
+			return (
+				<tr>
+					<td>Loading</td>
+				</tr>
+			);
 	}
 }
 
