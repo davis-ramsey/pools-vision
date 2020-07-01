@@ -42,7 +42,7 @@ class PoolsTable extends React.Component {
 		if (pool.swaps[0] === undefined) return <td data-label="24h Trading Volume">$0</td>;
 		const swap = pool.swaps[0].poolTotalSwapVolume;
 		const volume = totalSwapVolume - swap;
-		return <td data-label="24h Trading Volume">${Number(volume.toFixed(2)).toLocaleString()}</td>; //
+		return <td data-label="24h Trading Volume">${Number(volume.toFixed(2)).toLocaleString()}</td>;
 	}
 
 	renderFees(pool) {
@@ -51,7 +51,26 @@ class PoolsTable extends React.Component {
 		const swap = pool.swaps[0].poolTotalSwapVolume;
 		const volume = totalSwapVolume - swap;
 		const fees = volume * pool.swapFee;
-		return <td data-label="24h Fees">${Number(fees.toFixed(2)).toLocaleString()}</td>; //
+		return <td data-label="24h Fees">${Number(fees.toFixed(2)).toLocaleString()}</td>;
+	}
+
+	renderYield(pool, index) {
+		const totalSwapVolume = pool.totalSwapVolume;
+		if (pool.swaps[0] === undefined) return <td data-label="24h Yield">No Data</td>;
+		const swap = pool.swaps[0].poolTotalSwapVolume;
+		const volume = totalSwapVolume - swap;
+		const fees = volume * pool.swapFee;
+		let total = 0;
+		for (let token of pool.tokens) {
+			const address = token.address;
+			if (this.props.prices[address] === undefined) return <td data-label="24h Yield">No Data</td>;
+			const price = this.props.prices[address].usd;
+			const balance = parseFloat(token.balance);
+			total += price * balance;
+		}
+		const feeYield = fees / total * 100;
+		if (isNaN(feeYield)) return <td data-label="24h Yield">No Data</td>;
+		return <td data-label="24h Yield">{feeYield.toFixed(4)}%</td>; //
 	}
 
 	checkLiquidity(pool) {
@@ -68,17 +87,18 @@ class PoolsTable extends React.Component {
 
 	render() {
 		if (this.props.pools && this.props.prices)
-			return this.props.pools.map((pool) => {
+			return this.props.pools.map((pool, index) => {
 				const check = parseInt(this.checkLiquidity(pool));
 				if (check !== 0) {
 					return (
 						<tr key={pool.id}>
-							<td data-label="Pool Address">{pool.id}</td>
+							<td data-label="Pool Address">...{pool.id.slice(-8)}</td>
 							{this.renderAssets(pool)}
 							<td data-label="Swap Fee">{(pool.swapFee * 100).toFixed(2)}%</td>
 							{this.renderTotalLiquidity(pool)}
 							{this.renderVolume(pool)}
 							{this.renderFees(pool)}
+							{this.renderYield(pool, index)}
 						</tr>
 					);
 				}

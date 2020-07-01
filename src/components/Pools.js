@@ -15,6 +15,7 @@ class Pools extends React.Component {
 							<th>Total Liquidity</th>
 							<th>24h Trading Volume</th>
 							<th>24h Fees</th>
+							<th>24h Yield</th>
 						</tr>
 					</thead>
 					<tbody>
