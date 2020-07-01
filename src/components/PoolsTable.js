@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchPools, fetchPrice, fetchSwaps } from '../actions';
+import { fetchPools, fetchPrice } from '../actions';
 
 class PoolsTable extends React.Component {
 	async componentDidMount() {
 		await this.props.fetchPools();
 		const addresses = [];
 		for (let pool of this.props.pools) {
-			await this.props.fetchSwaps();
 			for (let token of pool.tokens) {
 				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
 			}
@@ -29,25 +28,27 @@ class PoolsTable extends React.Component {
 		let total = 0;
 		for (let token of pool.tokens) {
 			const address = token.address;
+			if (this.props.prices[address] === undefined) return <td data-label="Total Liquidity">No Data</td>;
 			const price = this.props.prices[address].usd;
 			const balance = parseFloat(token.balance);
 			total += price * balance;
 		}
+		if (isNaN(total)) return <td data-label="Total Liquidity">No Data</td>;
 		return <td data-label="Total Liquidity">${Number(total.toFixed(2)).toLocaleString()}</td>;
 	}
 
-	renderVolume(pool, index) {
+	renderVolume(pool) {
 		const totalSwapVolume = pool.totalSwapVolume;
-		if (this.props.swaps[index].swaps[0] === undefined) return <td data-label="24h Trading Volume">$0</td>;
-		const swap = this.props.swaps[index].swaps[0].poolTotalSwapVolume;
+		if (pool.swaps[0] === undefined) return <td data-label="24h Trading Volume">$0</td>;
+		const swap = pool.swaps[0].poolTotalSwapVolume;
 		const volume = totalSwapVolume - swap;
 		return <td data-label="24h Trading Volume">${Number(volume.toFixed(2)).toLocaleString()}</td>; //
 	}
 
-	renderFees(pool, index) {
+	renderFees(pool) {
 		const totalSwapVolume = pool.totalSwapVolume;
-		if (this.props.swaps[index].swaps[0] === undefined) return <td data-label="24h Fees">$0</td>;
-		const swap = this.props.swaps[index].swaps[0].poolTotalSwapVolume;
+		if (pool.swaps[0] === undefined) return <td data-label="24h Fees">$0</td>;
+		const swap = pool.swaps[0].poolTotalSwapVolume;
 		const volume = totalSwapVolume - swap;
 		const fees = volume * pool.swapFee;
 		return <td data-label="24h Fees">${Number(fees.toFixed(2)).toLocaleString()}</td>; //
@@ -57,6 +58,7 @@ class PoolsTable extends React.Component {
 		let total = 0;
 		for (let token of pool.tokens) {
 			const address = token.address;
+			if (this.props.prices[address] === undefined) return 0;
 			const price = this.props.prices[address].usd;
 			const balance = parseFloat(token.balance);
 			total += price * balance;
@@ -65,8 +67,8 @@ class PoolsTable extends React.Component {
 	}
 
 	render() {
-		if (this.props.pools && this.props.prices && this.props.swaps)
-			return this.props.pools.map((pool, index) => {
+		if (this.props.pools && this.props.prices)
+			return this.props.pools.map((pool) => {
 				const check = parseInt(this.checkLiquidity(pool));
 				if (check !== 0) {
 					return (
@@ -75,8 +77,8 @@ class PoolsTable extends React.Component {
 							{this.renderAssets(pool)}
 							<td data-label="Swap Fee">{(pool.swapFee * 100).toFixed(2)}%</td>
 							{this.renderTotalLiquidity(pool)}
-							{this.renderVolume(pool, index)}
-							{this.renderFees(pool, index)}
+							{this.renderVolume(pool)}
+							{this.renderFees(pool)}
 						</tr>
 					);
 				}
@@ -88,9 +90,8 @@ class PoolsTable extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		pools: state.balancer.pools,
-		prices: state.coingecko.prices,
-		swaps: state.balancer.swaps
+		prices: state.coingecko.prices
 	};
 };
 
-export default connect(mapStateToProps, { fetchPools, fetchPrice, fetchSwaps })(PoolsTable);
+export default connect(mapStateToProps, { fetchPools, fetchPrice })(PoolsTable);
