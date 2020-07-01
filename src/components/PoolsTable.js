@@ -37,30 +37,20 @@ class PoolsTable extends React.Component {
 	}
 
 	renderVolume(pool, index) {
-		let total = 0;
-		const swaps = this.props.swaps[index].swaps;
-		for (let swap of swaps) {
-			if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
-				const price = this.props.prices[swap.tokenIn].usd;
-				const amount = parseFloat(swap.tokenAmountIn);
-				total += price * amount;
-			}
-		}
-		return <td data-label="24h Trading Volume">${Number(total.toFixed(2)).toLocaleString()}</td>;
+		const totalSwapVolume = pool.totalSwapVolume;
+		if (this.props.swaps[index].swaps[0] === undefined) return <td data-label="24h Trading Volume">$0</td>;
+		const swap = this.props.swaps[index].swaps[0].poolTotalSwapVolume;
+		const volume = totalSwapVolume - swap;
+		return <td data-label="24h Trading Volume">${Number(volume.toFixed(2)).toLocaleString()}</td>; //
 	}
 
 	renderFees(pool, index) {
-		let total = 0;
-		const swaps = this.props.swaps[index].swaps;
-		const swapFee = this.props.pools[index].swapFee;
-		for (let swap of swaps) {
-			if (swap.timestamp > (Date.now() / 1000).toFixed(0) - 86400) {
-				const price = this.props.prices[swap.tokenIn].usd;
-				const amount = parseFloat(swap.tokenAmountIn);
-				total += price * amount * swapFee;
-			}
-		}
-		return <td data-label="24h Fees">${Number(total.toFixed(2)).toLocaleString()}</td>;
+		const totalSwapVolume = pool.totalSwapVolume;
+		if (this.props.swaps[index].swaps[0] === undefined) return <td data-label="24h Fees">$0</td>;
+		const swap = this.props.swaps[index].swaps[0].poolTotalSwapVolume;
+		const volume = totalSwapVolume - swap;
+		const fees = volume * pool.swapFee;
+		return <td data-label="24h Fees">${Number(fees.toFixed(2)).toLocaleString()}</td>; //
 	}
 
 	checkLiquidity(pool) {

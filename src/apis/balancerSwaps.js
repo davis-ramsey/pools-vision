@@ -5,15 +5,16 @@ export default axios({
 	method: 'post',
 	data: {
 		query: `{
-  pools(first: 50) {
-    swaps(first: 1000, skip: 0, orderBy: timestamp, orderDirection: desc) {
-        timestamp
-        tokenIn
-        tokenInSym
-        tokenAmountIn
-        tokenOut
-        tokenOutSym
-        tokenAmountOut
+  pools(first: 150, skip: 0, where: {finalized: true}, orderBy: liquidity, orderDirection: desc) {
+    swaps (first: 1,orderBy: timestamp,orderDirection: desc, where: {timestamp_lt: ${Math.floor(Date.now() / 1000) -
+		86400}}) {
+      tokenIn
+      tokenInSym
+      tokenAmountIn
+      tokenOut
+      tokenOutSym
+      tokenAmountOut
+      poolTotalSwapVolume
     }
   }
 }
