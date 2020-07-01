@@ -16,3 +16,7 @@ export const fetchSwaps = () => async (dispatch) => {
 	const response = await balancerSwaps;
 	dispatch({ type: 'FETCH_SWAPS', payload: response.data.data.pools });
 };
+
+export const selectPool = (pool) => (dispatch) => {
+	dispatch({ type: 'SELECT_POOL', payload: pool });
+};
