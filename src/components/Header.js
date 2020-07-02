@@ -9,13 +9,13 @@ class Header extends React.Component {
 	render() {
 		if (this.props.portfolio.length !== 0)
 			return (
-				<div className="ui secondary pointing menu">
+				<div className="ui top attached sticky header">
 					<Link to={`/${this.props.portfolio}`} className="ui button primary">
 						Portfolio
 					</Link>
 				</div>
 			);
-		else return <div className="ui secondary pointing menu">Header</div>;
+		else return <div className="ui top attached sticky header">Header</div>;
 	}
 }
 
