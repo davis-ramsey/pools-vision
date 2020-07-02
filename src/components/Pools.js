@@ -15,6 +15,7 @@ class Pools extends React.Component {
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">24h Trading Volume</th>
 							<th className="center aligned">24h Fees</th>
+							<th className="center aligned">Weekly BAL</th>
 							<th className="center aligned">24h Yield</th>
 						</tr>
 					</thead>

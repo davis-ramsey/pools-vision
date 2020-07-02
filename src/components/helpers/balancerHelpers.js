@@ -40,20 +40,20 @@ export const renderFees = (pool) => {
 
 export const renderYield = (pool, prices) => {
 	const totalSwapVolume = pool.totalSwapVolume;
-	if (pool.swaps[0] === undefined) return 'No Data';
+	if (pool.swaps[0] === undefined) return '0';
 	const swap = pool.swaps[0].poolTotalSwapVolume;
 	const volume = totalSwapVolume - swap;
 	const fees = volume * pool.swapFee;
 	let total = 0;
 	for (let token of pool.tokens) {
 		const address = token.address;
-		if (prices === undefined) return 'No Data';
+		if (prices === undefined) return '0';
 		const price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}
 	const feeYield = fees / total * 100;
-	if (isNaN(feeYield)) return 'No Data';
+	if (isNaN(feeYield)) return '0';
 	return feeYield.toFixed(4);
 };
 

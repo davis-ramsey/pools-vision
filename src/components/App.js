@@ -13,7 +13,7 @@ const App = () => {
 				<div>
 					<Header />
 					<Switch>
-						<Route path="/:portfolio" component={PortfolioView} />
+						<Route path="/portfolio/:portfolio" component={PortfolioView} />
 						<Route path="/" component={Pools} />
 					</Switch>
 				</div>

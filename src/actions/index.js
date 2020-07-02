@@ -30,6 +30,14 @@ export const deletePools = () => (dispatch) => {
 	dispatch({ type: 'DELETE_POOLS' });
 };
 
+export const sumLiquidity = (value) => (dispatch) => {
+	dispatch({ type: 'SUM_LIQUIDITY', payload: value });
+};
+
+export const clearLiquidity = () => (dispatch) => {
+	dispatch({ type: 'CLEAR_LIQUIDITY' });
+};
+
 export const fetchPool = (id) => async (dispatch) => {
 	const response = await axios({
 		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',

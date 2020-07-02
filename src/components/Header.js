@@ -8,7 +8,7 @@ class Header extends React.Component {
 			return (
 				<div className="two ui buttons header">
 					<Link
-						to={`/${this.props.portfolio.filter((value) => value !== '' && value !== null)}`}
+						to={`/portfolio/${this.props.portfolio.filter((value) => value !== '' && value !== null)}`}
 						className="ui button left aligned primary"
 					>
 						Portfolio
