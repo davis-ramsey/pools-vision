@@ -6,16 +6,16 @@ class Pools extends React.Component {
 		return (
 			<div>
 				<div className="ui horizontal divider">List of All Pools</div>
-				<table className="ui celled table">
+				<table className="ui inverted striped celled table">
 					<thead>
 						<tr>
-							<th>Pool Address</th>
-							<th>Assets</th>
-							<th>Swap Fee</th>
-							<th>Total Liquidity</th>
-							<th>24h Trading Volume</th>
-							<th>24h Fees</th>
-							<th>24h Yield</th>
+							<th className="center aligned">Pool Address</th>
+							<th className="center aligned">Assets</th>
+							<th className="center aligned">Swap Fee</th>
+							<th className="center aligned">Total Liquidity</th>
+							<th className="center aligned">24h Trading Volume</th>
+							<th className="center aligned">24h Fees</th>
+							<th className="center aligned">24h Yield</th>
 						</tr>
 					</thead>
 					<tbody>

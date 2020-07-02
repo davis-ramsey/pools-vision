@@ -22,6 +22,10 @@ export const selectPool = (pool) => (dispatch) => {
 	dispatch({ type: 'SELECT_POOL', payload: pool });
 };
 
+export const deletePool = (pool) => (dispatch) => {
+	dispatch({ type: 'DELETE_POOL', payload: pool });
+};
+
 export const deletePools = () => (dispatch) => {
 	dispatch({ type: 'DELETE_POOLS' });
 };

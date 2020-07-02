@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchPool, fetchPrice, deletePools } from '../actions';
+import { fetchPool, fetchPrice, deletePools, selectPool, deletePool } from '../actions';
 import {
 	renderAssets,
 	renderTotalLiquidity,
@@ -13,12 +13,16 @@ import {
 class PortfolioView extends React.Component {
 	async componentDidMount() {
 		const pools = this.props.portfolio.split(',');
-		for (let pool of pools) await this.props.fetchPool(pool);
+		for (let pool of pools) {
+			await this.props.fetchPool(pool);
+			this.props.selectPool(pool);
+		}
 		const addresses = [];
 		for (let pool of pools) {
-			for (let token of this.props.pools[pool].tokens) {
-				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
-			}
+			if (this.props.pools[pool] !== undefined)
+				for (let token of this.props.pools[pool].tokens) {
+					if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
+				}
 		}
 		await this.props.fetchPrice(addresses.join(','));
 	}
@@ -28,19 +32,37 @@ class PortfolioView extends React.Component {
 	renderTable() {
 		const pools = this.props.portfolio.split(',');
 		return pools.map((pool) => {
+			if (this.props.checkPortfolio.indexOf(pool) === -1) return null;
 			const selectedPool = this.props.pools[pool];
 			if (selectedPool && this.props.prices && this.props.portfolio) {
 				const check = parseInt(checkLiquidity(selectedPool, this.props.prices));
 				if (check !== 0)
 					return (
-						<tr key={selectedPool.id}>
-							<td data-label="Pool Address">{selectedPool.id}</td>
-							{renderAssets(selectedPool)}
-							<td data-label="Swap Fee">{(selectedPool.swapFee * 100).toFixed(2)}%</td>
-							{renderTotalLiquidity(selectedPool, this.props.prices)}
-							{renderVolume(selectedPool)}
-							{renderFees(selectedPool)}
-							{renderYield(selectedPool, this.props.prices)}
+						<tr onClick={() => this.props.deletePool(selectedPool.id)} key={selectedPool.id}>
+							<td className="center aligned" data-label="Pool Address">
+								{selectedPool.id}
+							</td>
+							<td className="center aligned" data-label="Assets">
+								{' '}
+								{renderAssets(selectedPool)}
+							</td>
+							<td className="center aligned" data-label="Swap Fee">
+								{(selectedPool.swapFee * 100).toFixed(2)}%
+							</td>
+							<td className="center aligned" data-label="Total Liquidity">
+								${renderTotalLiquidity(selectedPool, this.props.prices)}
+							</td>
+							<td className="center aligned" data-label="24h Trading Volume">
+								{' '}
+								${renderVolume(selectedPool)}
+							</td>
+							<td className="center aligned" data-label="24h Fees">
+								${renderFees(selectedPool)}
+							</td>
+							<td className="center aligned" data-label="24h Yield">
+								{' '}
+								{renderYield(selectedPool, this.props.prices)}%{' '}
+							</td>
 						</tr>
 					);
 				else return null;
@@ -52,16 +74,16 @@ class PortfolioView extends React.Component {
 		return (
 			<div>
 				<div className="ui horizontal divider">Show your selected pools here</div>
-				<table className="ui celled table">
+				<table className="ui inverted striped celled table">
 					<thead>
 						<tr>
-							<th>Pool Address</th>
-							<th>Assets</th>
-							<th>Swap Fee</th>
-							<th>Total Liquidity</th>
-							<th>24h Trading Volume</th>
-							<th>24h Fees</th>
-							<th>24h Yield</th>
+							<th className="center aligned">Pool Address</th>
+							<th className="center aligned">Assets</th>
+							<th className="center aligned">Swap Fee</th>
+							<th className="center aligned">Total Liquidity</th>
+							<th className="center aligned">24h Trading Volume</th>
+							<th className="center aligned">24h Fees</th>
+							<th className="center aligned">24h Yield</th>
 						</tr>
 					</thead>
 					<tbody>{this.renderTable()}</tbody>
@@ -75,8 +97,9 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		portfolio: ownProps.match.params.portfolio,
 		pools: state.poolReducer,
-		prices: state.coingecko.prices
+		prices: state.coingecko.prices,
+		checkPortfolio: state.portfolio
 	};
 };
 
-export default connect(mapStateToProps, { fetchPool, fetchPrice, deletePools })(PortfolioView);
+export default connect(mapStateToProps, { fetchPool, fetchPrice, selectPool, deletePool, deletePools })(PortfolioView);

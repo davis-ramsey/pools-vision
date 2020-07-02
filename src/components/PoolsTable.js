@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchPools, fetchPrice, selectPool } from '../actions';
+import { fetchPools, fetchPrice, selectPool, deletePool } from '../actions';
 import {
 	renderAssets,
 	renderTotalLiquidity,
@@ -27,17 +27,58 @@ class PoolsTable extends React.Component {
 			return this.props.pools.map((pool) => {
 				const check = parseInt(checkLiquidity(pool, this.props.prices));
 				if (check !== 0) {
-					return (
-						<tr onClick={() => this.props.selectPool(pool.id)} key={pool.id}>
-							<td data-label="Pool Address">...{pool.id.slice(-8)}</td>
-							{renderAssets(pool)}
-							<td data-label="Swap Fee">{(pool.swapFee * 100).toFixed(2)}%</td>
-							{renderTotalLiquidity(pool, this.props.prices)}
-							{renderVolume(pool)}
-							{renderFees(pool)}
-							{renderYield(pool, this.props.prices)}
-						</tr>
-					);
+					if (this.props.portfolio.indexOf(pool.id) === -1)
+						return (
+							<tr onClick={() => this.props.selectPool(pool.id)} key={pool.id}>
+								<td className="center aligned" data-label="Pool Address">
+									{pool.id}
+								</td>
+								<td className="center aligned" data-label="Assets">
+									{renderAssets(pool)}
+								</td>
+								<td className="center aligned" data-label="Swap Fee">
+									{(pool.swapFee * 100).toFixed(2)}%
+								</td>
+								<td className="center aligned" data-label="Total Liquidity">
+									${renderTotalLiquidity(pool, this.props.prices)}
+								</td>
+								<td className="center aligned" data-label="24h Trading Volume">
+									${renderVolume(pool)}
+								</td>
+								<td className="center aligned" data-label="24h Fees">
+									${renderFees(pool)}
+								</td>
+								<td className="center aligned" data-label="24h Yield">
+									{renderYield(pool, this.props.prices)}%
+								</td>
+							</tr>
+						);
+					else
+						return (
+							<tr className="positive" onClick={() => this.props.deletePool(pool.id)} key={pool.id}>
+								<td className="center aligned" data-label="Pool Address">
+									{pool.id}
+								</td>
+								<td className="center aligned" data-label="Assets">
+									{renderAssets(pool)}
+								</td>
+								<td className="center aligned" data-label="Swap Fee">
+									{(pool.swapFee * 100).toFixed(2)}%
+								</td>
+								<td className="center aligned" data-label="Total Liquidity">
+									${renderTotalLiquidity(pool, this.props.prices)}
+								</td>
+								<td className="center aligned" data-label="24h Trading Volume">
+									${renderVolume(pool)}
+								</td>
+								<td className="center aligned" data-label="24h Fees">
+									${renderFees(pool)}
+								</td>
+								<td className="center aligned" data-label="24h Yield">
+									{renderYield(pool, this.props.prices)}%
+								</td>
+							</tr>
+						);
 				}
 				return null;
 			});
@@ -58,4 +99,4 @@ const mapStateToProps = (state) => {
 	};
 };
 
-export default connect(mapStateToProps, { fetchPools, fetchPrice, selectPool })(PoolsTable);
+export default connect(mapStateToProps, { fetchPools, fetchPrice, selectPool, deletePool })(PoolsTable);
