@@ -9,13 +9,23 @@ class Header extends React.Component {
 	render() {
 		if (this.props.portfolio.length !== 0)
 			return (
-				<div className="ui top attached sticky header">
-					<Link to={`/${this.props.portfolio}`} className="ui button primary">
+				<div className="two ui buttons header">
+					<Link to={`/${this.props.portfolio}`} className="ui button left aligned primary">
 						Portfolio
+					</Link>
+					<Link to="/" className="ui button right aligned primary">
+						All Pools
 					</Link>
 				</div>
 			);
-		else return <div className="ui top attached sticky header">Header</div>;
+		else
+			return (
+				<div className="two ui buttons header">
+					<Link to="/" className="ui button right aligned primary">
+						All Pools
+					</Link>
+				</div>
+			);
 	}
 }
 

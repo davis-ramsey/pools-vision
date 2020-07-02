@@ -40,7 +40,7 @@ export const renderFees = (pool) => {
 	return <td data-label="24h Fees">${Number(fees.toFixed(2)).toLocaleString()}</td>;
 };
 
-export const renderYield = (pool, index, prices) => {
+export const renderYield = (pool, prices) => {
 	const totalSwapVolume = pool.totalSwapVolume;
 	if (pool.swaps[0] === undefined) return <td data-label="24h Yield">No Data</td>;
 	const swap = pool.swaps[0].poolTotalSwapVolume;
@@ -49,7 +49,7 @@ export const renderYield = (pool, index, prices) => {
 	let total = 0;
 	for (let token of pool.tokens) {
 		const address = token.address;
-		if (prices[address] === undefined) return <td data-label="24h Yield">No Data</td>;
+		if (prices === undefined) return <td data-label="24h Yield">No Data</td>;
 		const price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		total += price * balance;

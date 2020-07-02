@@ -23,8 +23,8 @@ class PoolsTable extends React.Component {
 	}
 
 	render() {
-		if (this.props.pools && this.props.prices)
-			return this.props.pools.map((pool, index) => {
+		if (this.props.pools && this.props.prices && this.props.portfolio)
+			return this.props.pools.map((pool) => {
 				const check = parseInt(checkLiquidity(pool, this.props.prices));
 				if (check !== 0) {
 					return (
@@ -35,7 +35,7 @@ class PoolsTable extends React.Component {
 							{renderTotalLiquidity(pool, this.props.prices)}
 							{renderVolume(pool)}
 							{renderFees(pool)}
-							{renderYield(pool, index, this.props.prices)}
+							{renderYield(pool, this.props.prices)}
 						</tr>
 					);
 				}

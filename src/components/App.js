@@ -14,7 +14,7 @@ const App = () => {
 					<Header />
 					<Switch>
 						<Route path="/:portfolio" component={PortfolioView} />
-						<Route path="/" exact component={Pools} />
+						<Route path="/" component={Pools} />
 					</Switch>
 				</div>
 			</Router>

@@ -5,7 +5,7 @@ class Pools extends React.Component {
 	render() {
 		return (
 			<div>
-				<div className="ui horizontal divider header">List of All Pools</div>
+				<div className="ui horizontal divider">List of All Pools</div>
 				<table className="ui celled table">
 					<thead>
 						<tr>

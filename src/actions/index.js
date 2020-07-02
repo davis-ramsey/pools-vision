@@ -22,6 +22,10 @@ export const selectPool = (pool) => (dispatch) => {
 	dispatch({ type: 'SELECT_POOL', payload: pool });
 };
 
+export const deletePools = () => (dispatch) => {
+	dispatch({ type: 'DELETE_POOLS' });
+};
+
 export const fetchPool = (id) => async (dispatch) => {
 	const response = await axios({
 		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
