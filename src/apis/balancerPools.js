@@ -5,7 +5,7 @@ export default axios({
 	method: 'post',
 	data: {
 		query: `{
-      pools (first: 1000, skip: 0, where: {finalized: true}, orderBy: liquidity, orderDirection: desc) {
+      pools (first: 1000, skip: 0, where: {publicSwap: true}, orderBy: liquidity, orderDirection: desc) {
         id
        publicSwap
        finalized

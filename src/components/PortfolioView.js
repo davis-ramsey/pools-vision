@@ -29,6 +29,7 @@ class PortfolioView extends React.Component {
 	componentWillUnmount() {
 		this.props.deletePools();
 	}
+
 	renderTable() {
 		const pools = this.props.portfolio.split(',');
 		return pools.map((pool) => {
@@ -97,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		portfolio: ownProps.match.params.portfolio,
 		pools: state.poolReducer,
-		prices: state.coingecko.prices,
+		prices: state.coingecko,
 		checkPortfolio: state.portfolio
 	};
 };

@@ -9,6 +9,7 @@ import {
 	renderYield,
 	checkLiquidity
 } from './helpers/balancerHelpers';
+import { ratioFactor } from './helpers/factorCalcs';
 
 class PoolsTable extends React.Component {
 	async componentDidMount() {
@@ -19,7 +20,10 @@ class PoolsTable extends React.Component {
 				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
 			}
 		}
-		await this.props.fetchPrice(addresses.join(','));
+		const a1 = addresses.slice(0, addresses.length / 2);
+		const a2 = addresses.slice(addresses.length / 2);
+		await this.props.fetchPrice(a1.join(','));
+		await this.props.fetchPrice(a2.join(','));
 	}
 
 	render() {
@@ -94,7 +98,7 @@ class PoolsTable extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		pools: state.balancer.pools,
-		prices: state.coingecko.prices,
+		prices: state.coingecko,
 		portfolio: state.portfolio
 	};
 };
