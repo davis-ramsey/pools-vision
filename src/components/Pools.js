@@ -6,7 +6,7 @@ class Pools extends React.Component {
 		return (
 			<div>
 				<div className="ui horizontal divider">List of All Pools</div>
-				<table className="ui inverted striped celled table">
+				<table className="ui selectable inverted striped celled table">
 					<thead>
 						<tr>
 							<th className="center aligned">Pool Address</th>
@@ -15,8 +15,8 @@ class Pools extends React.Component {
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">24h Trading Volume</th>
 							<th className="center aligned">24h Fees</th>
-							<th className="center aligned">Weekly BAL</th>
-							<th className="center aligned">24h Yield</th>
+							<th className="center aligned">Annual BAL</th>
+							<th className="center aligned">APY</th>
 						</tr>
 					</thead>
 					<tbody>

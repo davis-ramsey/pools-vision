@@ -1,4 +1,5 @@
 import React from 'react';
+import { PieChart } from 'react-minimal-pie-chart';
 import { connect } from 'react-redux';
 import { fetchPools, fetchPrice, selectPool, deletePool, sumLiquidity, clearLiquidity } from '../actions';
 import {
@@ -8,7 +9,8 @@ import {
 	renderFees,
 	checkLiquidity,
 	renderAdjLiquidity,
-	renderTotalYield
+	renderTotalYield,
+	renderAssetsText
 } from './helpers/balancerHelpers';
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
@@ -51,58 +53,140 @@ class PoolsTable extends React.Component {
 				if (check !== 0) {
 					if (this.props.portfolio.indexOf(pool.id) === -1)
 						return (
-							<tr onClick={() => this.props.selectPool(pool.id)} key={pool.id}>
+							<tr key={pool.id}>
 								<td className="center aligned" data-label="Pool Address">
-									{pool.id}
+									<a
+										target="_blank"
+										rel="noopener noreferrer"
+										href={`https://pools.balancer.exchange/#/pool/${pool.id}`}
+									>
+										<button className="ui inverted left floated button">
+											...{pool.id.slice(-8)}
+										</button>
+									</a>
 								</td>
-								<td className="center aligned" data-label="Assets">
-									{renderAssets(pool)}
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="Assets"
+								>
+									<PieChart
+										onClick={() => this.props.selectPool(pool.id)}
+										className="ui tiny circular image"
+										data={renderAssets(pool)}
+									/>
+									<i className="icon long arrow alternate right" />
+									{renderAssetsText(pool).join('  ')}
 								</td>
-								<td className="center aligned" data-label="Swap Fee">
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="Swap Fee"
+								>
 									{(pool.swapFee * 100).toFixed(2)}%
 								</td>
-								<td className="center aligned" data-label="Total Liquidity">
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="Total Liquidity"
+								>
 									${renderTotalLiquidity(pool, this.props.prices)}
 								</td>
-								<td className="center aligned" data-label="24h Trading Volume">
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="24h Trading Volume"
+								>
 									${renderVolume(pool)}
 								</td>
-								<td className="center aligned" data-label="24h Fees">
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="24h Fees"
+								>
 									${renderFees(pool)}
 								</td>
-								<td className="center aligned" data-label="Weekly BAL">
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="Annual BAL"
+								>
 									{renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)}
 								</td>
-								<td className="center aligned" data-label="24h Yield">
+								<td
+									onClick={() => this.props.selectPool(pool.id)}
+									className="center aligned"
+									data-label="APY"
+								>
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
 							</tr>
 						);
 					else
 						return (
-							<tr className="positive" onClick={() => this.props.deletePool(pool.id)} key={pool.id}>
+							<tr className="positive" key={pool.id}>
 								<td className="center aligned" data-label="Pool Address">
-									{pool.id}
+									<a
+										target="_blank"
+										rel="noopener noreferrer"
+										href={`https://pools.balancer.exchange/#/pool/${pool.id}`}
+									>
+										<button className="ui left floated button">...{pool.id.slice(-8)}</button>
+									</a>
 								</td>
-								<td className="center aligned" data-label="Assets">
-									{renderAssets(pool)}
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="Assets"
+								>
+									<PieChart
+										onClick={() => this.props.deletePool(pool.id)}
+										className="ui tiny circular image"
+										data={renderAssets(pool)}
+									/>
+									<i className="icon long arrow alternate right" />
+									{renderAssetsText(pool).join('  ')}
 								</td>
-								<td className="center aligned" data-label="Swap Fee">
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="Swap Fee"
+								>
 									{(pool.swapFee * 100).toFixed(2)}%
 								</td>
-								<td className="center aligned" data-label="Total Liquidity">
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="Total Liquidity"
+								>
 									${renderTotalLiquidity(pool, this.props.prices)}
 								</td>
-								<td className="center aligned" data-label="24h Trading Volume">
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="24h Trading Volume"
+								>
 									${renderVolume(pool)}
 								</td>
-								<td className="center aligned" data-label="24h Fees">
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="24h Fees"
+								>
 									${renderFees(pool)}
 								</td>
-								<td className="center aligned" data-label="Weekly BAL">
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="Annual BAL"
+								>
 									{renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)}
 								</td>
-								<td className="center aligned" data-label="24h Yield">
+								<td
+									onClick={() => this.props.deletePool(pool.id)}
+									className="center aligned"
+									data-label="APY"
+								>
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
 							</tr>

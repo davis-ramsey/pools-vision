@@ -1,4 +1,5 @@
 import React from 'react';
+import { PieChart } from 'react-minimal-pie-chart';
 import { connect } from 'react-redux';
 import {
 	fetchPools,
@@ -17,7 +18,8 @@ import {
 	renderFees,
 	checkLiquidity,
 	renderTotalYield,
-	renderAdjLiquidity
+	renderAdjLiquidity,
+	renderAssetsText
 } from './helpers/balancerHelpers';
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
@@ -68,34 +70,78 @@ class PortfolioView extends React.Component {
 				const check = parseInt(checkLiquidity(selectedPool, this.props.prices));
 				if (check !== 0)
 					return (
-						<tr onClick={() => this.props.deletePool(selectedPool.id)} key={selectedPool.id}>
+						<tr key={selectedPool.id}>
 							<td className="center aligned" data-label="Pool Address">
-								{selectedPool.id}
+								<a
+									target="_blank"
+									rel="noopener noreferrer"
+									href={`https://pools.balancer.exchange/#/pool/${selectedPool.id}`}
+								>
+									<button className="ui inverted left floated button">
+										...{selectedPool.id.slice(-8)}
+									</button>
+								</a>
 							</td>
-							<td className="center aligned" data-label="Assets">
-								{renderAssets(selectedPool)}
+
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="Assets"
+							>
+								<PieChart className="ui tiny circular image" data={renderAssets(selectedPool)} />
+								<i className="icon long arrow alternate right" />
+								{renderAssetsText(selectedPool).join('  ')}
 							</td>
-							<td className="center aligned" data-label="Swap Fee">
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="Swap Fee"
+							>
 								{(selectedPool.swapFee * 100).toFixed(2)}%
 							</td>
-							<td className="center aligned" data-label="Total Liquidity">
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="Total Liquidity"
+							>
 								${renderTotalLiquidity(selectedPool, this.props.prices)}
 							</td>
-							<td className="center aligned" data-label="24h Trading Volume">
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="24h Trading Volume"
+							>
 								${renderVolume(selectedPool)}
 							</td>
-							<td className="center aligned" data-label="24h Fees">
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="24h Fees"
+							>
 								${renderFees(selectedPool)}
 							</td>
-							<td className="center aligned" data-label="Annual BAL">
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="Annual BAL"
+							>
 								{renderAdjLiquidity(selectedPool, this.props.prices, this.props.sumLiq).toFixed(0)}
 							</td>
-							<td className="center aligned" data-label="APY">
+							<td
+								onClick={() => this.props.deletePool(selectedPool.id)}
+								className="center aligned"
+								data-label="APY"
+							>
 								{renderTotalYield(selectedPool, this.props.prices, this.props.sumLiq)}%
 							</td>
 						</tr>
 					);
-				else return null;
+				else
+					return (
+						<tr key={selectedPool.id}>
+							<td>Loading!</td>
+						</tr>
+					);
 			} else return null;
 		});
 	}
@@ -103,8 +149,8 @@ class PortfolioView extends React.Component {
 	render() {
 		return (
 			<div>
-				<div className="ui horizontal divider">Show your selected pools here</div>
-				<table className="ui inverted striped celled table">
+				<div className="ui horizontal divider">Your Selected Pools</div>
+				<table className="ui selectable inverted striped celled table">
 					<thead>
 						<tr>
 							<th className="center aligned">Pool Address</th>
@@ -113,7 +159,7 @@ class PortfolioView extends React.Component {
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">24h Trading Volume</th>
 							<th className="center aligned">24h Fees</th>
-							<th className="center aligned">Weekly BAL</th>
+							<th className="center aligned">Annual BAL</th>
 							<th className="center aligned">APY</th>
 						</tr>
 					</thead>

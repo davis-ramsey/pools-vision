@@ -1,13 +1,26 @@
 import { feeFactor, ratioFactor } from './factorCalcs';
 
-export const renderAssets = (pool) => {
+const colors = [ 'gray', 'orange', 'blue', 'green', 'black', 'mistyrose', 'red', 'purple' ];
+
+export const renderAssetsText = (pool) => {
 	const assets = [];
 	for (let token of pool.tokens) {
 		const weight = token.denormWeight / pool.totalWeight;
 		const percentage = (weight * 100).toFixed(2) + '%';
 		assets.push(percentage + ' ' + token.symbol);
 	}
-	return assets.join(' ');
+	return assets;
+};
+
+export const renderAssets = (pool) => {
+	const assets = [];
+	pool.tokens.forEach((token, index) => {
+		const weight = token.denormWeight / pool.totalWeight;
+		const percentage = parseFloat((weight * 100).toFixed(2));
+		const entry = { title: token.symbol, value: percentage, color: colors[index] };
+		assets.push(entry);
+	});
+	return assets;
 };
 
 export const renderTotalLiquidity = (pool, prices) => {
@@ -61,7 +74,7 @@ export const renderTotalYield = (pool, prices, sumLiq) => {
 	const priceBAL = prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
 	const yieldBAL = parseFloat(annualBAL * priceBAL / liquidity * 100);
 	const totalYield = yieldBAL + feeYield;
-	return totalYield.toFixed(4);
+	return totalYield.toFixed(2);
 };
 
 export const checkLiquidity = (pool, prices) => {
