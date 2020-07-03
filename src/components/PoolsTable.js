@@ -18,6 +18,7 @@ class PoolsTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.timer = null;
+		this.sum = 0;
 	}
 	async componentDidMount() {
 		if (!this.props.pools) await this.props.fetchPools();
@@ -34,6 +35,8 @@ class PoolsTable extends React.Component {
 			await this.props.fetchPrice(a2.join(','));
 		}
 		for (let pool of this.props.pools) this.adjLiquidity(pool);
+		this.props.sumLiquidity(this.sum);
+		console.log(this.sum);
 		this.timer = setInterval(() => {
 			this.props.deletePrices();
 			this.refreshData();
@@ -72,7 +75,8 @@ class PoolsTable extends React.Component {
 	adjLiquidity = (pool) => {
 		const totalFactor = this.totalFactor(pool);
 		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
-		this.props.sumLiquidity(liquidity * totalFactor);
+		if (isNaN(liquidity * totalFactor)) return;
+		this.sum += liquidity * totalFactor;
 	};
 
 	render() {

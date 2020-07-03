@@ -28,6 +28,7 @@ class PortfolioView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.timer = null;
+		this.sum = 0;
 	}
 	async componentDidMount() {
 		const pools = this.props.portfolio.split(',');
@@ -48,7 +49,9 @@ class PortfolioView extends React.Component {
 			await this.props.fetchPrice(a1.join(','));
 			await this.props.fetchPrice(a2.join(','));
 		}
-		if (this.props.allPools) for (let pool of this.props.allPools) this.adjLiquidity(pool);
+
+		for (let pool of this.props.allPools) this.adjLiquidity(pool);
+		this.props.sumLiquidity(this.sum);
 		this.timer = setInterval(() => {
 			this.props.deletePrices();
 			this.refreshData();
@@ -86,7 +89,8 @@ class PortfolioView extends React.Component {
 	adjLiquidity = (pool) => {
 		const totalFactor = this.totalFactor(pool);
 		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
-		this.props.sumLiquidity(liquidity * totalFactor);
+		if (isNaN(liquidity * totalFactor)) return;
+		this.sum += liquidity * totalFactor;
 	};
 
 	renderTable() {
