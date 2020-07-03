@@ -9,7 +9,8 @@ import {
 	selectPool,
 	deletePool,
 	sumLiquidity,
-	clearLiquidity
+	clearLiquidity,
+	deletePrices
 } from '../actions';
 import {
 	renderAssets,
@@ -24,6 +25,10 @@ import {
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
 class PortfolioView extends React.Component {
+	constructor(props) {
+		super(props);
+		this.timer = null;
+	}
 	async componentDidMount() {
 		const pools = this.props.portfolio.split(',');
 		for (let pool of pools) {
@@ -44,10 +49,33 @@ class PortfolioView extends React.Component {
 			await this.props.fetchPrice(a2.join(','));
 		}
 		if (this.props.allPools) for (let pool of this.props.allPools) this.adjLiquidity(pool);
+		this.timer = setInterval(() => {
+			this.props.deletePrices();
+			this.refreshData();
+		}, 60000);
 	}
 	componentWillUnmount() {
 		this.props.deletePools();
 		this.props.clearLiquidity();
+		clearInterval(this.timer);
+	}
+	async refreshData() {
+		clearInterval(this.timer);
+		await this.props.fetchPools();
+		const addresses = [];
+		for (let pool of this.props.allPools) {
+			for (let token of pool.tokens) {
+				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
+			}
+		}
+		const a1 = addresses.slice(0, addresses.length / 2);
+		const a2 = addresses.slice(addresses.length / 2);
+		await this.props.fetchPrice(a1.join(','));
+		await this.props.fetchPrice(a2.join(','));
+		this.timer = setInterval(() => {
+			this.props.deletePrices();
+			this.refreshData();
+		}, 60000);
 	}
 
 	totalFactor = (pool) => {
@@ -189,5 +217,6 @@ export default connect(mapStateToProps, {
 	deletePool,
 	deletePools,
 	sumLiquidity,
-	clearLiquidity
+	clearLiquidity,
+	deletePrices
 })(PortfolioView);

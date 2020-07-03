@@ -1,6 +1,5 @@
 import balancerPools from '../apis/balancerPools';
 import coingecko from '../apis/coingecko';
-import balancerSwaps from '../apis/balancerSwaps';
 import axios from 'axios';
 
 export const fetchPools = () => async (dispatch) => {
@@ -8,14 +7,13 @@ export const fetchPools = () => async (dispatch) => {
 	dispatch({ type: 'FETCH_POOLS', payload: response.data });
 };
 
+export const deletePrices = () => (dispatch) => {
+	dispatch({ type: 'DELETE_PRICES' });
+};
+
 export const fetchPrice = (address) => async (dispatch) => {
 	const response = await coingecko.get(`/ethereum?contract_addresses=${address}&vs_currencies=usd`);
 	dispatch({ type: 'FETCH_PRICE', payload: response.data });
-};
-
-export const fetchSwaps = () => async (dispatch) => {
-	const response = await balancerSwaps;
-	dispatch({ type: 'FETCH_SWAPS', payload: response.data.data.pools });
 };
 
 export const selectPool = (pool) => (dispatch) => {

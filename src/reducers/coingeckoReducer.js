@@ -7,6 +7,8 @@ export default (state = INITIAL_STATE, action) => {
 				...state,
 				...action.payload
 			};
+		case 'DELETE_PRICES':
+			return {};
 		default:
 			return state;
 	}

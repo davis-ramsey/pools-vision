@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 class Header extends React.Component {
+	constructor(props) {
+		super(props);
+		this.timer = 0;
+	}
 	renderPortfolioButton() {
 		if (this.props.portfolio.length !== 0)
 			return (
@@ -52,16 +56,18 @@ class Header extends React.Component {
 		return (
 			<div>
 				{this.renderMenu()}
+				<div className="ui horizontal divider">Page Last Refreshed: {Date()}</div>
 				<div className="ui ignored info message">
-					For the official Balancer Pool interface, please visit{' '}
+					For the official Balancer Pool interface, please visit
 					<a target="_blank" rel="noopener noreferrer" href={`https://pools.balancer.exchange/#/`}>
 						{' '}
 						https://pools.balancer.exchange/#/
 					</a>
 					<br />
 					Click a pool to add or remove it from your selected pools. To view only selected pools, click the
-					Portfolio button. To view all pools, click the All Pools button.<br />Note: APY is calculated using
-					24h fee yield extrapolated to an annualized rate plus yield on weekly BAL distributions.
+					Portfolio button. To view all pools, click the All Pools button. Prices are automatically updated
+					every 60 seconds. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate
+					plus yield on weekly BAL distributions.
 				</div>
 			</div>
 		);
@@ -70,7 +76,8 @@ class Header extends React.Component {
 
 const mapStateToProps = (state) => {
 	return {
-		portfolio: state.portfolio
+		portfolio: state.portfolio,
+		prices: state.coingecko
 	};
 };
 

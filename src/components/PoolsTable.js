@@ -1,7 +1,7 @@
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import { connect } from 'react-redux';
-import { fetchPools, fetchPrice, selectPool, deletePool, sumLiquidity, clearLiquidity } from '../actions';
+import { fetchPools, fetchPrice, selectPool, deletePool, sumLiquidity, clearLiquidity, deletePrices } from '../actions';
 import {
 	renderAssets,
 	renderTotalLiquidity,
@@ -15,6 +15,10 @@ import {
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
 class PoolsTable extends React.Component {
+	constructor(props) {
+		super(props);
+		this.timer = null;
+	}
 	async componentDidMount() {
 		if (!this.props.pools) await this.props.fetchPools();
 		if (!this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d']) {
@@ -30,10 +34,35 @@ class PoolsTable extends React.Component {
 			await this.props.fetchPrice(a2.join(','));
 		}
 		for (let pool of this.props.pools) this.adjLiquidity(pool);
+		this.timer = setInterval(() => {
+			this.props.deletePrices();
+			this.refreshData();
+		}, 60000);
 	}
 	componentWillUnmount() {
 		this.props.clearLiquidity();
+		clearInterval(this.timer);
 	}
+
+	async refreshData() {
+		clearInterval(this.timer);
+		await this.props.fetchPools();
+		const addresses = [];
+		for (let pool of this.props.pools) {
+			for (let token of pool.tokens) {
+				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
+			}
+		}
+		const a1 = addresses.slice(0, addresses.length / 2);
+		const a2 = addresses.slice(addresses.length / 2);
+		await this.props.fetchPrice(a1.join(','));
+		await this.props.fetchPrice(a2.join(','));
+		this.timer = setInterval(() => {
+			this.props.deletePrices();
+			this.refreshData();
+		}, 60000);
+	}
+
 	totalFactor = (pool) => {
 		const fee = feeFactor(pool.swapFee);
 		const ratio = ratioFactor(pool);
@@ -218,5 +247,6 @@ export default connect(mapStateToProps, {
 	selectPool,
 	deletePool,
 	sumLiquidity,
-	clearLiquidity
+	clearLiquidity,
+	deletePrices
 })(PoolsTable);
