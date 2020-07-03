@@ -8,7 +8,7 @@ import Pools from './Pools';
 
 const App = () => {
 	return (
-		<div className="ui container">
+		<div className="ui fluid container">
 			<Router history={history}>
 				<div>
 					<Header />

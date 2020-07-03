@@ -80,6 +80,7 @@ class PortfolioView extends React.Component {
 			const selectedPool = this.props.pools[pool];
 			if (selectedPool && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236) {
 				const check = parseInt(checkLiquidity(selectedPool, this.props.prices));
+				console.log(selectedPool);
 				if (check !== 0)
 					return (
 						<tr onClick={() => this.props.deletePool(selectedPool.id)} key={selectedPool.id}>
