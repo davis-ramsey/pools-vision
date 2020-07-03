@@ -27,17 +27,19 @@ class PortfolioView extends React.Component {
 			await this.props.fetchPool(pool);
 			this.props.selectPool(pool);
 		}
-		await this.props.fetchPools();
-		const addresses = [];
-		for (let pool of this.props.allPools) {
-			for (let token of pool.tokens) {
-				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
+		if (!this.props.allPools) await this.props.fetchPools();
+		if (!this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d']) {
+			const addresses = [];
+			for (let pool of this.props.allPools) {
+				for (let token of pool.tokens) {
+					if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
+				}
 			}
+			const a1 = addresses.slice(0, addresses.length / 2);
+			const a2 = addresses.slice(addresses.length / 2);
+			await this.props.fetchPrice(a1.join(','));
+			await this.props.fetchPrice(a2.join(','));
 		}
-		const a1 = addresses.slice(0, addresses.length / 2);
-		const a2 = addresses.slice(addresses.length / 2);
-		await this.props.fetchPrice(a1.join(','));
-		await this.props.fetchPrice(a2.join(','));
 		for (let pool of this.props.allPools) this.adjLiquidity(pool);
 	}
 	componentWillUnmount() {
@@ -60,16 +62,16 @@ class PortfolioView extends React.Component {
 		const totalFactor = this.totalFactor(pool);
 		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
 		if (isNaN(liquidity / this.props.sumLiq * 14500)) return 0;
-		return liquidity * totalFactor / this.props.sumLiq * 145000;
+		return liquidity * totalFactor / this.props.sumLiq * 145000 * 52;
 	};
 
 	renderTotalYield = (pool, prices) => {
 		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
 		if (isNaN(liquidity / this.props.sumLiq * 14500)) return 0;
 		const weekBAL = this.renderAdjLiquidity(pool);
-		const feeYield = parseFloat(renderYield(pool, prices));
+		const feeYield = parseFloat(renderYield(pool, prices)) * 365;
 		const priceBAL = this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
-		const yieldBAL = parseFloat(weekBAL / 7 * priceBAL / liquidity * 100);
+		const yieldBAL = parseFloat(weekBAL * priceBAL / liquidity * 100);
 		const totalYield = yieldBAL + feeYield;
 		return totalYield.toFixed(4);
 	};
@@ -102,10 +104,10 @@ class PortfolioView extends React.Component {
 							<td className="center aligned" data-label="24h Fees">
 								${renderFees(selectedPool)}
 							</td>
-							<td className="center aligned" data-label="Weekly BAL">
+							<td className="center aligned" data-label="Annual BAL">
 								{this.renderAdjLiquidity(selectedPool).toFixed(0)}
 							</td>
-							<td className="center aligned" data-label="24h Yield">
+							<td className="center aligned" data-label="APY">
 								{this.renderTotalYield(selectedPool, this.props.prices)}%
 							</td>
 						</tr>
@@ -129,7 +131,7 @@ class PortfolioView extends React.Component {
 							<th className="center aligned">24h Trading Volume</th>
 							<th className="center aligned">24h Fees</th>
 							<th className="center aligned">Weekly BAL</th>
-							<th className="center aligned">24h Yield</th>
+							<th className="center aligned">APY</th>
 						</tr>
 					</thead>
 					<tbody>{this.renderTable()}</tbody>
