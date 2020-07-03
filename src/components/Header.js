@@ -66,8 +66,8 @@ class Header extends React.Component {
 					<br />
 					Click a pool to add or remove it from your selected pools. To view only selected pools, click the
 					Portfolio button. To view all pools, click the All Pools button. Prices are automatically updated
-					every 60 seconds. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate
-					plus yield on weekly BAL distributions.
+					every 5 minutes. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate plus
+					yield on weekly BAL distributions.
 				</div>
 			</div>
 		);

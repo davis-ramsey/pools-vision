@@ -55,7 +55,7 @@ class PortfolioView extends React.Component {
 		this.timer = setInterval(() => {
 			this.props.deletePrices();
 			this.refreshData();
-		}, 60000);
+		}, 300000);
 	}
 	componentWillUnmount() {
 		this.props.deletePools();
@@ -78,7 +78,7 @@ class PortfolioView extends React.Component {
 		this.timer = setInterval(() => {
 			this.props.deletePrices();
 			this.refreshData();
-		}, 60000);
+		}, 300000);
 	}
 
 	totalFactor = (pool) => {
@@ -157,7 +157,9 @@ class PortfolioView extends React.Component {
 								className="center aligned"
 								data-label="Annual BAL"
 							>
-								{renderAdjLiquidity(selectedPool, this.props.prices, this.props.sumLiq).toFixed(0)}
+								{Number(
+									renderAdjLiquidity(selectedPool, this.props.prices, this.props.sumLiq).toFixed(0)
+								).toLocaleString()}
 							</td>
 							<td
 								onClick={() => this.props.deletePool(selectedPool.id)}

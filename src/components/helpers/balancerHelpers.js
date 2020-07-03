@@ -1,6 +1,19 @@
 import { feeFactor, ratioFactor } from './factorCalcs';
 
-const colors = [ 'gray', 'orange', 'blue', 'green', 'black', 'mistyrose', 'red', 'purple' ];
+const colors = [
+	'lightslategray',
+	'darkorange',
+	'teal',
+	'forestgreen',
+	'aquamarine',
+	'mistyrose',
+	'crimson',
+	'orchid',
+	'steelblue',
+	'blue',
+	'darkmagenta',
+	'goldenrod'
+];
 
 export const renderAssetsText = (pool) => {
 	const assets = [];
@@ -14,10 +27,16 @@ export const renderAssetsText = (pool) => {
 
 export const renderAssets = (pool) => {
 	const assets = [];
+	const pickedColors = [];
 	pool.tokens.forEach((token, index) => {
+		const colorChoices = colors.filter((value) => pickedColors.indexOf(value) === -1);
+		const random = Math.floor(Math.random() * colorChoices.length);
+		const colorPick = colorChoices[random];
+		console.log(colorPick);
+		pickedColors.push(colorPick);
 		const weight = token.denormWeight / pool.totalWeight;
 		const percentage = parseFloat((weight * 100).toFixed(2));
-		const entry = { title: token.symbol, value: percentage, color: colors[index] };
+		const entry = { title: token.symbol, value: percentage, color: colorPick };
 		assets.push(entry);
 	});
 	return assets;

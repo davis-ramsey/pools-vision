@@ -36,11 +36,10 @@ class PoolsTable extends React.Component {
 		}
 		for (let pool of this.props.pools) this.adjLiquidity(pool);
 		this.props.sumLiquidity(this.sum);
-		console.log(this.sum);
 		this.timer = setInterval(() => {
 			this.props.deletePrices();
 			this.refreshData();
-		}, 60000);
+		}, 300000);
 	}
 	componentWillUnmount() {
 		this.props.clearLiquidity();
@@ -63,7 +62,7 @@ class PoolsTable extends React.Component {
 		this.timer = setInterval(() => {
 			this.props.deletePrices();
 			this.refreshData();
-		}, 60000);
+		}, 300000);
 	}
 
 	totalFactor = (pool) => {
@@ -144,7 +143,9 @@ class PoolsTable extends React.Component {
 									className="center aligned"
 									data-label="Annual BAL"
 								>
-									{renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)}
+									{Number(
+										renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)
+									).toLocaleString()}
 								</td>
 								<td
 									onClick={() => this.props.selectPool(pool.id)}
@@ -213,7 +214,9 @@ class PoolsTable extends React.Component {
 									className="center aligned"
 									data-label="Annual BAL"
 								>
-									{renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)}
+									{Number(
+										renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)
+									).toLocaleString()}
 								</td>
 								<td
 									onClick={() => this.props.deletePool(pool.id)}
