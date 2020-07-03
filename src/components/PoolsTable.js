@@ -6,8 +6,9 @@ import {
 	renderTotalLiquidity,
 	renderVolume,
 	renderFees,
-	renderYield,
-	checkLiquidity
+	checkLiquidity,
+	renderAdjLiquidity,
+	renderTotalYield
 } from './helpers/balancerHelpers';
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
@@ -43,23 +44,6 @@ class PoolsTable extends React.Component {
 		this.props.sumLiquidity(liquidity * totalFactor);
 	};
 
-	renderAdjLiquidity = (pool) => {
-		const totalFactor = this.totalFactor(pool);
-		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
-		if (isNaN(liquidity / this.props.sumLiq * 14500)) return 0;
-		return liquidity * totalFactor / this.props.sumLiq * 145000;
-	};
-
-	renderTotalYield = (pool, prices) => {
-		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
-		if (isNaN(liquidity / this.props.sumLiq * 14500)) return 0;
-		const weekBAL = this.renderAdjLiquidity(pool);
-		const feeYield = parseFloat(renderYield(pool, prices));
-		const priceBAL = this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
-		const yieldBAL = parseFloat(weekBAL / 7 * priceBAL / liquidity * 100);
-		const totalYield = yieldBAL + feeYield;
-		return totalYield.toFixed(4);
-	};
 	render() {
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
 			return this.props.pools.map((pool) => {
@@ -87,10 +71,10 @@ class PoolsTable extends React.Component {
 									${renderFees(pool)}
 								</td>
 								<td className="center aligned" data-label="Weekly BAL">
-									{this.renderAdjLiquidity(pool).toFixed(0)}
+									{renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)}
 								</td>
 								<td className="center aligned" data-label="24h Yield">
-									{this.renderTotalYield(pool, this.props.prices)}%
+									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
 							</tr>
 						);
@@ -116,10 +100,10 @@ class PoolsTable extends React.Component {
 									${renderFees(pool)}
 								</td>
 								<td className="center aligned" data-label="Weekly BAL">
-									{this.renderAdjLiquidity(pool).toFixed(0)}
+									{renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)}
 								</td>
 								<td className="center aligned" data-label="24h Yield">
-									{this.renderTotalYield(pool, this.props.prices)}%
+									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
 							</tr>
 						);
