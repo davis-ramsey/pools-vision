@@ -57,7 +57,7 @@ class Header extends React.Component {
 			<div>
 				{this.renderMenu()}
 				<div className="ui horizontal divider">Page Last Refreshed: {Date()}</div>
-				<div className="ui ignored info message">
+				<div className="ui black compact message">
 					For the official Balancer Pool interface, please visit
 					<a target="_blank" rel="noopener noreferrer" href={`https://pools.balancer.exchange/#/`}>
 						{' '}
