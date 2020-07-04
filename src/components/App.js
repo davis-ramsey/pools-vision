@@ -2,6 +2,7 @@ import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import history from '../history';
 
+import Footer from './Footer';
 import Header from './Header';
 import PortfolioView from './PortfolioView';
 import Pools from './Pools';
@@ -17,6 +18,7 @@ const App = () => {
 						<Route path="/" component={Pools} />
 					</Switch>
 				</div>
+				<Footer />
 			</Router>
 		</div>
 	);

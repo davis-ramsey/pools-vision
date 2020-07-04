@@ -29,7 +29,7 @@ class Header extends React.Component {
 					<div className="ui avatar image visible content">
 						<img alt="grug stack rock" src="/images/pebbles.png" />
 					</div>
-					<div className="hidden content">Grug stack rock</div>
+					<div className="ui hidden content">Grug stack rock</div>
 				</div>
 
 				<div className="ui animated secondary button">
