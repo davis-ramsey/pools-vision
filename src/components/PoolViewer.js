@@ -69,7 +69,7 @@ class PoolViewer extends React.Component {
 							<tr>
 								<th className="center aligned">Total Liquidity</th>
 								<th className="center aligned">Swap Fee</th>
-								<th className="center aligned">24h Trading Volume</th>
+								<th className="center aligned">24h Volume</th>
 								<th className="center aligned">24h Fees</th>
 								<th className="center aligned">Annual BAL</th>
 								<th className="center aligned">APY</th>
@@ -83,7 +83,7 @@ class PoolViewer extends React.Component {
 								<td className="center aligned" data-label="Swap Fee">
 									{(this.props.pool[this.props.viewPool].swapFee * 100).toFixed(2)}%
 								</td>
-								<td className="center aligned" data-label="24h Trading Volume">
+								<td className="center aligned" data-label="24h Volume">
 									${renderVolume(this.props.pool[this.props.viewPool])}
 								</td>
 								<td className="center aligned" data-label="24h Fees">

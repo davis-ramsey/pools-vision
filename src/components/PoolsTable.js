@@ -61,7 +61,7 @@ class PoolsTable extends React.Component {
 								<td className="center aligned" data-label="Total Liquidity">
 									${renderTotalLiquidity(pool, this.props.prices)}
 								</td>
-								<td className="center aligned" data-label="24h Trading Volume">
+								<td className="center aligned" data-label="24h Volume">
 									${renderVolume(pool)}
 								</td>
 								<td className="center aligned" data-label="24h Fees">
@@ -117,7 +117,7 @@ class PoolsTable extends React.Component {
 								<td className="center aligned" data-label="Total Liquidity">
 									${renderTotalLiquidity(pool, this.props.prices)}
 								</td>
-								<td className="center aligned" data-label="24h Trading Volume">
+								<td className="center aligned" data-label="24h Volume">
 									${renderVolume(pool)}
 								</td>
 								<td className="center aligned" data-label="24h Fees">
