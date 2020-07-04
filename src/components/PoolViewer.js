@@ -1,17 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-	fetchPools,
-	fetchPool,
-	fetchPrice,
-	deletePools,
-	sumAllLiq,
-	sumAllVol,
-	sumLiquidity,
-	clearLiquidity,
-	deleteAllLiq,
-	deleteAllVol
-} from '../actions';
+import { fetchPool, deletePools } from '../actions';
 import {
 	renderTotalLiquidity,
 	renderVolume,
@@ -20,66 +9,14 @@ import {
 	renderAssetsText,
 	renderTotalYield
 } from './helpers/balancerHelpers';
-import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
 class PoolViewer extends React.Component {
-	constructor(props) {
-		super(props);
-		this.sumTotalAdjLiq = 0;
-		this.sumTotalLiq = 0;
-		this.sumVolume = 0;
-	}
 	async componentDidMount() {
 		await this.props.fetchPool(this.props.viewPool);
-		if (!this.props.allPools) await this.props.fetchPools();
-		if (!this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'] && this.props.allPools) {
-			const addresses = [];
-			for (let pool of this.props.allPools) {
-				for (let token of pool.tokens) {
-					if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
-				}
-			}
-			const a1 = addresses.slice(0, addresses.length / 2);
-			const a2 = addresses.slice(addresses.length / 2);
-			await this.props.fetchPrice(a1.join(','));
-			await this.props.fetchPrice(a2.join(','));
-		}
-
-		for (let pool of this.props.allPools) {
-			this.adjLiquidity(pool);
-			this.getTotalVolume(pool);
-		}
-		this.props.sumAllLiq(this.sumTotalLiq);
-		this.props.sumAllVol(this.sumVolume);
-		this.props.sumLiquidity(this.sumTotalAdjLiq);
 	}
 
-	getTotalVolume(pool) {
-		const totalSwapVolume = pool.totalSwapVolume;
-		if (pool.swaps[0] === undefined) return;
-		const swap = pool.swaps[0].poolTotalSwapVolume;
-		const volume = totalSwapVolume - swap;
-		this.sumVolume += volume;
-	}
-
-	totalFactor = (pool) => {
-		const fee = feeFactor(pool.swapFee);
-		const ratio = ratioFactor(pool);
-		return fee * ratio;
-	};
-
-	adjLiquidity = (pool) => {
-		const totalFactor = this.totalFactor(pool);
-		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
-		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
-		if (isNaN(liquidity * totalFactor)) return;
-		this.sumTotalAdjLiq += liquidity * totalFactor;
-	};
 	componentWillUnmount() {
 		this.props.deletePools();
-		this.props.clearLiquidity();
-		this.props.deleteAllLiq();
-		this.props.deleteAllVol();
 	}
 
 	renderAssetValue(index) {
@@ -201,14 +138,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, {
-	fetchPools,
-	fetchPrice,
 	fetchPool,
-	deletePools,
-	sumAllLiq,
-	sumAllVol,
-	sumLiquidity,
-	clearLiquidity,
-	deleteAllLiq,
-	deleteAllVol
+	deletePools
 })(PoolViewer);

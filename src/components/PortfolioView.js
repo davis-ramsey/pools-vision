@@ -1,21 +1,7 @@
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import { connect } from 'react-redux';
-import {
-	fetchPools,
-	fetchPool,
-	fetchPrice,
-	deletePools,
-	selectPool,
-	deletePool,
-	sumLiquidity,
-	clearLiquidity,
-	deletePrices,
-	sumAllLiq,
-	deleteAllLiq,
-	sumAllVol,
-	deleteAllVol
-} from '../actions';
+import { fetchPool, selectPool, deletePool, deletePools } from '../actions';
 import {
 	renderAssets,
 	renderTotalLiquidity,
@@ -26,107 +12,18 @@ import {
 	renderAdjLiquidity,
 	renderAssetsText
 } from './helpers/balancerHelpers';
-import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 
 class PortfolioView extends React.Component {
-	constructor(props) {
-		super(props);
-		this.timer = null;
-		this.sumTotalAdjLiq = 0;
-		this.sumTotalLiq = 0;
-		this.sumVolume = 0;
-	}
 	async componentDidMount() {
 		const pools = this.props.portfolio.split(',');
 		for (let pool of pools) {
 			await this.props.fetchPool(pool);
 			this.props.selectPool(pool);
 		}
-		if (!this.props.allPools) await this.props.fetchPools();
-		if (!this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'] && this.props.allPools) {
-			const addresses = [];
-			for (let pool of this.props.allPools) {
-				for (let token of pool.tokens) {
-					if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
-				}
-			}
-			const a1 = addresses.slice(0, addresses.length / 2);
-			const a2 = addresses.slice(addresses.length / 2);
-			await this.props.fetchPrice(a1.join(','));
-			await this.props.fetchPrice(a2.join(','));
-		}
-
-		for (let pool of this.props.allPools) {
-			this.adjLiquidity(pool);
-			this.getTotalVolume(pool);
-		}
-		this.props.sumAllLiq(this.sumTotalLiq);
-		this.props.sumAllVol(this.sumVolume);
-		this.props.sumLiquidity(this.sumTotalAdjLiq);
-		this.timer = setInterval(() => {
-			this.refreshData();
-		}, 300000);
 	}
 	componentWillUnmount() {
 		this.props.deletePools();
-		this.props.clearLiquidity();
-		this.props.deleteAllLiq();
-		this.props.deleteAllVol();
-		clearInterval(this.timer);
 	}
-
-	getTotalVolume(pool) {
-		const totalSwapVolume = pool.totalSwapVolume;
-		if (pool.swaps[0] === undefined) return;
-		const swap = pool.swaps[0].poolTotalSwapVolume;
-		const volume = totalSwapVolume - swap;
-		this.sumVolume += volume;
-	}
-
-	async refreshData() {
-		clearInterval(this.timer);
-		this.props.clearLiquidity();
-		this.props.deleteAllLiq();
-		this.props.deleteAllVol();
-		this.props.deletePrices();
-		this.sumTotalAdjLiq = 0;
-		this.sumTotalLiq = 0;
-		this.sumVolume = 0;
-		await this.props.fetchPools();
-		const addresses = [];
-		for (let pool of this.props.allPools) {
-			for (let token of pool.tokens) {
-				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
-			}
-		}
-		const a1 = addresses.slice(0, addresses.length / 2);
-		const a2 = addresses.slice(addresses.length / 2);
-		await this.props.fetchPrice(a1.join(','));
-		await this.props.fetchPrice(a2.join(','));
-		for (let pool of this.props.allPools) {
-			this.adjLiquidity(pool);
-			this.getTotalVolume(pool);
-		}
-		this.props.sumAllLiq(this.sumTotalLiq);
-		this.props.sumAllVol(this.sumVolume);
-		this.props.sumLiquidity(this.sumTotalAdjLiq);
-		this.timer = setInterval(() => {
-			this.refreshData();
-		}, 300000);
-	}
-
-	totalFactor = (pool) => {
-		const fee = feeFactor(pool.swapFee);
-		const ratio = ratioFactor(pool);
-		return fee * ratio;
-	};
-	adjLiquidity = (pool) => {
-		const totalFactor = this.totalFactor(pool);
-		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
-		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
-		if (isNaN(liquidity * totalFactor)) return;
-		this.sumTotalAdjLiq += liquidity * totalFactor;
-	};
 
 	renderTable() {
 		const pools = this.props.portfolio.split(',');
@@ -211,7 +108,12 @@ class PortfolioView extends React.Component {
 							<td>Loading!</td>
 						</tr>
 					);
-			} else return null;
+			} else
+				return (
+					<tr key={Math.random()}>
+						<td>Loading!</td>
+					</tr>
+				);
 		});
 	}
 
@@ -251,17 +153,9 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, {
-	fetchPools,
 	fetchPool,
-	fetchPrice,
+
 	selectPool,
 	deletePool,
-	deletePools,
-	sumLiquidity,
-	clearLiquidity,
-	deletePrices,
-	sumAllLiq,
-	deleteAllLiq,
-	sumAllVol,
-	deleteAllVol
+	deletePools
 })(PortfolioView);

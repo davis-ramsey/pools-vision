@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import {
 	fetchPools,
 	fetchPrice,
-	selectPool,
-	deletePool,
 	sumLiquidity,
 	clearLiquidity,
 	deletePrices,
 	sumAllLiq,
 	deleteAllLiq,
 	sumAllVol,
-	deleteAllVol
+	deleteAllVol,
+	deletePools,
+	fetchPool
 } from '../actions';
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 import { renderTotalLiquidity } from './helpers/balancerHelpers';
@@ -62,9 +62,15 @@ class Data extends React.Component {
 		this.props.deleteAllLiq();
 		this.props.deleteAllVol();
 		this.props.deletePrices();
+		if (this.props.portfolioPools && this.props.poolsList) {
+			this.props.deletePools();
+			for (let pool of this.props.poolsList) {
+				await this.props.fetchPool(pool);
+			}
+		}
+
 		this.gatherData();
 	}
-
 	adjLiquidity = (pool) => {
 		const totalFactor = this.totalFactor(pool);
 		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
@@ -95,20 +101,22 @@ class Data extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		pools: state.balancer.pools,
-		prices: state.coingecko
+		prices: state.coingecko,
+		portfolioPools: state.poolReducer,
+		poolsList: state.portfolio
 	};
 };
 
 export default connect(mapStateToProps, {
 	fetchPools,
 	fetchPrice,
-	selectPool,
-	deletePool,
 	sumLiquidity,
 	clearLiquidity,
 	deletePrices,
 	sumAllLiq,
 	deleteAllLiq,
 	sumAllVol,
-	deleteAllVol
+	deleteAllVol,
+	deletePools,
+	fetchPool
 })(Data);

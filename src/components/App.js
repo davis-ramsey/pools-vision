@@ -7,10 +7,12 @@ import Header from './Header';
 import PortfolioView from './PortfolioView';
 import Pools from './Pools';
 import PoolViewer from './PoolViewer';
+import Data from './Data';
 
 const App = () => {
 	return (
 		<div className="ui container">
+			<Data />
 			<Router history={history}>
 				<div>
 					<Header />
