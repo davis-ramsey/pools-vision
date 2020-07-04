@@ -5,13 +5,13 @@ class Footer extends React.Component {
 		return (
 			<div className="ui center aligned inverted bottom attached header">
 				<a target="_blank" rel="noopener noreferrer" href={`https://twitter.com/DavisRamsey`}>
-					<i className="right twitter icon" />
+					<i className="large twitter icon" />
 				</a>
 				<a target="_blank" rel="noopener noreferrer" href={`https://github.com/davis-ramsey`}>
-					<i className="github icon" />
+					<i className="large github icon" />
 				</a>
 				<a target="_blank" rel="noopener noreferrer" href={`mailto:davis.ramsey@gmail.com`}>
-					<i className="at icon" />
+					<i className="large at icon" />
 				</a>
 			</div>
 		);

@@ -62,10 +62,11 @@ class Header extends React.Component {
 						https://pools.balancer.exchange/#/
 					</a>
 					<br />
-					Click a pool to add or remove it from your selected pools. To view only selected pools, click the
-					Portfolio button. To view all pools, click the All Pools button. Prices are automatically updated
-					every 5 minutes. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate plus
-					yield on weekly BAL distributions.
+					Click the button to add or remove a pool from your selected pools. To view only selected pools,
+					click the Portfolio button. To view all pools, click the All Pools button. Clicking in the Assets
+					column will show more info about that pool's assets. Prices are automatically updated every 5
+					minutes. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield
+					on weekly BAL distributions.
 				</div>
 				<HeaderTable />
 			</div>
