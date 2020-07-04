@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/pools-vision/static/js/main.b4a0856e.chunk.js",
-    "main.js.map": "/pools-vision/static/js/main.b4a0856e.chunk.js.map",
+    "main.js": "/pools-vision/static/js/main.f19083c5.chunk.js",
+    "main.js.map": "/pools-vision/static/js/main.f19083c5.chunk.js.map",
     "runtime-main.js": "/pools-vision/static/js/runtime-main.e7939d5c.js",
     "runtime-main.js.map": "/pools-vision/static/js/runtime-main.e7939d5c.js.map",
     "static/js/2.f08633e9.chunk.js": "/pools-vision/static/js/2.f08633e9.chunk.js",
     "static/js/2.f08633e9.chunk.js.map": "/pools-vision/static/js/2.f08633e9.chunk.js.map",
     "index.html": "/pools-vision/index.html",
-    "precache-manifest.5d828b504a9594e5b70c750b3cc03f2e.js": "/pools-vision/precache-manifest.5d828b504a9594e5b70c750b3cc03f2e.js",
+    "precache-manifest.a9665291aad4f00939bd9e1afcede49a.js": "/pools-vision/precache-manifest.a9665291aad4f00939bd9e1afcede49a.js",
     "service-worker.js": "/pools-vision/service-worker.js",
     "static/js/2.f08633e9.chunk.js.LICENSE.txt": "/pools-vision/static/js/2.f08633e9.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.e7939d5c.js",
     "static/js/2.f08633e9.chunk.js",
-    "static/js/main.b4a0856e.chunk.js"
+    "static/js/main.f19083c5.chunk.js"
   ]
 }
