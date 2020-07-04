@@ -25,20 +25,20 @@ class Header extends React.Component {
 				{this.renderPortfolioButton()}
 				<div className="ui animated secondary button">
 					<div className="ui avatar image visible content">
-						<img alt="grug stack rock" src="/images/pebbles.png" />
+						<img alt="grug stack rock" src="https://i.imgur.com/87YWwgq.png" />
 					</div>
 					<div className="ui hidden content">Grug stack rock</div>
 				</div>
 
 				<div className="ui animated secondary button">
 					<div className="ui avatar image visible content">
-						<img alt="graph" src="/images/graph.png" />
+						<img alt="graph" src="https://i.imgur.com/90yffKg.png" />
 					</div>
 					<div className="hidden content">Built using The Graph Protocol</div>
 				</div>
 				<div className="ui animated secondary button">
 					<div className="ui avatar image visible content">
-						<img alt="coingecko" src="/images/gecko.png" />
+						<img alt="coingecko" src="https://i.imgur.com/EbNy23a.png" />
 					</div>
 					<div className="hidden content">Powered by CoinGecko API</div>
 				</div>
