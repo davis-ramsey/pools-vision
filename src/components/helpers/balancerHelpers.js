@@ -5,16 +5,22 @@ const colors = [
 	'darkorange',
 	'teal',
 	'forestgreen',
-	'aquamarine',
-	'mistyrose',
 	'crimson',
 	'orchid',
 	'steelblue',
-	'blue',
-	'darkmagenta',
-	'goldenrod'
+	'darkmagenta'
 ];
 
+const tokenAddresses = [
+	'0xba100000625a3754423978a60c9317c58a424e3d',
+	'0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+	'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+	'0xe2f2a5c287993345a840db3b0845fbc70f5935a5',
+	'0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+	'0x6b175474e89094c44da98b954eedeac495271d0f',
+	'0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
+];
+const tokenColors = [ 'white', 'pink', 'olive', 'goldenrod', 'aquamarine', 'yellow', 'blue' ];
 export const renderAssetsText = (pool) => {
 	const assets = [];
 	for (let token of pool.tokens) {
@@ -31,7 +37,10 @@ export const renderAssets = (pool) => {
 	pool.tokens.forEach((token, index) => {
 		const colorChoices = colors.filter((value) => pickedColors.indexOf(value) === -1);
 		const random = Math.floor(Math.random() * colorChoices.length);
-		const colorPick = colorChoices[random];
+		let colorPick = null;
+		if (tokenAddresses.indexOf(token.address) !== -1)
+			colorPick = tokenColors[tokenAddresses.findIndex((value) => value === token.address)];
+		else colorPick = colorChoices[random];
 		console.log(colorPick);
 		pickedColors.push(colorPick);
 		const weight = token.denormWeight / pool.totalWeight;
