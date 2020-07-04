@@ -13,7 +13,7 @@ class Pools extends React.Component {
 							<th className="center aligned ten wide">Assets</th>
 							<th className="center aligned">Swap Fee</th>
 							<th className="center aligned">Total Liquidity</th>
-							<th className="center aligned">24h Trading Volume</th>
+							<th className="center aligned">24h Volume</th>
 							<th className="center aligned">24h Fees</th>
 							<th className="center aligned">Annual BAL</th>
 							<th className="center aligned">APY</th>
