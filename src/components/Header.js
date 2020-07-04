@@ -5,10 +5,6 @@ import { Link } from 'react-router-dom';
 import HeaderTable from './HeaderTable';
 
 class Header extends React.Component {
-	constructor(props) {
-		super(props);
-		this.timer = 0;
-	}
 	renderPortfolioButton() {
 		if (this.props.portfolio.length !== 0)
 			return (

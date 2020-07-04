@@ -6,6 +6,7 @@ import Footer from './Footer';
 import Header from './Header';
 import PortfolioView from './PortfolioView';
 import Pools from './Pools';
+import PoolViewer from './PoolViewer';
 
 const App = () => {
 	return (
@@ -14,6 +15,7 @@ const App = () => {
 				<div>
 					<Header />
 					<Switch>
+						<Route path="/pool/:viewPool" component={PoolViewer} />
 						<Route path="/portfolio/:portfolio" component={PortfolioView} />
 						<Route path="/" component={Pools} />
 					</Switch>

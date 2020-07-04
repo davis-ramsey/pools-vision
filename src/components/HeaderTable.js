@@ -24,7 +24,6 @@ class HeaderTable extends React.Component {
 		return (
 			<div>
 				<br />
-				<br />
 				<div className="ui grid centered">
 					<table className="ui collapsing padded inverted celled table">
 						<thead>
