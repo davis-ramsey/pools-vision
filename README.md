@@ -1,3 +1,14 @@
+# Welcome to Pools.Explore
+
+## Overview
+
+An app for exploring and comparing balancer liquidity pools. You can add/remove pools from a custom portfolio, share a link to your portfolio, and view asset data of individual pools. Data is queried from the balancer subgraph and CoinGecko API. Built with ReactJS and Redux.
+
+## Example Display
+
+![Example](docs/example.png)
+
+---------Begin Boilerplate---------
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
