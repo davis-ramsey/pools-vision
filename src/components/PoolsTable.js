@@ -1,7 +1,19 @@
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import { connect } from 'react-redux';
-import { fetchPools, fetchPrice, selectPool, deletePool, sumLiquidity, clearLiquidity, deletePrices } from '../actions';
+import {
+	fetchPools,
+	fetchPrice,
+	selectPool,
+	deletePool,
+	sumLiquidity,
+	clearLiquidity,
+	deletePrices,
+	sumAllLiq,
+	deleteAllLiq,
+	sumAllVol,
+	deleteAllVol
+} from '../actions';
 import {
 	renderAssets,
 	renderTotalLiquidity,
@@ -18,7 +30,9 @@ class PoolsTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.timer = null;
-		this.sum = 0;
+		this.sumTotalAdjLiq = 0;
+		this.sumTotalLiq = 0;
+		this.sumVolume = 0;
 	}
 	async componentDidMount() {
 		if (!this.props.pools) await this.props.fetchPools();
@@ -34,20 +48,34 @@ class PoolsTable extends React.Component {
 			await this.props.fetchPrice(a1.join(','));
 			await this.props.fetchPrice(a2.join(','));
 		}
-		for (let pool of this.props.pools) this.adjLiquidity(pool);
+		for (let pool of this.props.pools) {
+			this.adjLiquidity(pool);
+			this.getTotalVolume(pool);
+		}
+		this.props.sumAllLiq(this.sumTotalLiq);
+		this.props.sumAllVol(this.sumVolume);
+		this.props.sumLiquidity(this.sumTotalAdjLiq);
 		this.props.sumLiquidity(this.sum);
 		this.timer = setInterval(() => {
-			this.props.deletePrices();
 			this.refreshData();
 		}, 300000);
 	}
 	componentWillUnmount() {
 		this.props.clearLiquidity();
+		this.props.deleteAllLiq();
+		this.props.deleteAllVol();
 		clearInterval(this.timer);
 	}
 
 	async refreshData() {
 		clearInterval(this.timer);
+		this.sumTotalAdjLiq = 0;
+		this.sumTotalLiq = 0;
+		this.sumVolume = 0;
+		this.props.clearLiquidity();
+		this.props.deleteAllLiq();
+		this.props.deleteAllVol();
+		this.props.deletePrices();
 		await this.props.fetchPools();
 		const addresses = [];
 		for (let pool of this.props.pools) {
@@ -59,10 +87,24 @@ class PoolsTable extends React.Component {
 		const a2 = addresses.slice(addresses.length / 2);
 		await this.props.fetchPrice(a1.join(','));
 		await this.props.fetchPrice(a2.join(','));
+		for (let pool of this.props.allPools) {
+			this.adjLiquidity(pool);
+			this.getTotalVolume(pool);
+		}
+		this.props.sumAllLiq(this.sumTotalLiq);
+		this.props.sumAllVol(this.sumVolume);
+		this.props.sumLiquidity(this.sumTotalAdjLiq);
 		this.timer = setInterval(() => {
-			this.props.deletePrices();
 			this.refreshData();
 		}, 300000);
+	}
+
+	getTotalVolume(pool) {
+		const totalSwapVolume = pool.totalSwapVolume;
+		if (pool.swaps[0] === undefined) return;
+		const swap = pool.swaps[0].poolTotalSwapVolume;
+		const volume = totalSwapVolume - swap;
+		this.sumVolume += volume;
 	}
 
 	totalFactor = (pool) => {
@@ -73,9 +115,10 @@ class PoolsTable extends React.Component {
 
 	adjLiquidity = (pool) => {
 		const totalFactor = this.totalFactor(pool);
-		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
+		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
+		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
 		if (isNaN(liquidity * totalFactor)) return;
-		this.sum += liquidity * totalFactor;
+		this.sumTotalAdjLiq += liquidity * totalFactor;
 	};
 
 	render() {
@@ -255,5 +298,9 @@ export default connect(mapStateToProps, {
 	deletePool,
 	sumLiquidity,
 	clearLiquidity,
-	deletePrices
+	deletePrices,
+	sumAllLiq,
+	deleteAllLiq,
+	sumAllVol,
+	deleteAllVol
 })(PoolsTable);

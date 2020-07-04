@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import HeaderTable from './HeaderTable';
+
 class Header extends React.Component {
 	constructor(props) {
 		super(props);
@@ -69,6 +71,7 @@ class Header extends React.Component {
 					every 5 minutes. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate plus
 					yield on weekly BAL distributions.
 				</div>
+				<HeaderTable />
 			</div>
 		);
 	}

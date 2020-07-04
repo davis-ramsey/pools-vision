@@ -10,7 +10,11 @@ import {
 	deletePool,
 	sumLiquidity,
 	clearLiquidity,
-	deletePrices
+	deletePrices,
+	sumAllLiq,
+	deleteAllLiq,
+	sumAllVol,
+	deleteAllVol
 } from '../actions';
 import {
 	renderAssets,
@@ -28,7 +32,9 @@ class PortfolioView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.timer = null;
-		this.sum = 0;
+		this.sumTotalAdjLiq = 0;
+		this.sumTotalLiq = 0;
+		this.sumVolume = 0;
 	}
 	async componentDidMount() {
 		const pools = this.props.portfolio.split(',');
@@ -50,20 +56,42 @@ class PortfolioView extends React.Component {
 			await this.props.fetchPrice(a2.join(','));
 		}
 
-		for (let pool of this.props.allPools) this.adjLiquidity(pool);
-		this.props.sumLiquidity(this.sum);
+		for (let pool of this.props.allPools) {
+			this.adjLiquidity(pool);
+			this.getTotalVolume(pool);
+		}
+		this.props.sumAllLiq(this.sumTotalLiq);
+		this.props.sumAllVol(this.sumVolume);
+		this.props.sumLiquidity(this.sumTotalAdjLiq);
 		this.timer = setInterval(() => {
-			this.props.deletePrices();
 			this.refreshData();
 		}, 300000);
 	}
 	componentWillUnmount() {
 		this.props.deletePools();
 		this.props.clearLiquidity();
+		this.props.deleteAllLiq();
+		this.props.deleteAllVol();
 		clearInterval(this.timer);
 	}
+
+	getTotalVolume(pool) {
+		const totalSwapVolume = pool.totalSwapVolume;
+		if (pool.swaps[0] === undefined) return;
+		const swap = pool.swaps[0].poolTotalSwapVolume;
+		const volume = totalSwapVolume - swap;
+		this.sumVolume += volume;
+	}
+
 	async refreshData() {
 		clearInterval(this.timer);
+		this.props.clearLiquidity();
+		this.props.deleteAllLiq();
+		this.props.deleteAllVol();
+		this.props.deletePrices();
+		this.sumTotalAdjLiq = 0;
+		this.sumTotalLiq = 0;
+		this.sumVolume = 0;
 		await this.props.fetchPools();
 		const addresses = [];
 		for (let pool of this.props.allPools) {
@@ -75,8 +103,14 @@ class PortfolioView extends React.Component {
 		const a2 = addresses.slice(addresses.length / 2);
 		await this.props.fetchPrice(a1.join(','));
 		await this.props.fetchPrice(a2.join(','));
+		for (let pool of this.props.allPools) {
+			this.adjLiquidity(pool);
+			this.getTotalVolume(pool);
+		}
+		this.props.sumAllLiq(this.sumTotalLiq);
+		this.props.sumAllVol(this.sumVolume);
+		this.props.sumLiquidity(this.sumTotalAdjLiq);
 		this.timer = setInterval(() => {
-			this.props.deletePrices();
 			this.refreshData();
 		}, 300000);
 	}
@@ -88,9 +122,10 @@ class PortfolioView extends React.Component {
 	};
 	adjLiquidity = (pool) => {
 		const totalFactor = this.totalFactor(pool);
-		const liquidity = renderTotalLiquidity(pool, this.props.prices).split(',').join('');
+		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
+		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
 		if (isNaN(liquidity * totalFactor)) return;
-		this.sum += liquidity * totalFactor;
+		this.sumTotalAdjLiq += liquidity * totalFactor;
 	};
 
 	renderTable() {
@@ -224,5 +259,9 @@ export default connect(mapStateToProps, {
 	deletePools,
 	sumLiquidity,
 	clearLiquidity,
-	deletePrices
+	deletePrices,
+	sumAllLiq,
+	deleteAllLiq,
+	sumAllVol,
+	deleteAllVol
 })(PortfolioView);

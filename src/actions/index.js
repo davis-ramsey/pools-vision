@@ -28,6 +28,19 @@ export const deletePools = () => (dispatch) => {
 	dispatch({ type: 'DELETE_POOLS' });
 };
 
+export const sumAllLiq = (value) => (dispatch) => {
+	dispatch({ type: 'SUM_ALL_LIQ', payload: value });
+};
+export const deleteAllLiq = () => (dispatch) => {
+	dispatch({ type: 'DELETE_ALL_LIQ' });
+};
+export const sumAllVol = (value) => (dispatch) => {
+	dispatch({ type: 'SUM_ALL_VOL', payload: value });
+};
+export const deleteAllVol = () => (dispatch) => {
+	dispatch({ type: 'DELETE_ALL_VOL' });
+};
+
 export const sumLiquidity = (value) => (dispatch) => {
 	dispatch({ type: 'SUM_LIQUIDITY', payload: value });
 };

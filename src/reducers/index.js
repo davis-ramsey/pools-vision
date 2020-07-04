@@ -4,11 +4,15 @@ import coingeckoReducer from './coingeckoReducer';
 import portfolioReducer from './portfolioReducer';
 import poolReducer from './poolReducer';
 import liquidityReducer from './liquidityReducer';
+import allLiqReducer from './allLiqReducer';
+import sumVolReducer from './sumVolReducer';
 
 export default combineReducers({
 	balancer: balancerReducer,
 	coingecko: coingeckoReducer,
 	portfolio: portfolioReducer,
 	poolReducer,
-	sumLiq: liquidityReducer
+	sumLiq: liquidityReducer,
+	sumTotalLiq: allLiqReducer,
+	sumVol: sumVolReducer
 });
