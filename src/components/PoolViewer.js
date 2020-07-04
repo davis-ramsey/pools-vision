@@ -25,8 +25,6 @@ class PoolViewer extends React.Component {
 		if (this.props.prices[address] === undefined) return '0';
 		const price = this.props.prices[address].usd;
 		const balance = parseFloat(token.balance);
-		console.log(price);
-		console.log(balance);
 		return Number((price * balance).toFixed(2)).toLocaleString();
 	}
 

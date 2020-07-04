@@ -64,9 +64,7 @@ class Data extends React.Component {
 		this.props.deletePrices();
 		if (this.props.portfolioPools && this.props.poolsList) {
 			this.props.deletePools();
-			for (let pool of this.props.poolsList) {
-				await this.props.fetchPool(pool);
-			}
+			for (let pool of this.props.poolsList) await this.props.fetchPool(pool);
 		}
 
 		this.gatherData();

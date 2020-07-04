@@ -39,7 +39,7 @@ class PoolsTable extends React.Component {
 										onClick={() => this.props.selectPool(pool.id)}
 										className="ui small inverted floating compact centered button"
 									>
-										Add to Portfolio
+										Add
 									</button>
 								</td>
 								<td
@@ -47,7 +47,11 @@ class PoolsTable extends React.Component {
 									data-label="Assets"
 									onClick={() => history.push(`/pool/${pool.id}`)}
 								>
-									<PieChart className="ui tiny circular image" data={renderAssets(pool)} />
+									<PieChart
+										className="ui tiny circular image"
+										data={renderAssets(pool)}
+										onClick={() => history.push(`/pool/${pool.id}`)}
+									/>
 									<i className="icon long arrow alternate right" />
 									{renderAssetsText(pool).join('  ')}
 								</td>
@@ -91,11 +95,19 @@ class PoolsTable extends React.Component {
 										onClick={() => this.props.deletePool(pool.id)}
 										className="ui small floating compact centered button"
 									>
-										Remove From Portfolio
+										Remove
 									</button>
 								</td>
-								<td className="center aligned" data-label="Assets">
-									<PieChart className="ui tiny circular image" data={renderAssets(pool)} />
+								<td
+									className="center aligned selectable"
+									data-label="Assets"
+									onClick={() => history.push(`/pool/${pool.id}`)}
+								>
+									<PieChart
+										className="ui tiny circular image"
+										data={renderAssets(pool)}
+										onClick={() => history.push(`/pool/${pool.id}`)}
+									/>
 									<i className="icon long arrow alternate right" />
 									{renderAssetsText(pool).join('  ')}
 								</td>

@@ -7,7 +7,7 @@ export default (state = INITIAL_STATE, action) => {
 			if (newState.indexOf(action.payload) === -1) newState.push(action.payload);
 			return newState;
 		case 'DELETE_POOL':
-			const deletedPool = state.map((value) => (value !== action.payload ? value : null));
+			const deletedPool = state.filter((value) => value !== action.payload);
 			return deletedPool;
 		default:
 			return state;

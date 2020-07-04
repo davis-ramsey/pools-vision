@@ -1,6 +1,7 @@
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import { connect } from 'react-redux';
+import history from '../history';
 import { fetchPool, selectPool, deletePool, deletePools } from '../actions';
 import {
 	renderAssets,
@@ -41,63 +42,49 @@ class PortfolioView extends React.Component {
 									rel="noopener noreferrer"
 									href={`https://pools.balancer.exchange/#/pool/${selectedPool.id}`}
 								>
-									<button className="ui inverted left floated button">
+									<button className="ui small inverted floating compact centered button">
 										...{selectedPool.id.slice(-8)}
 									</button>
 								</a>
+								<button
+									onClick={() => this.props.deletePool(selectedPool.id)}
+									className="ui small inverted floating compact centered button"
+								>
+									Remove
+								</button>
 							</td>
 
 							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
+								onClick={() => history.push(`/pool/${selectedPool.id}`)}
 								className="center aligned"
 								data-label="Assets"
 							>
-								<PieChart className="ui tiny circular image" data={renderAssets(selectedPool)} />
+								<PieChart
+									className="ui tiny circular image"
+									data={renderAssets(selectedPool)}
+									onClick={() => history.push(`/pool/${selectedPool.id}`)}
+								/>
 								<i className="icon long arrow alternate right" />
 								{renderAssetsText(selectedPool).join('  ')}
 							</td>
-							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
-								className="center aligned"
-								data-label="Swap Fee"
-							>
+							<td className="center aligned" data-label="Swap Fee">
 								{(selectedPool.swapFee * 100).toFixed(2)}%
 							</td>
-							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
-								className="center aligned"
-								data-label="Total Liquidity"
-							>
+							<td className="center aligned" data-label="Total Liquidity">
 								${renderTotalLiquidity(selectedPool, this.props.prices)}
 							</td>
-							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
-								className="center aligned"
-								data-label="24h Trading Volume"
-							>
+							<td className="center aligned" data-label="24h Trading Volume">
 								${renderVolume(selectedPool)}
 							</td>
-							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
-								className="center aligned"
-								data-label="24h Fees"
-							>
+							<td className="center aligned" data-label="24h Fees">
 								${renderFees(selectedPool)}
 							</td>
-							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
-								className="center aligned"
-								data-label="Annual BAL"
-							>
+							<td className="center aligned" data-label="Annual BAL">
 								{Number(
 									renderAdjLiquidity(selectedPool, this.props.prices, this.props.sumLiq).toFixed(0)
 								).toLocaleString()}
 							</td>
-							<td
-								onClick={() => this.props.deletePool(selectedPool.id)}
-								className="center aligned"
-								data-label="APY"
-							>
+							<td className="center aligned" data-label="APY">
 								{renderTotalYield(selectedPool, this.props.prices, this.props.sumLiq)}%
 							</td>
 						</tr>
@@ -125,7 +112,7 @@ class PortfolioView extends React.Component {
 					<thead>
 						<tr>
 							<th className="center aligned">Pool Address</th>
-							<th className="center aligned">Assets</th>
+							<th className="center aligned ten wide">Assets</th>
 							<th className="center aligned">Swap Fee</th>
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">24h Trading Volume</th>
@@ -154,7 +141,6 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {
 	fetchPool,
-
 	selectPool,
 	deletePool,
 	deletePools
