@@ -9,6 +9,7 @@ An app for exploring and comparing balancer liquidity pools. You can add/remove 
 ![Example](docs/example.png)
 
 ---------Begin Boilerplate---------
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
