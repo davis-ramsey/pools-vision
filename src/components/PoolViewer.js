@@ -63,7 +63,7 @@ class PoolViewer extends React.Component {
 		if (this.props.pool[this.props.viewPool] && this.props.prices && this.props.sumLiq > 138683236)
 			return (
 				<div>
-					<div className="ui horizontal divider">Pool Viewer: {this.props.viewPool}</div>
+					<div className="ui inverted horizontal divider">Pool Viewer: {this.props.viewPool}</div>
 					<table className="ui selectable inverted striped celled table">
 						<thead>
 							<tr>

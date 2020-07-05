@@ -10,15 +10,17 @@ import {
 	checkLiquidity,
 	renderAdjLiquidity,
 	renderTotalYield,
-	renderAssetsText
+	renderAssetsText,
+	renderOwnership,
+	renderNumLP
 } from './helpers/balancerHelpers';
 
 import history from '../history';
 
 class PoolsTable extends React.Component {
 	checker = (pool) => {
-		if (!this.props.form) return 1;
-		if (!this.props.form.values) return 1;
+		if (!this.props.form) return;
+		if (!this.props.form.values) return;
 		const userInput = this.props.form.values.address.toLowerCase();
 		for (let share of pool.shares) {
 			const shareBalance = parseFloat(share.balance);
@@ -28,17 +30,12 @@ class PoolsTable extends React.Component {
 		return 0;
 	};
 
-	renderOwnership(ownership) {
-		if (ownership === 1) return '-';
-		else return (ownership * 100).toFixed(2);
-	}
-
 	render() {
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
 			return this.props.pools.map((pool) => {
 				const ownership = this.checker(pool);
 				if (ownership === 0) return null;
-				const check = parseInt(checkLiquidity(pool, this.props.prices));
+				const check = parseFloat(checkLiquidity(pool, this.props.prices));
 				if (check !== 0) {
 					if (this.props.portfolio.indexOf(pool.id) === -1)
 						return (
@@ -100,7 +97,10 @@ class PoolsTable extends React.Component {
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
 								<td className="center aligned" data-label="User %">
-									{this.renderOwnership(ownership)}%
+									{renderOwnership(ownership)}%
+								</td>
+								<td className="center aligned" data-label="# of LP's">
+									{renderNumLP(pool)}
 								</td>
 							</tr>
 						);
@@ -164,7 +164,10 @@ class PoolsTable extends React.Component {
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
 								<td className="center aligned" data-label="User %">
-									{this.renderOwnership(ownership)}%
+									{renderOwnership(ownership)}%
+								</td>
+								<td className="center aligned" data-label="# of LP's">
+									{renderNumLP(pool)}
 								</td>
 							</tr>
 						);

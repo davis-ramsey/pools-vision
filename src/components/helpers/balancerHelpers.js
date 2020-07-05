@@ -152,3 +152,14 @@ export const renderYield = (pool, prices) => {
 	if (isNaN(feeYield)) return '0';
 	return feeYield.toFixed(4);
 };
+
+export const renderOwnership = (ownership) => {
+	if (!ownership) return '-';
+	else return (ownership * 100).toFixed(2);
+};
+
+export const renderNumLP = (pool) => {
+	let count = 0;
+	for (let share of pool.shares) if (parseInt(share.balance) !== 0) count++;
+	return count;
+};
