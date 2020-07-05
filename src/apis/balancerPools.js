@@ -22,7 +22,7 @@ export default axios({
          symbol
          denormWeight
        }
-       shares {
+       shares (first: 1000) {
         id
         userAddress {
           id

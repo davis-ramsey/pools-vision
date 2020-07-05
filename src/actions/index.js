@@ -69,7 +69,7 @@ export const fetchPool = (id) => async (dispatch) => {
              symbol
              denormWeight
 					 }
-					 shares {
+					 shares (first: 1000) {
 						id
 						poolId {
 							id
