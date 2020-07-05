@@ -16,9 +16,28 @@ import {
 import history from '../history';
 
 class PoolsTable extends React.Component {
+	checker = (pool) => {
+		if (!this.props.form) return 1;
+		if (!this.props.form.values) return 1;
+		const userInput = this.props.form.values.address.toLowerCase();
+		for (let share of pool.shares) {
+			const shareBalance = parseFloat(share.balance);
+			if (share.userAddress.id === userInput && shareBalance !== 0)
+				return shareBalance / parseFloat(pool.totalShares).toFixed(4);
+		}
+		return 0;
+	};
+
+	renderOwnership(ownership) {
+		if (ownership === 1) return '-';
+		else return (ownership * 100).toFixed(2);
+	}
+
 	render() {
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
 			return this.props.pools.map((pool) => {
+				const ownership = this.checker(pool);
+				if (ownership === 0) return null;
 				const check = parseInt(checkLiquidity(pool, this.props.prices));
 				if (check !== 0) {
 					if (this.props.portfolio.indexOf(pool.id) === -1)
@@ -59,21 +78,29 @@ class PoolsTable extends React.Component {
 									{(pool.swapFee * 100).toFixed(2)}%
 								</td>
 								<td className="center aligned" data-label="Total Liquidity">
-									${renderTotalLiquidity(pool, this.props.prices)}
+									${renderTotalLiquidity(pool, this.props.prices, ownership)}
 								</td>
 								<td className="center aligned" data-label="24h Volume">
-									${renderVolume(pool)}
+									${renderVolume(pool, ownership)}
 								</td>
 								<td className="center aligned" data-label="24h Fees">
-									${renderFees(pool)}
+									${renderFees(pool, ownership)}
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
 									{Number(
-										renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)
+										renderAdjLiquidity(
+											pool,
+											this.props.prices,
+											this.props.sumLiq,
+											ownership
+										).toFixed(0)
 									).toLocaleString()}
 								</td>
 								<td className="center aligned" data-label="APY">
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
+								</td>
+								<td className="center aligned" data-label="User %">
+									{this.renderOwnership(ownership)}%
 								</td>
 							</tr>
 						);
@@ -115,21 +142,29 @@ class PoolsTable extends React.Component {
 									{(pool.swapFee * 100).toFixed(2)}%
 								</td>
 								<td className="center aligned" data-label="Total Liquidity">
-									${renderTotalLiquidity(pool, this.props.prices)}
+									${renderTotalLiquidity(pool, this.props.prices, ownership)}
 								</td>
 								<td className="center aligned" data-label="24h Volume">
-									${renderVolume(pool)}
+									${renderVolume(pool, ownership)}
 								</td>
 								<td className="center aligned" data-label="24h Fees">
-									${renderFees(pool)}
+									${renderFees(pool, ownership)}
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
 									{Number(
-										renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq).toFixed(0)
+										renderAdjLiquidity(
+											pool,
+											this.props.prices,
+											this.props.sumLiq,
+											ownership
+										).toFixed(0)
 									).toLocaleString()}
 								</td>
 								<td className="center aligned" data-label="APY">
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
+								</td>
+								<td className="center aligned" data-label="User %">
+									{this.renderOwnership(ownership)}%
 								</td>
 							</tr>
 						);
@@ -150,7 +185,8 @@ const mapStateToProps = (state) => {
 		pools: state.balancer.pools,
 		prices: state.coingecko,
 		portfolio: state.portfolio,
-		sumLiq: state.sumLiq
+		sumLiq: state.sumLiq,
+		form: state.form.UserInput
 	};
 };
 

@@ -57,7 +57,8 @@ export const fetchPool = (id) => async (dispatch) => {
 			query: `{
           pools (where: {id: "${id.toLowerCase()}"}, orderBy: liquidity, orderDirection: desc) {
             id
-           swapFee
+					 swapFee
+					 totalShares
            totalWeight
            totalSwapVolume
            tokens {
@@ -67,7 +68,17 @@ export const fetchPool = (id) => async (dispatch) => {
              decimals
              symbol
              denormWeight
-           }
+					 }
+					 shares {
+						id
+						poolId {
+							id
+						}
+						userAddress {
+							id
+						}
+						balance
+					}
            swaps (first: 1,orderBy: timestamp,orderDirection: desc, where: {timestamp_lt: ${Math.floor(
 				Date.now() / 1000
 			) - 86400}}) {

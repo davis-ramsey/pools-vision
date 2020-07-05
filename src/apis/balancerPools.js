@@ -22,6 +22,13 @@ export default axios({
          symbol
          denormWeight
        }
+       shares {
+        id
+        userAddress {
+          id
+        }
+        balance
+      }
        swaps (first: 1,orderBy: timestamp,orderDirection: desc, where: {timestamp_lt: ${Math.floor(Date.now() / 1000) -
 			86400}}) {
          tokenIn

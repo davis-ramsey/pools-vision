@@ -68,7 +68,7 @@ export const renderAssets = (pool) => {
 	return assets;
 };
 
-export const renderTotalLiquidity = (pool, prices) => {
+export const renderTotalLiquidity = (pool, prices, ownership = 1) => {
 	let total = 0;
 	for (let token of pool.tokens) {
 		const address = token.address;
@@ -78,23 +78,24 @@ export const renderTotalLiquidity = (pool, prices) => {
 		total += price * balance;
 	}
 	if (isNaN(total)) return 'No Data';
+	total = total * ownership;
 	return Number(total.toFixed(2)).toLocaleString();
 };
 
-export const renderVolume = (pool) => {
+export const renderVolume = (pool, ownership = 1) => {
 	const totalSwapVolume = pool.totalSwapVolume;
 	if (pool.swaps[0] === undefined) return 0;
 	const swap = pool.swaps[0].poolTotalSwapVolume;
-	const volume = totalSwapVolume - swap;
+	const volume = (totalSwapVolume - swap) * ownership;
 	return Number(volume.toFixed(2)).toLocaleString();
 };
 
-export const renderFees = (pool) => {
+export const renderFees = (pool, ownership = 1) => {
 	const totalSwapVolume = pool.totalSwapVolume;
 	if (pool.swaps[0] === undefined) return 0;
 	const swap = pool.swaps[0].poolTotalSwapVolume;
 	const volume = totalSwapVolume - swap;
-	const fees = volume * pool.swapFee;
+	const fees = volume * pool.swapFee * ownership;
 	return Number(fees.toFixed(2)).toLocaleString();
 };
 
@@ -104,11 +105,11 @@ const totalFactor = (pool) => {
 	return fee * ratio;
 };
 
-export const renderAdjLiquidity = (pool, prices, sumLiq) => {
+export const renderAdjLiquidity = (pool, prices, sumLiq, ownership = 1) => {
 	const tFactor = totalFactor(pool);
 	const liquidity = renderTotalLiquidity(pool, prices).split(',').join('');
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	return liquidity * tFactor / sumLiq * 145000 * 52;
+	return liquidity * tFactor / sumLiq * 145000 * 52 * ownership;
 };
 
 export const renderTotalYield = (pool, prices, sumLiq) => {

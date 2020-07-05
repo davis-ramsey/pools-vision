@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
 import balancerReducer from './balancerReducer';
 import coingeckoReducer from './coingeckoReducer';
 import portfolioReducer from './portfolioReducer';
@@ -14,5 +15,6 @@ export default combineReducers({
 	poolReducer,
 	sumLiq: liquidityReducer,
 	sumTotalLiq: allLiqReducer,
-	sumVol: sumVolReducer
+	sumVol: sumVolReducer,
+	form: formReducer
 });

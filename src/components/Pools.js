@@ -1,11 +1,15 @@
 import React from 'react';
 import PoolsTable from './PoolsTable';
+import UserInput from './UserInput';
 
 class Pools extends React.Component {
+	onSubmit = ({ address }) => {};
+
 	render() {
 		return (
 			<div>
-				<div className="ui horizontal divider">List of All Pools</div>
+				<UserInput onSubmit={this.onSubmit} />
+				<div className="ui inverted horizontal divider">List of All Pools</div>
 				<table className="ui selectable padded inverted striped celled table">
 					<thead>
 						<tr>
@@ -17,6 +21,7 @@ class Pools extends React.Component {
 							<th className="center aligned">24h Fees</th>
 							<th className="center aligned">Annual BAL</th>
 							<th className="center aligned">APY</th>
+							<th className="center aligned">User %</th>
 						</tr>
 					</thead>
 					<tbody>
