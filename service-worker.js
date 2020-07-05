@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pools-vision/precache-manifest.a9665291aad4f00939bd9e1afcede49a.js"
+  "/pools-vision/precache-manifest.e46f8a341d19967788c2ccd873ad6161.js"
 );
 
 self.addEventListener('message', (event) => {
