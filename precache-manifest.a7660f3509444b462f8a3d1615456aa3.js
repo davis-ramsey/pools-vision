@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "69a26fceb1fb9756a592e488d4fbd630",
+    "revision": "e1dac287617e02e4c280c3c3616ead36",
     "url": "/pools-vision/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pools-vision/static/js/2.01628e79.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f60de507ff2a8d36388f",
-    "url": "/pools-vision/static/js/main.9e262987.chunk.js"
+    "revision": "d621bdf76fb691782acc",
+    "url": "/pools-vision/static/js/main.b429862d.chunk.js"
   },
   {
     "revision": "ec2a32edf69cab5d86ff",
