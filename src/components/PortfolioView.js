@@ -107,7 +107,7 @@ class PortfolioView extends React.Component {
 	render() {
 		return (
 			<div>
-				<div className="ui horizontal divider">Your Selected Pools</div>
+				<div className="ui inverted horizontal divider">Your Selected Pools</div>
 				<table className="ui selectable inverted striped celled table">
 					<thead>
 						<tr>

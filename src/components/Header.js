@@ -11,7 +11,7 @@ class Header extends React.Component {
 					to={`/portfolio/${this.props.portfolio.filter((value) => value !== '' && value !== null)}`}
 					className="ui button animated left aligned primary"
 				>
-					<div className="visible content center">Portfolio</div>
+					<div className="visible content center">Selected Pools</div>
 					<div className="hidden content">View Selected Pools</div>
 				</Link>
 			);
@@ -62,8 +62,8 @@ class Header extends React.Component {
 					</a>
 					<br />
 					Click the button to add or remove a pool from your selected pools. To view only selected pools,
-					click the Portfolio button. To view all pools, click the All Pools button. Clicking in the Assets
-					column will show more info about that pool's assets. Prices are automatically updated every 5
+					click the Selected Pools button. To view all pools, click the All Pools button. Clicking in the
+					Assets column will show more info about that pool's assets. Prices are automatically updated every 5
 					minutes. Note: APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield
 					on weekly BAL distributions. WrapFactor and CapFactor are currently NOT included in the
 					calculations, so Annual BAL and APY may not be 100% accurate.
