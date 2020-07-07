@@ -1,6 +1,7 @@
 import React from 'react';
 import PoolsTable from './PoolsTable';
 import UserInput from './UserInput';
+import UserTotals from './UserTotals';
 
 class Pools extends React.Component {
 	onSubmit = ({ address }) => {};
@@ -27,6 +28,7 @@ class Pools extends React.Component {
 					</thead>
 					<tbody>
 						<PoolsTable />
+						<UserTotals />
 					</tbody>
 				</table>
 			</div>
