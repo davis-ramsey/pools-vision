@@ -12,7 +12,8 @@ import {
 	renderTotalYield,
 	renderAdjLiquidity,
 	renderAssetsText,
-	renderNumLP
+	renderNumLP,
+	renderLifetimeFees
 } from './helpers/balancerHelpers';
 
 class PortfolioView extends React.Component {
@@ -88,6 +89,9 @@ class PortfolioView extends React.Component {
 							<td className="center aligned" data-label="APY">
 								{renderTotalYield(selectedPool, this.props.prices, this.props.sumLiq)}%
 							</td>
+							<td className="center aligned" data-label="Lifetime Fees">
+								${renderLifetimeFees(selectedPool)}
+							</td>
 							<td className="center aligned" data-label="# of LP's">
 								{renderNumLP(selectedPool)}
 							</td>
@@ -123,6 +127,7 @@ class PortfolioView extends React.Component {
 							<th className="center aligned">24h Fees</th>
 							<th className="center aligned">Annual BAL</th>
 							<th className="center aligned">APY</th>
+							<th className="center aligned">Lifetime Fees</th>
 							<th className="center aligned"># of LP's</th>
 						</tr>
 					</thead>

@@ -7,7 +7,9 @@ import {
 	renderFees,
 	renderAdjLiquidity,
 	renderAssetsText,
-	renderTotalYield
+	renderTotalYield,
+	renderNumLP,
+	renderLifetimeFees
 } from './helpers/balancerHelpers';
 
 class PoolViewer extends React.Component {
@@ -73,6 +75,8 @@ class PoolViewer extends React.Component {
 								<th className="center aligned">24h Fees</th>
 								<th className="center aligned">Annual BAL</th>
 								<th className="center aligned">APY</th>
+								<th className="center aligned">Lifetime Fees</th>
+								<th className="center aligned"># of LP's</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -105,6 +109,12 @@ class PoolViewer extends React.Component {
 										this.props.sumLiq
 									)}%
 								</td>
+								<td className="center aligned" data-label="Lifetime Fees">
+									${renderLifetimeFees(this.props.pool[this.props.viewPool])}
+								</td>
+								<td className="center aligned" data-label="# of LP's">
+									{renderNumLP(this.props.pool[this.props.viewPool])}
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -121,7 +131,7 @@ class PoolViewer extends React.Component {
 					</table>
 				</div>
 			);
-		else return 'Loading!';
+		else return <div className="ui inverted horizontal divider">Pool Viewer is loading! Standby..</div>;
 	}
 }
 

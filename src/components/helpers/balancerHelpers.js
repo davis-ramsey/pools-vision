@@ -163,3 +163,9 @@ export const renderNumLP = (pool) => {
 	for (let share of pool.shares) if (parseInt(share.balance) !== 0) count++;
 	return count;
 };
+
+export const renderLifetimeFees = (pool) => {
+	const swapFee = pool.swapFee;
+	const totalVolume = pool.totalSwapVolume;
+	return Number((totalVolume * swapFee).toFixed(2)).toLocaleString();
+};

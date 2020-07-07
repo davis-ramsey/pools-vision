@@ -12,7 +12,8 @@ import {
 	renderTotalYield,
 	renderAssetsText,
 	renderOwnership,
-	renderNumLP
+	renderNumLP,
+	renderLifetimeFees
 } from './helpers/balancerHelpers';
 
 import history from '../history';
@@ -29,6 +30,32 @@ class PoolsTable extends React.Component {
 		}
 		return 0;
 	};
+
+	renderToggle(pool, ownership) {
+		if (parseFloat(renderLifetimeFees(pool).split(',').join('')) > 100000)
+			return (
+				<td className="center aligned" data-label="Lifetime Fees">
+					$0
+				</td>
+			);
+		if (!this.props.form)
+			return (
+				<td className="center aligned" data-label="Lifetime Fees">
+					${renderLifetimeFees(pool)}
+				</td>
+			);
+		if (!this.props.form.values)
+			return (
+				<td className="center aligned" data-label="Lifetime Fees">
+					${renderLifetimeFees(pool)}
+				</td>
+			);
+		return (
+			<td className="center aligned" data-label="User %">
+				{renderOwnership(ownership)}%
+			</td>
+		);
+	}
 
 	render() {
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
@@ -96,9 +123,7 @@ class PoolsTable extends React.Component {
 								<td className="center aligned" data-label="APY">
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
-								<td className="center aligned" data-label="User %">
-									{renderOwnership(ownership)}%
-								</td>
+								{this.renderToggle(pool, ownership)}
 								<td className="center aligned" data-label="# of LP's">
 									{renderNumLP(pool)}
 								</td>
@@ -163,9 +188,7 @@ class PoolsTable extends React.Component {
 								<td className="center aligned" data-label="APY">
 									{renderTotalYield(pool, this.props.prices, this.props.sumLiq)}%
 								</td>
-								<td className="center aligned" data-label="User %">
-									{renderOwnership(ownership)}%
-								</td>
+								{this.renderToggle(pool, ownership)}
 								<td className="center aligned" data-label="# of LP's">
 									{renderNumLP(pool)}
 								</td>
