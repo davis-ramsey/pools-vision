@@ -50,6 +50,11 @@ class PoolViewer extends React.Component {
 					<td className="center aligned" data-label="Price">
 						${this.renderAssetPrice(index)}
 					</td>
+					<td className="center aligned" data-label="Balance">
+						{Number(
+							parseFloat(this.props.pool[this.props.viewPool].tokens[index].balance).toFixed(2)
+						).toLocaleString()}
+					</td>
 					<td className="center aligned" data-label="Weight">
 						{output[0]}
 					</td>
@@ -123,6 +128,7 @@ class PoolViewer extends React.Component {
 							<tr>
 								<th className="center aligned">Asset</th>
 								<th className="center aligned">Price</th>
+								<th className="center aligned">Balance</th>
 								<th className="center aligned">Weight</th>
 								<th className="center aligned">Value</th>
 							</tr>
