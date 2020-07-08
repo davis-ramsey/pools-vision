@@ -161,7 +161,8 @@ export const renderOwnership = (ownership) => {
 export const renderNumLP = (pool) => {
 	let count = 0;
 	for (let share of pool.shares) if (parseInt(share.balance) !== 0) count++;
-	return count;
+	if (count === 0) return 1;
+	else return count;
 };
 
 export const renderLifetimeFees = (pool) => {
