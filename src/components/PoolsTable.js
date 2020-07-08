@@ -86,17 +86,26 @@ class PoolsTable extends React.Component {
 									</button>
 								</td>
 								<td
-									className="center aligned selectable"
+									className="mini center aligned selectable"
 									data-label="Assets"
 									onClick={() => history.push(`/pool/${pool.id}`)}
+									style={{
+										display: 'flex',
+										justifyContent: 'center',
+										alignItems: 'center',
+										fontFamily: 'Roboto Condensed, sans-serif',
+										letterSpacing: 1.3,
+										fontSize: '12px'
+									}}
 								>
-									<PieChart
-										className="ui tiny circular image"
-										data={renderAssets(pool)}
-										onClick={() => history.push(`/pool/${pool.id}`)}
-									/>
-									<i className="icon long arrow alternate right" />
-									{renderAssetsText(pool).join('  ')}
+									<div className="ui">
+										<PieChart
+											className="ui tiny circular image"
+											data={renderAssets(pool)}
+											onClick={() => history.push(`/pool/${pool.id}`)}
+										/>
+									</div>
+									<div className="ui">&nbsp;&nbsp;{renderAssetsText(pool)}</div>
 								</td>
 								<td className="center aligned" data-label="Swap Fee">
 									{(pool.swapFee * 100).toFixed(2)}%
@@ -151,17 +160,25 @@ class PoolsTable extends React.Component {
 									</button>
 								</td>
 								<td
-									className="center aligned selectable"
+									className="mini center aligned selectable"
 									data-label="Assets"
 									onClick={() => history.push(`/pool/${pool.id}`)}
+									style={{
+										display: 'flex',
+										justifyContent: 'center',
+										alignItems: 'center',
+										fontFamily: 'Roboto Condensed, sans-serif',
+										letterSpacing: 1.3
+									}}
 								>
-									<PieChart
-										className="ui tiny circular image"
-										data={renderAssets(pool)}
-										onClick={() => history.push(`/pool/${pool.id}`)}
-									/>
-									<i className="icon long arrow alternate right" />
-									{renderAssetsText(pool).join('  ')}
+									<div className="ui">
+										<PieChart
+											className="ui tiny circular image"
+											data={renderAssets(pool)}
+											onClick={() => history.push(`/pool/${pool.id}`)}
+										/>
+									</div>
+									<div className="ui">&nbsp;&nbsp;{renderAssetsText(pool)}</div>
 								</td>
 								<td className="center aligned" data-label="Swap Fee">
 									{(pool.swapFee * 100).toFixed(2)}%

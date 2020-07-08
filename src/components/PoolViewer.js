@@ -6,7 +6,6 @@ import {
 	renderVolume,
 	renderFees,
 	renderAdjLiquidity,
-	renderAssetsText,
 	renderTotalYield,
 	renderNumLP,
 	renderLifetimeFees
@@ -39,7 +38,13 @@ class PoolViewer extends React.Component {
 	}
 
 	renderAssetTable() {
-		const assets = renderAssetsText(this.props.pool[this.props.viewPool]);
+		const pool = this.props.pool[this.props.viewPool];
+		const assets = [];
+		for (let token of pool.tokens) {
+			const weight = token.denormWeight / pool.totalWeight;
+			const percentage = (weight * 100).toFixed(2) + '%';
+			assets.push(percentage + ' ' + token.symbol);
+		}
 		return assets.map((asset, index) => {
 			const output = asset.split(' ');
 			return (

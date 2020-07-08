@@ -57,17 +57,25 @@ class PortfolioView extends React.Component {
 							</td>
 
 							<td
-								onClick={() => history.push(`/pool/${selectedPool.id}`)}
-								className="center aligned"
+								className="mini center aligned selectable"
 								data-label="Assets"
+								onClick={() => history.push(`/pool/${selectedPool.id}`)}
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									fontFamily: 'Roboto Condensed, sans-serif',
+									letterSpacing: 1.3
+								}}
 							>
-								<PieChart
-									className="ui tiny circular image"
-									data={renderAssets(selectedPool)}
-									onClick={() => history.push(`/pool/${selectedPool.id}`)}
-								/>
-								<i className="icon long arrow alternate right" />
-								{renderAssetsText(selectedPool).join('  ')}
+								<div className="ui">
+									<PieChart
+										className="ui tiny circular image"
+										data={renderAssets(selectedPool)}
+										onClick={() => history.push(`/pool/${selectedPool.id}`)}
+									/>
+								</div>
+								<div className="ui">&nbsp;&nbsp;{renderAssetsText(selectedPool)}</div>
 							</td>
 							<td className="center aligned" data-label="Swap Fee">
 								{(selectedPool.swapFee * 100).toFixed(2)}%
@@ -120,7 +128,7 @@ class PortfolioView extends React.Component {
 					<thead>
 						<tr>
 							<th className="center aligned">Pool Address</th>
-							<th className="center aligned ten wide">Assets</th>
+							<th className="center aligned">Assets</th>
 							<th className="center aligned">Swap Fee</th>
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">24h Volume</th>

@@ -22,7 +22,7 @@ class Pools extends React.Component {
 					<thead>
 						<tr>
 							<th className="center aligned">Pool Address</th>
-							<th className="center aligned five wide">Assets</th>
+							<th className="center aligned">Assets</th>
 							<th className="center aligned">Swap Fee</th>
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">24h Volume</th>
