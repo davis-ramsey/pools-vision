@@ -14,7 +14,18 @@ class UserInput extends React.Component {
 	renderInput = ({ input, label, meta }) => {
 		const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
 		return (
-			<div className={className}>
+			<div className={className} style={{ flex: '1 1 40%', marginLeft: '3%', marginTop: '1%' }}>
+				<label>{label}</label>
+				<input {...input} autoComplete="off" />
+				{this.renderError(meta)}
+			</div>
+		);
+	};
+
+	renderSmallInput = ({ input, label, meta }) => {
+		const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
+		return (
+			<div className={className} style={{ flex: '1 1 10%', marginLeft: '3%', marginTop: '1%' }}>
 				<label>{label}</label>
 				<input {...input} autoComplete="off" />
 				{this.renderError(meta)}
@@ -28,8 +39,14 @@ class UserInput extends React.Component {
 
 	render() {
 		return (
-			<form onSubmit={this.props.handleSubmit(this.onSubmit)} className="ui inverted form error">
+			<form
+				onSubmit={this.props.handleSubmit(this.onSubmit)}
+				className="ui inverted form error"
+				style={{ display: 'flex' }}
+			>
 				<Field name="address" component={this.renderInput} type="text" label="Filter by wallet address" />
+				<Field name="token" component={this.renderSmallInput} type="text" label="Filter by token" />
+				<Field name="apy" component={this.renderSmallInput} type="text" label="Filter by APY" />
 			</form>
 		);
 	}

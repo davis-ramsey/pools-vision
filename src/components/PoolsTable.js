@@ -18,10 +18,9 @@ import {
 
 import history from '../history';
 
-class PoolsTable extends React.Component {
-	checker = (pool) => {
-		if (!this.props.form) return;
-		if (!this.props.form.values) return;
+class PoolsTable extends React.PureComponent {
+	addressChecker = (pool) => {
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.address) return;
 		const userInput = this.props.form.values.address.toLowerCase();
 		for (let share of pool.shares) {
 			const shareBalance = parseFloat(share.balance);
@@ -31,6 +30,28 @@ class PoolsTable extends React.Component {
 		return 0;
 	};
 
+	tokenChecker = (pool) => {
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.token) return true;
+		const userInput = this.props.form.values.token.toUpperCase().split(' ');
+		const matches = [];
+		for (let token of pool.tokens)
+			for (let input of userInput) if (input === token.symbol) matches.push(token.symbol);
+		if (matches.length === userInput.length) return true;
+		return false;
+	};
+
+	apyChecker = (pool) => {
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.apy) return true;
+		const userInput = this.props.form.values.apy;
+		if (
+			isNaN(renderTotalYield(pool, this.props.prices, this.props.sumLiq)) ||
+			userInput >= renderTotalYield(pool, this.props.prices, this.props.sumLiq) ||
+			pool.id === '0xf0df48041dcdafb47e623ed81788ff8c0edb05c2'
+		)
+			return false;
+		return true;
+	};
+
 	renderToggle(pool, ownership) {
 		if (parseFloat(renderLifetimeFees(pool).split(',').join('')) > 100000)
 			return (
@@ -38,13 +59,7 @@ class PoolsTable extends React.Component {
 					$0
 				</td>
 			);
-		if (!this.props.form)
-			return (
-				<td className="center aligned" data-label="Lifetime Fees">
-					${renderLifetimeFees(pool)}
-				</td>
-			);
-		if (!this.props.form.values)
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.address)
 			return (
 				<td className="center aligned" data-label="Lifetime Fees">
 					${renderLifetimeFees(pool)}
@@ -58,10 +73,10 @@ class PoolsTable extends React.Component {
 	}
 
 	render() {
-		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
+		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 150683236)
 			return this.props.pools.map((pool) => {
-				const ownership = this.checker(pool);
-				if (ownership === 0) return null;
+				const ownership = this.addressChecker(pool);
+				if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool)) return null;
 				const check = parseFloat(checkLiquidity(pool, this.props.prices));
 				if (check !== 0) {
 					if (this.props.portfolio.indexOf(pool.id) === -1)

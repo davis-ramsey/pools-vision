@@ -15,8 +15,7 @@ class UserTotals extends React.Component {
 		this.userSum = {};
 	}
 	checker = (pool) => {
-		if (!this.props.form) return;
-		if (!this.props.form.values) return;
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.address) return;
 		const userInput = this.props.form.values.address.toLowerCase();
 		for (let share of pool.shares) {
 			const shareBalance = parseFloat(share.balance);
@@ -62,8 +61,7 @@ class UserTotals extends React.Component {
 			Bal: 0,
 			AvgAPY: []
 		};
-		if (!this.props.form) return null;
-		if (!this.props.form.values) return null;
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.address) return null;
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
 			this.props.pools.map((pool) => {
 				this.checker(pool);

@@ -10,6 +10,7 @@ class Pools extends React.Component {
 	renderToggle() {
 		if (!this.props.form) return <th className="center aligned">Lifetime Fees</th>;
 		if (!this.props.form.values) return <th className="center aligned">Lifetime Fees</th>;
+		if (!this.props.form.values.address) return <th className="center aligned">Lifetime Fees</th>;
 		return <th className="center aligned">User %</th>;
 	}
 
