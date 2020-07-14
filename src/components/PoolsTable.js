@@ -43,13 +43,8 @@ class PoolsTable extends React.PureComponent {
 	apyChecker = (pool) => {
 		if (!this.props.form || !this.props.form.values || !this.props.form.values.apy) return true;
 		const userInput = this.props.form.values.apy;
-		if (
-			isNaN(renderTotalYield(pool, this.props.prices, this.props.sumLiq)) ||
-			userInput >= renderTotalYield(pool, this.props.prices, this.props.sumLiq) ||
-			pool.id === '0xf0df48041dcdafb47e623ed81788ff8c0edb05c2'
-		)
-			return false;
-		return true;
+		if (userInput >= parseFloat(renderTotalYield(pool, this.props.prices, this.props.sumLiq))) return false;
+		else return true;
 	};
 
 	renderToggle(pool, ownership) {
