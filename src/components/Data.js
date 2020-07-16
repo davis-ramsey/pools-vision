@@ -11,7 +11,9 @@ import {
 	sumAllVol,
 	deleteAllVol,
 	deletePools,
-	fetchPool
+	fetchPool,
+	addShares,
+	deleteShares
 } from '../actions';
 import { feeFactor, ratioFactor } from './helpers/factorCalcs';
 import { renderTotalLiquidity } from './helpers/balancerHelpers';
@@ -33,6 +35,9 @@ class Data extends React.Component {
 		await this.props.fetchPools();
 		const addresses = [];
 		for (let pool of this.props.pools) {
+			if (pool.shares.length > 990) {
+				await this.props.addShares(pool, 1);
+			}
 			for (let token of pool.tokens) {
 				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
 			}
@@ -51,6 +56,19 @@ class Data extends React.Component {
 		this.timer = setInterval(() => {
 			this.refreshData();
 		}, this.refreshTimer);
+		const checked = [];
+		for (let i = 2; i < 999; i++) {
+			let exit = true;
+			for (let j = 0; j < this.props.moreShares.length; j++) {
+				const pool = this.props.moreShares[j];
+				if (pool.shares.length > 400 && checked.indexOf(j) === -1) {
+					this.props.addShares(pool, i);
+					checked.push(j);
+					exit = false;
+				}
+			}
+			if (exit) break;
+		}
 	}
 
 	async refreshData() {
@@ -62,6 +80,7 @@ class Data extends React.Component {
 		this.props.deleteAllLiq();
 		this.props.deleteAllVol();
 		this.props.deletePrices();
+		this.props.deleteShares();
 		if (this.props.portfolioPools && this.props.poolsList) {
 			this.props.deletePools();
 			for (let pool of this.props.poolsList) await this.props.fetchPool(pool);
@@ -101,7 +120,8 @@ const mapStateToProps = (state) => {
 		pools: state.balancer.pools,
 		prices: state.coingecko,
 		portfolioPools: state.poolReducer,
-		poolsList: state.portfolio
+		poolsList: state.portfolio,
+		moreShares: state.moreShares
 	};
 };
 
@@ -116,5 +136,7 @@ export default connect(mapStateToProps, {
 	sumAllVol,
 	deleteAllVol,
 	deletePools,
-	fetchPool
+	fetchPool,
+	addShares,
+	deleteShares
 })(Data);

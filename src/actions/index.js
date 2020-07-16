@@ -2,6 +2,32 @@ import balancerPools from '../apis/balancerPools';
 import coingecko from '../apis/coingecko';
 import axios from 'axios';
 
+export const addShares = ({ id }, num) => async (dispatch) => {
+	const response = await axios({
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
+		method: 'post',
+		data: {
+			query: `{
+      pools (where: {id: "${id}"}) {
+        id
+       shares (first: 1000, skip: ${1000 * num}) {
+        id
+        userAddress {
+          id
+        }
+        balance
+      }
+     }
+   }`
+		}
+	});
+	dispatch({ type: 'ADD_SHARES', payload: response.data });
+};
+
+export const deleteShares = () => (dispatch) => {
+	dispatch({ type: 'DELETE_SHARES' });
+};
+
 export const fetchPools = () => async (dispatch) => {
 	const response = await balancerPools;
 	dispatch({ type: 'FETCH_POOLS', payload: response.data });
