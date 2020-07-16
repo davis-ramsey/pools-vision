@@ -123,7 +123,7 @@ class PoolViewer extends React.Component {
 									${renderLifetimeFees(this.props.pool[this.props.viewPool])}
 								</td>
 								<td className="center aligned" data-label="# of LP's">
-									{renderNumLP(this.props.pool[this.props.viewPool])}
+									{renderNumLP(this.props.pool[this.props.viewPool], this.props.moreShares)}
 								</td>
 							</tr>
 						</tbody>
@@ -152,7 +152,8 @@ const mapStateToProps = (state, ownProps) => {
 		prices: state.coingecko,
 		pool: state.poolReducer,
 		sumLiq: state.sumLiq,
-		allPools: state.balancer.pools
+		allPools: state.balancer.pools,
+		moreShares: state.moreShares
 	};
 };
 

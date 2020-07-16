@@ -61,7 +61,7 @@ class Data extends React.Component {
 			let exit = true;
 			for (let j = 0; j < this.props.moreShares.length; j++) {
 				const pool = this.props.moreShares[j];
-				if (pool.shares.length > 400 && checked.indexOf(j) === -1) {
+				if (pool.shares.length > 990 && checked.indexOf(j) === -1) {
 					this.props.addShares(pool, i);
 					checked.push(j);
 					exit = false;

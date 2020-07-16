@@ -31,7 +31,34 @@ class UserTotals extends React.Component {
 
 				return ownership;
 			}
+			for (let anotherPool of this.props.moreShares)
+				if (pool.id === anotherPool.id)
+					for (let share of anotherPool.shares) {
+						const shareBalance = parseFloat(share.balance);
+						if (share.userAddress.id === userInput && shareBalance !== 0) {
+							const ownership = shareBalance / parseFloat(anotherPool.totalShares).toFixed(4);
+							this.userSum.Liq.push(
+								parseFloat(
+									renderTotalLiquidity(anotherPool, this.props.prices, ownership).split(',').join('')
+								)
+							);
+							this.userSum.Vol += parseFloat(renderVolume(anotherPool, ownership).split(',').join(''));
+							this.userSum.Fees += parseFloat(renderFees(anotherPool, ownership).split(',').join(''));
+							this.userSum.Bal += renderAdjLiquidity(
+								anotherPool,
+								this.props.prices,
+								this.props.sumLiq,
+								ownership
+							);
+							this.userSum.AvgAPY.push(
+								renderTotalYield(anotherPool, this.props.prices, this.props.sumLiq)
+							);
+
+							return ownership;
+						}
+					}
 		}
+
 		return 0;
 	};
 
@@ -103,7 +130,8 @@ const mapStateToProps = (state) => {
 		prices: state.coingecko,
 		portfolio: state.portfolio,
 		sumLiq: state.sumLiq,
-		form: state.form.UserInput
+		form: state.form.UserInput,
+		moreShares: state.moreShares
 	};
 };
 

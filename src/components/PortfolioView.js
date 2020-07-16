@@ -101,7 +101,7 @@ class PortfolioView extends React.Component {
 								${renderLifetimeFees(selectedPool)}
 							</td>
 							<td className="center aligned" data-label="# of LP's">
-								{renderNumLP(selectedPool)}
+								{renderNumLP(selectedPool, this.props.moreShares)}
 							</td>
 						</tr>
 					);
@@ -153,7 +153,8 @@ const mapStateToProps = (state, ownProps) => {
 		prices: state.coingecko,
 		checkPortfolio: state.portfolio,
 		sumLiq: state.sumLiq,
-		allPools: state.balancer.pools
+		allPools: state.balancer.pools,
+		moreShares: state.moreShares
 	};
 };
 

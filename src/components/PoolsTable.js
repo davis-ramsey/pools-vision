@@ -26,6 +26,13 @@ class PoolsTable extends React.PureComponent {
 			const shareBalance = parseFloat(share.balance);
 			if (share.userAddress.id === userInput && shareBalance !== 0)
 				return shareBalance / parseFloat(pool.totalShares).toFixed(4);
+			for (let anotherPool of this.props.moreShares)
+				if (pool.id === anotherPool.id)
+					for (let share of anotherPool.shares) {
+						const shareBalance = parseFloat(share.balance);
+						if (share.userAddress.id === userInput && shareBalance !== 0)
+							return shareBalance / parseFloat(pool.totalShares).toFixed(4);
+					}
 		}
 		return 0;
 	};
@@ -144,7 +151,7 @@ class PoolsTable extends React.PureComponent {
 								</td>
 								{this.renderToggle(pool, ownership)}
 								<td className="center aligned" data-label="# of LP's">
-									{renderNumLP(pool)}
+									{renderNumLP(pool, this.props.moreShares)}
 								</td>
 							</tr>
 						);
@@ -217,7 +224,7 @@ class PoolsTable extends React.PureComponent {
 								</td>
 								{this.renderToggle(pool, ownership)}
 								<td className="center aligned" data-label="# of LP's">
-									{renderNumLP(pool)}
+									{renderNumLP(pool, this.props.moreShares)}
 								</td>
 							</tr>
 						);
@@ -239,7 +246,8 @@ const mapStateToProps = (state) => {
 		prices: state.coingecko,
 		portfolio: state.portfolio,
 		sumLiq: state.sumLiq,
-		form: state.form.UserInput
+		form: state.form.UserInput,
+		moreShares: state.moreShares
 	};
 };
 

@@ -9,14 +9,39 @@ export const addShares = ({ id }, num) => async (dispatch) => {
 		data: {
 			query: `{
       pools (where: {id: "${id}"}) {
-        id
+				id
+				publicSwap
+				finalized
+				swapFee
+				totalWeight
+				totalShares
+				totalSwapVolume
+				tokensList
+				tokens {
+					id
+					address
+					balance
+					decimals
+					symbol
+					denormWeight
+				}
        shares (first: 1000, skip: ${1000 * num}) {
         id
         userAddress {
           id
         }
         balance
-      }
+			}
+			swaps (first: 1,orderBy: timestamp,orderDirection: desc, where: {timestamp_lt: ${Math.floor(Date.now() / 1000) -
+				86400}}) {
+					 tokenIn
+					 tokenInSym
+					 tokenAmountIn
+					 tokenOut
+					 tokenOutSym
+					 tokenAmountOut
+					 poolTotalSwapVolume
+				 }
      }
    }`
 		}
