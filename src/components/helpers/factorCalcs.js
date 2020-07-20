@@ -1,5 +1,5 @@
 export const feeFactor = (swapFee) => {
-	return Math.exp(-Math.pow(swapFee * 50, 2));
+	return Math.exp(-Math.pow(swapFee * 25, 2));
 };
 
 export const ratioFactor = (pool) => {

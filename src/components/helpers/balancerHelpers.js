@@ -141,10 +141,21 @@ const totalFactor = (pool) => {
 };
 
 export const renderAdjLiquidity = (pool, prices, sumLiq, ownership = 1) => {
+	let balFactor = 1;
+	const addresses = [];
+	for (let token of pool.tokens) {
+		addresses.push(token.address);
+		if (
+			addresses.length === 2 &&
+			addresses.indexOf('0xba100000625a3754423978a60c9317c58a424e3d') !== -1 &&
+			addresses.indexOf('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') !== -1
+		)
+			balFactor = 1.5;
+	}
 	const tFactor = totalFactor(pool);
 	const liquidity = renderTotalLiquidity(pool, prices).split(',').join('');
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	return liquidity * tFactor / sumLiq * 145000 * 52 * ownership;
+	return liquidity * tFactor * balFactor / sumLiq * 145000 * 52 * ownership;
 };
 
 export const renderTotalYield = (pool, prices, sumLiq) => {
