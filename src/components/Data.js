@@ -91,9 +91,20 @@ class Data extends React.Component {
 	adjLiquidity = (pool) => {
 		const totalFactor = this.totalFactor(pool);
 		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
+		let balFactor = 1;
+		const addresses = [];
+		for (let token of pool.tokens) {
+			addresses.push(token.address);
+			if (
+				addresses.length === 2 &&
+				addresses.indexOf('0xba100000625a3754423978a60c9317c58a424e3d') !== -1 &&
+				addresses.indexOf('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') !== -1
+			)
+				balFactor = 1.5;
+		}
 		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
 		if (isNaN(liquidity * totalFactor)) return;
-		this.sumTotalAdjLiq += liquidity * totalFactor;
+		this.sumTotalAdjLiq += liquidity * totalFactor * balFactor;
 	};
 
 	getTotalVolume(pool) {
