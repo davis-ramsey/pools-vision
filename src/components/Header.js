@@ -64,7 +64,12 @@ class Header extends React.Component {
 					Clicking in the Assets column will show more info about that pool's assets. Prices are automatically
 					updated every 5 minutes. APY is calculated using 24h fee yield extrapolated to an annualized rate
 					plus yield on weekly BAL distributions. WrapFactor and CapFactor are currently NOT included in the
-					calculations.
+					calculations. <br />
+					<br />
+					<b>
+						July 20 updated: the feeFactor has been updated to have a coefficient of 0.25 instead of 0.5 and
+						balFactor has been added for BAL/WETH pools.
+					</b>
 				</div>
 				<HeaderTable />
 			</div>
