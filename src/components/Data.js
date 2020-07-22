@@ -15,8 +15,7 @@ import {
 	addShares,
 	deleteShares
 } from '../actions';
-import { feeFactor, ratioFactor } from './helpers/factorCalcs';
-import { renderTotalLiquidity } from './helpers/balancerHelpers';
+import { renderTotalLiquidity, totalFactor } from './helpers/balancerHelpers';
 
 class Data extends React.Component {
 	constructor(props) {
@@ -89,22 +88,11 @@ class Data extends React.Component {
 		this.gatherData();
 	}
 	adjLiquidity = (pool) => {
-		const totalFactor = this.totalFactor(pool);
+		const totalFac = totalFactor(pool);
 		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
-		let balFactor = 1;
-		const addresses = [];
-		for (let token of pool.tokens) {
-			addresses.push(token.address);
-			if (
-				addresses.length === 2 &&
-				addresses.indexOf('0xba100000625a3754423978a60c9317c58a424e3d') !== -1 &&
-				addresses.indexOf('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') !== -1
-			)
-				balFactor = 1.5;
-		}
 		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
-		if (isNaN(liquidity * totalFactor)) return;
-		this.sumTotalAdjLiq += liquidity * totalFactor * balFactor;
+		if (isNaN(liquidity * totalFac)) return;
+		this.sumTotalAdjLiq += liquidity * totalFac;
 	};
 
 	getTotalVolume(pool) {
@@ -114,12 +102,6 @@ class Data extends React.Component {
 		const volume = totalSwapVolume - swap;
 		this.sumVolume += volume;
 	}
-
-	totalFactor = (pool) => {
-		const fee = feeFactor(pool.swapFee);
-		const ratio = ratioFactor(pool);
-		return fee * ratio;
-	};
 
 	render() {
 		return null;

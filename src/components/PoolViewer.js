@@ -8,8 +8,12 @@ import {
 	renderAdjLiquidity,
 	renderTotalYield,
 	renderNumLP,
-	renderLifetimeFees
+	renderLifetimeFees,
+	balFactor,
+	wrapFactor,
+	totalFactor
 } from './helpers/balancerHelpers';
+import { feeFactor } from './helpers/factorCalcs';
 
 class PoolViewer extends React.Component {
 	async componentDidMount() {
@@ -83,6 +87,10 @@ class PoolViewer extends React.Component {
 								<th className="center aligned">Swap Fee</th>
 								<th className="center aligned">24h Volume</th>
 								<th className="center aligned">24h Fees</th>
+								<th className="center aligned">Fee Factor</th>
+								<th className="center aligned">BAL/Ratio Factor</th>
+								<th className="center aligned">Wrap Factor</th>
+								<th className="center aligned">Total Factor</th>
 								<th className="center aligned">Annual BAL</th>
 								<th className="center aligned">APY</th>
 								<th className="center aligned">Lifetime Fees</th>
@@ -102,6 +110,18 @@ class PoolViewer extends React.Component {
 								</td>
 								<td className="center aligned" data-label="24h Fees">
 									${renderFees(this.props.pool[this.props.viewPool])}
+								</td>
+								<td className="center aligned" data-label="Fee Factor">
+									{feeFactor(this.props.pool[this.props.viewPool].swapFee).toFixed(2)}
+								</td>
+								<td className="center aligned" data-label="Bal Factor">
+									{balFactor(this.props.pool[this.props.viewPool]).toFixed(2)}
+								</td>
+								<td className="center aligned" data-label="Wrap Factor">
+									{wrapFactor(this.props.pool[this.props.viewPool]).toFixed(2)}
+								</td>
+								<td className="center aligned" data-label="Total Factor">
+									{totalFactor(this.props.pool[this.props.viewPool]).toFixed(2)}
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
 									{Number(

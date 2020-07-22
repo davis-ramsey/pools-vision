@@ -1,4 +1,4 @@
-import { feeFactor, ratioFactor } from './factorCalcs';
+import { feeFactor } from './factorCalcs';
 import React from 'react';
 
 const colors = [
@@ -10,6 +10,40 @@ const colors = [
 	'steelblue',
 	'lightslategray',
 	'darkmagenta'
+];
+
+const softWrap = [
+	[
+		//stablecoin soft pegs USDC, mUSD, sUSD, DAI, cUSDC, cUSDT,cDAI
+		'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+		'0xe2f2a5c287993345a840db3b0845fbc70f5935a5',
+		'0x57ab1ec28d129707052df4df418d58a2d46d5f51',
+		'0x6b175474e89094c44da98b954eedeac495271d0f',
+		'0x39aa39c021dfbae8fac545936693ac917d5e7563',
+		'0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9',
+		'0x5d3a536e4d6dbd6114cc1ead35777bab948e3643'
+	], //WETH soft pegs sETH, WETH
+	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ],
+	//WBTC soft pegs wBTC, renBTC, imBTC,pBTC,sBTC
+	[
+		'0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+		'0xeb4c2781e4eba804ce9a9803c67d0893436bb27d',
+		'0x3212b29e33587a00fb1c83346f5dbfa69a458923',
+		'0x5228a22e72ccc52d415ecfd199f99d0665e7733b',
+		'0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6'
+	]
+];
+
+//WETH, DAI, USDC, WBTC, BAL
+const unCapped = [
+	[
+		'0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+		'0x6b175474e89094c44da98b954eedeac495271d0f',
+		'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+		'0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+		'0xba100000625a3754423978a60c9317c58a424e3d'
+	],
+	[]
 ];
 
 const tokenAddresses = [
@@ -66,6 +100,7 @@ const tokenColors = [
 	'rgb(12%, 32%, 10%)', //BAT
 	'rgb(86%, 34%, 36%)' //SNX
 ];
+
 export const renderAssetsText = (pool) => {
 	const assets = [];
 	const colorPick = [];
@@ -134,28 +169,96 @@ export const renderFees = (pool, ownership = 1) => {
 	return Number(fees.toFixed(2)).toLocaleString();
 };
 
-const totalFactor = (pool) => {
+export const totalFactor = (pool) => {
 	const fee = feeFactor(pool.swapFee);
-	const ratio = ratioFactor(pool);
-	return fee * ratio;
+	const addresses = [];
+	const weights = [];
+	for (let token of pool.tokens) {
+		addresses.push(token.address.toLowerCase());
+		weights.push(parseFloat(token.denormWeight));
+	}
+	const balFactor = getBalFactor(addresses, weights, balPair);
+	const wrapFactor = getWrapFactor(addresses, weights, isWrapPair, 0.7);
+	return balFactor * fee * wrapFactor;
 };
 
-export const renderAdjLiquidity = (pool, prices, sumLiq, ownership = 1) => {
-	let balFactor = 1;
+export const wrapFactor = (pool) => {
 	const addresses = [];
+	const weights = [];
 	for (let token of pool.tokens) {
-		addresses.push(token.address);
-		if (
-			addresses.length === 2 &&
-			addresses.indexOf('0xba100000625a3754423978a60c9317c58a424e3d') !== -1 &&
-			addresses.indexOf('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') !== -1
-		)
-			balFactor = 1.5;
+		addresses.push(token.address.toLowerCase());
+		weights.push(parseFloat(token.denormWeight));
 	}
+	return getWrapFactor(addresses, weights, isWrapPair, 0.7);
+};
+
+export const balFactor = (pool) => {
+	const addresses = [];
+	const weights = [];
+	for (let token of pool.tokens) {
+		addresses.push(token.address.toLowerCase());
+		weights.push(parseFloat(token.denormWeight));
+	}
+	const balFactor = getBalFactor(addresses, weights, balPair);
+	return balFactor;
+};
+
+function getWrapFactor(tokens, weights, factor, value) {
+	let wrapFactorSum = 0;
+	let pairWeightSum = 0;
+	let n = weights.length;
+	for (let x = 0; x < n; x++) {
+		for (let y = x + 1; y < n; y++) {
+			let pairWeight = weights[x] * weights[y];
+			let isWrapped = factor(tokens[x], tokens[y]);
+			let wrapFactorPair = isWrapped ? value : 1;
+			wrapFactorSum = wrapFactorSum + wrapFactorPair * pairWeight;
+			pairWeightSum = pairWeightSum + pairWeight;
+		}
+	}
+	let wrapFactor = wrapFactorSum / pairWeightSum;
+	return wrapFactor;
+}
+
+function getBalFactor(tokens, weights, factor) {
+	let ratioFactorSum = 0;
+	let pairWeightSum = 0;
+	let n = weights.length;
+	for (let x = 0; x < n; x++) {
+		for (let y = x + 1; y < n; y++) {
+			let pairWeight = weights[x] * weights[y];
+			let normalizedWeight1 = weights[x] / (weights[x] + weights[y]);
+			let normalizedWeight2 = weights[y] / (weights[x] + weights[y]);
+			let balFactor = factor(tokens[x], weights[x], tokens[y], weights[y]);
+			ratioFactorSum += balFactor * (4 * normalizedWeight1 * normalizedWeight2) * pairWeight;
+			pairWeightSum += pairWeight;
+		}
+	}
+	return ratioFactorSum / pairWeightSum;
+}
+
+function balPair(token1, weight1, token2, weight2) {
+	if (token1 === '0xba100000625a3754423978a60c9317c58a424e3d' && unCapped[0].includes(token2))
+		return (2 * weight1 + weight2) / (weight1 + weight2);
+	else if (token2 === '0xba100000625a3754423978a60c9317c58a424e3d' && unCapped[0].includes(token1))
+		return (weight1 + 2 * weight2) / (weight1 + weight2);
+	else return 1;
+}
+
+function isWrapPair(tokenA, tokenB) {
+	for (let set in softWrap) {
+		if (softWrap[set].includes(tokenA) && softWrap[set].includes(tokenB)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+export const renderAdjLiquidity = (pool, prices, sumLiq, ownership = 1) => {
 	const tFactor = totalFactor(pool);
 	const liquidity = renderTotalLiquidity(pool, prices).split(',').join('');
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	return liquidity * tFactor * balFactor / sumLiq * 145000 * 52 * ownership;
+	return liquidity * tFactor / sumLiq * 145000 * 52 * ownership;
 };
 
 export const renderTotalYield = (pool, prices, sumLiq) => {
