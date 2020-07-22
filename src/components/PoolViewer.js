@@ -112,16 +112,16 @@ class PoolViewer extends React.Component {
 									${renderFees(this.props.pool[this.props.viewPool])}
 								</td>
 								<td className="center aligned" data-label="Fee Factor">
-									{feeFactor(this.props.pool[this.props.viewPool].swapFee).toFixed(2)}
+									{feeFactor(this.props.pool[this.props.viewPool].swapFee).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Bal Factor">
-									{balFactor(this.props.pool[this.props.viewPool]).toFixed(2)}
+									{balFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Wrap Factor">
-									{wrapFactor(this.props.pool[this.props.viewPool]).toFixed(2)}
+									{wrapFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Total Factor">
-									{totalFactor(this.props.pool[this.props.viewPool]).toFixed(2)}
+									{totalFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
 									{Number(
