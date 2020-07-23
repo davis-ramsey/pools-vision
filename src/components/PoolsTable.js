@@ -55,7 +55,7 @@ class PoolsTable extends React.PureComponent {
 	};
 
 	renderToggle(pool, ownership) {
-		if (parseFloat(renderLifetimeFees(pool).split(',').join('')) > 100000)
+		if (parseFloat(renderLifetimeFees(pool).split(',').join('')) > 100000000)
 			return (
 				<td className="center aligned" data-label="Lifetime Fees">
 					$0
