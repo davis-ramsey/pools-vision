@@ -24,8 +24,10 @@ class UserTotals extends React.Component {
 				this.userSum.Liq.push(
 					parseFloat(renderTotalLiquidity(pool, this.props.prices, ownership).split(',').join(''))
 				);
-				this.userSum.Vol += parseFloat(renderVolume(pool, ownership).split(',').join(''));
-				this.userSum.Fees += parseFloat(renderFees(pool, ownership).split(',').join(''));
+				if (parseFloat(renderVolume(pool, ownership)) !== 0)
+					this.userSum.Vol += parseFloat(renderVolume(pool, ownership).split(',').join(''));
+				if (parseFloat(renderFees(pool, ownership)) !== 0)
+					this.userSum.Fees += parseFloat(renderFees(pool, ownership).split(',').join(''));
 				this.userSum.Bal += renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, ownership);
 				this.userSum.AvgAPY.push(renderTotalYield(pool, this.props.prices, this.props.sumLiq));
 
