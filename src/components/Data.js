@@ -13,7 +13,8 @@ import {
 	deletePools,
 	fetchPool,
 	addShares,
-	deleteShares
+	deleteShares,
+	removePools
 } from '../actions';
 import { renderTotalLiquidity, totalFactor } from './helpers/balancerHelpers';
 
@@ -31,7 +32,10 @@ class Data extends React.Component {
 	}
 
 	async gatherData() {
-		await this.props.fetchPools();
+		await this.props.fetchPools(0);
+		for (let i = 1; i < 100; i++) {
+			if (this.props.pools.length > 999 * i) await this.props.fetchPools(i);
+		}
 		const addresses = [];
 		for (let pool of this.props.pools) {
 			if (pool.shares.length > 990) {
@@ -75,6 +79,7 @@ class Data extends React.Component {
 		this.sumTotalAdjLiq = 0;
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
+		this.props.removePools();
 		this.props.clearLiquidity();
 		this.props.deleteAllLiq();
 		this.props.deleteAllVol();
@@ -131,5 +136,6 @@ export default connect(mapStateToProps, {
 	deletePools,
 	fetchPool,
 	addShares,
-	deleteShares
+	deleteShares,
+	removePools
 })(Data);
