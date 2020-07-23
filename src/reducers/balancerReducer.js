@@ -14,7 +14,7 @@ export default (state = INITIAL_STATE, action) => {
 
 		case 'REMOVE_POOLS':
 			return {
-				pools: null
+				pools: 0
 			};
 		default:
 			return state;
