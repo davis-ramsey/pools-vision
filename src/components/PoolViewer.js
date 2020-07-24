@@ -16,12 +16,20 @@ import {
 import { feeFactor } from './helpers/factorCalcs';
 
 class PoolViewer extends React.Component {
+	constructor(props) {
+		super(props);
+		this.timer = null;
+	}
 	async componentDidMount() {
 		await this.props.fetchPool(this.props.viewPool);
+		this.timer = setInterval(async () => {
+			await this.props.fetchPool(this.props.viewPool);
+		}, 60000);
 	}
 
 	componentWillUnmount() {
 		this.props.deletePools();
+		clearInterval(this.timer);
 	}
 
 	renderAssetValue(index) {

@@ -20,21 +20,25 @@ import history from '../history';
 
 class PoolsTable extends React.PureComponent {
 	addressChecker = (pool) => {
-		if (!this.props.form || !this.props.form.values || !this.props.form.values.address) return;
-		const userInput = this.props.form.values.address.toLowerCase();
+		const nav = this.props.ownProps.userAddr.location.pathname;
+		if (!nav.includes('/user/')) return;
+		let userBalance = 0;
+		const userInput = nav.slice(6).toLowerCase().split(',');
 		for (let share of pool.shares) {
 			const shareBalance = parseFloat(share.balance);
-			if (share.userAddress.id === userInput && shareBalance !== 0)
-				return shareBalance / parseFloat(pool.totalShares).toFixed(4);
+			for (let input of userInput)
+				if (share.userAddress.id === input && shareBalance !== 0)
+					userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
 			for (let anotherPool of this.props.moreShares)
 				if (pool.id === anotherPool.id)
 					for (let share of anotherPool.shares) {
 						const shareBalance = parseFloat(share.balance);
-						if (share.userAddress.id === userInput && shareBalance !== 0)
-							return shareBalance / parseFloat(pool.totalShares).toFixed(4);
+						for (let input of userInput)
+							if (share.userAddress.id === input && shareBalance !== 0)
+								userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
 					}
 		}
-		return 0;
+		return userBalance;
 	};
 
 	tokenChecker = (pool) => {
@@ -55,13 +59,14 @@ class PoolsTable extends React.PureComponent {
 	};
 
 	renderToggle(pool, ownership) {
+		const nav = this.props.ownProps.userAddr.location.pathname;
 		if (parseFloat(renderLifetimeFees(pool).split(',').join('')) > 100000000)
 			return (
 				<td className="center aligned" data-label="Lifetime Fees">
 					$0
 				</td>
 			);
-		if (!this.props.form || !this.props.form.values || !this.props.form.values.address)
+		if (!nav.includes('/user/'))
 			return (
 				<td className="center aligned" data-label="Lifetime Fees">
 					${renderLifetimeFees(pool)}
@@ -240,14 +245,15 @@ class PoolsTable extends React.PureComponent {
 	}
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
 	return {
 		pools: state.balancer.pools,
 		prices: state.coingecko,
 		portfolio: state.portfolio,
 		sumLiq: state.sumLiq,
 		form: state.form.UserInput,
-		moreShares: state.moreShares
+		moreShares: state.moreShares,
+		ownProps
 	};
 };
 

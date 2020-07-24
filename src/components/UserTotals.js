@@ -15,53 +15,39 @@ class UserTotals extends React.Component {
 		this.userSum = {};
 	}
 	checker = (pool) => {
-		if (!this.props.form || !this.props.form.values || !this.props.form.values.address) return;
-		const userInput = this.props.form.values.address.toLowerCase();
+		const nav = this.props.ownProps.userAddr.location.pathname;
+		if (!nav.includes('/user/')) return;
+		let userBalance = 0;
+		const userInput = nav.slice(6).toLowerCase().split(',');
 		for (let share of pool.shares) {
 			const shareBalance = parseFloat(share.balance);
-			if (share.userAddress.id === userInput && shareBalance !== 0) {
-				const ownership = shareBalance / parseFloat(pool.totalShares).toFixed(4);
-				this.userSum.Liq.push(
-					parseFloat(renderTotalLiquidity(pool, this.props.prices, ownership).split(',').join(''))
-				);
-				if (parseFloat(renderVolume(pool, ownership)) !== 0)
-					this.userSum.Vol += parseFloat(renderVolume(pool, ownership).split(',').join(''));
-				if (parseFloat(renderFees(pool, ownership)) !== 0)
-					this.userSum.Fees += parseFloat(renderFees(pool, ownership).split(',').join(''));
-				this.userSum.Bal += renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, ownership);
-				this.userSum.AvgAPY.push(renderTotalYield(pool, this.props.prices, this.props.sumLiq));
-
-				return ownership;
-			}
+			for (let input of userInput)
+				if (share.userAddress.id === input && shareBalance !== 0) {
+					userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
+				}
 			for (let anotherPool of this.props.moreShares)
 				if (pool.id === anotherPool.id)
 					for (let share of anotherPool.shares) {
 						const shareBalance = parseFloat(share.balance);
-						if (share.userAddress.id === userInput && shareBalance !== 0) {
-							const ownership = shareBalance / parseFloat(anotherPool.totalShares).toFixed(4);
-							this.userSum.Liq.push(
-								parseFloat(
-									renderTotalLiquidity(anotherPool, this.props.prices, ownership).split(',').join('')
-								)
-							);
-							this.userSum.Vol += parseFloat(renderVolume(anotherPool, ownership).split(',').join(''));
-							this.userSum.Fees += parseFloat(renderFees(anotherPool, ownership).split(',').join(''));
-							this.userSum.Bal += renderAdjLiquidity(
-								anotherPool,
-								this.props.prices,
-								this.props.sumLiq,
-								ownership
-							);
-							this.userSum.AvgAPY.push(
-								renderTotalYield(anotherPool, this.props.prices, this.props.sumLiq)
-							);
-
-							return ownership;
-						}
+						for (let input of userInput)
+							if (share.userAddress.id === input && shareBalance !== 0) {
+								userBalance += shareBalance / parseFloat(anotherPool.totalShares).toFixed(4);
+							}
 					}
 		}
+		if (userBalance !== 0) {
+			this.userSum.Liq.push(
+				parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance).split(',').join(''))
+			);
+			if (parseFloat(renderVolume(pool, userBalance)) !== 0)
+				this.userSum.Vol += parseFloat(renderVolume(pool, userBalance).split(',').join(''));
+			if (parseFloat(renderFees(pool, userBalance)) !== 0)
+				this.userSum.Fees += parseFloat(renderFees(pool, userBalance).split(',').join(''));
+			this.userSum.Bal += renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, userBalance);
+			this.userSum.AvgAPY.push(renderTotalYield(pool, this.props.prices, this.props.sumLiq));
+		}
 
-		return 0;
+		return userBalance;
 	};
 
 	renderLiq() {
@@ -81,7 +67,6 @@ class UserTotals extends React.Component {
 		}
 		return weightedSum / sumLiq;
 	}
-	//0x000b79f52356189c80a9d3ada3911d4438218516
 	render() {
 		this.userSum = {
 			Liq: [],
@@ -90,7 +75,8 @@ class UserTotals extends React.Component {
 			Bal: 0,
 			AvgAPY: []
 		};
-		if (!this.props.form || !this.props.form.values || !this.props.form.values.address) return null;
+		const nav = this.props.ownProps.userAddr.location.pathname;
+		if (!nav.includes('/user/')) return null;
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
 			this.props.pools.map((pool) => {
 				this.checker(pool);
@@ -126,14 +112,15 @@ class UserTotals extends React.Component {
 	}
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
 	return {
 		pools: state.balancer.pools,
 		prices: state.coingecko,
 		portfolio: state.portfolio,
 		sumLiq: state.sumLiq,
 		form: state.form.UserInput,
-		moreShares: state.moreShares
+		moreShares: state.moreShares,
+		ownProps
 	};
 };
 

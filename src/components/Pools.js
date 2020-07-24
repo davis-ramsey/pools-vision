@@ -8,9 +8,8 @@ class Pools extends React.Component {
 	onSubmit = ({ address }) => {};
 
 	renderToggle() {
-		if (!this.props.form) return <th className="center aligned">Lifetime Fees</th>;
-		if (!this.props.form.values) return <th className="center aligned">Lifetime Fees</th>;
-		if (!this.props.form.values.address) return <th className="center aligned">Lifetime Fees</th>;
+		const nav = this.props.user.location.pathname;
+		if (!nav.includes('/user/')) return <th className="center aligned">Lifetime Fees</th>;
 		return <th className="center aligned">User %</th>;
 	}
 
@@ -35,8 +34,8 @@ class Pools extends React.Component {
 						</tr>
 					</thead>
 					<tbody>
-						<PoolsTable />
-						<UserTotals />
+						<PoolsTable userAddr={this.props.user} />
+						<UserTotals userAddr={this.props.user} />
 					</tbody>
 				</table>
 			</div>
@@ -44,9 +43,10 @@ class Pools extends React.Component {
 	}
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
 	return {
-		form: state.form.UserInput
+		form: state.form.UserInput,
+		user: ownProps
 	};
 };
 
