@@ -8,6 +8,7 @@ import PortfolioView from './PortfolioView';
 import Pools from './Pools';
 import PoolViewer from './PoolViewer';
 import Data from './Data';
+import TokenList from './TokenList';
 
 const App = () => {
 	return (
@@ -19,6 +20,7 @@ const App = () => {
 					<Switch>
 						<Route path="/pool/:viewPool" component={PoolViewer} />
 						<Route path="/portfolio/:portfolio" component={PortfolioView} />
+						<Route path="/tokens/" component={TokenList} />
 						<Route path="/" component={Pools} />
 					</Switch>
 				</div>
