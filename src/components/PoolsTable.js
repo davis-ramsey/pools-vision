@@ -56,7 +56,8 @@ class PoolsTable extends React.PureComponent {
 	apyChecker = (pool) => {
 		if (!this.props.form || !this.props.form.values || !this.props.form.values.apy) return true;
 		const userInput = this.props.form.values.apy;
-		if (userInput >= parseFloat(renderTotalYield(pool, this.props.prices, this.props.sumLiq))) return false;
+		if (userInput >= parseFloat(renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps)))
+			return false;
 		else return true;
 	};
 
