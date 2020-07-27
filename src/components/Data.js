@@ -20,7 +20,7 @@ import {
 	sumFinal,
 	deleteFinal
 } from '../actions';
-import { renderTotalLiquidity, totalFactor, renderRealAdj } from './helpers/balancerHelpers';
+import { renderTotalLiquidity, totalFactor, renderCapFactor } from './helpers/balancerHelpers';
 
 class Data extends React.Component {
 	constructor(props) {
@@ -81,8 +81,9 @@ class Data extends React.Component {
 		this.props.sumAllLiq(this.sumTotalLiq);
 		this.props.sumAllVol(this.sumVolume);
 		this.props.sumLiquidity(this.sumTotalAdjLiq);
-		for (const pool of this.props.pools) this.capLiquidity(pool, caps);
+		for (let cap of caps) if (cap.adj) this.sumFinalLiq += renderCapFactor(cap.addr, cap.adj) * cap.adj;
 		this.props.sumFinal(this.sumFinalLiq);
+
 		this.timer = setInterval(() => {
 			this.refreshData();
 		}, this.refreshTimer);
@@ -139,10 +140,6 @@ class Data extends React.Component {
 					parseFloat(token.balance) * this.props.prices[token.address].usd * totalFac;
 		}
 		this.sumTotalAdjLiq += adjLiq;
-	};
-
-	capLiquidity = (pool, caps) => {
-		this.sumFinalLiq += renderRealAdj(pool, this.props.prices, caps);
 	};
 
 	getTotalVolume(pool) {

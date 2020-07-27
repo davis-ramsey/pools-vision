@@ -144,10 +144,10 @@ class PoolViewer extends React.Component {
 									{(this.props.pool[this.props.viewPool].swapFee * 100).toFixed(2)}%
 								</td>
 								<td className="center aligned" data-label="24h Volume">
-									${renderVolume(this.props.pool[this.props.viewPool])}
+									${numberWithCommas(renderVolume(this.props.pool[this.props.viewPool]))}
 								</td>
 								<td className="center aligned" data-label="24h Fees">
-									${renderFees(this.props.pool[this.props.viewPool])}
+									${numberWithCommas(renderFees(this.props.pool[this.props.viewPool]))}
 								</td>
 								<td className="center aligned" data-label="Fee Factor">
 									{feeFactor(this.props.pool[this.props.viewPool].swapFee).toFixed(4)}
