@@ -13,7 +13,9 @@ import {
 	renderAdjLiquidity,
 	renderAssetsText,
 	renderNumLP,
-	renderLifetimeFees
+	renderLifetimeFees,
+	renderRealAdj,
+	numberWithCommas
 } from './helpers/balancerHelpers';
 
 class PortfolioView extends React.Component {
@@ -33,7 +35,13 @@ class PortfolioView extends React.Component {
 		return pools.map((pool) => {
 			if (this.props.checkPortfolio.indexOf(pool) === -1) return null;
 			const selectedPool = this.props.pools[pool];
-			if (selectedPool && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236) {
+			if (
+				selectedPool &&
+				this.props.prices &&
+				this.props.portfolio &&
+				this.props.sumLiq > 138683236 &&
+				this.props.caps[5]
+			) {
 				const check = parseInt(checkLiquidity(selectedPool, this.props.prices));
 				if (check !== 0)
 					return (
@@ -65,7 +73,8 @@ class PortfolioView extends React.Component {
 									justifyContent: 'center',
 									alignItems: 'center',
 									fontFamily: 'Roboto Condensed, sans-serif',
-									letterSpacing: 1.3
+									letterSpacing: 1.3,
+									fontSize: '12px'
 								}}
 							>
 								<div className="ui">
@@ -81,24 +90,36 @@ class PortfolioView extends React.Component {
 								{(selectedPool.swapFee * 100).toFixed(2)}%
 							</td>
 							<td className="center aligned" data-label="Total Liquidity">
-								${renderTotalLiquidity(selectedPool, this.props.prices)}
+								<div className="ui">
+									${numberWithCommas(renderTotalLiquidity(selectedPool, this.props.prices))}
+								</div>
+								<div className="ui" style={{ fontSize: '12px' }}>
+									Adj: ${numberWithCommas(
+										renderRealAdj(selectedPool, this.props.prices, this.props.caps)
+									)}
+								</div>
 							</td>
 							<td className="center aligned" data-label="24h Volume">
-								${renderVolume(selectedPool)}
+								${numberWithCommas(renderVolume(selectedPool))}
 							</td>
 							<td className="center aligned" data-label="24h Fees">
-								${renderFees(selectedPool)}
+								${numberWithCommas(renderFees(selectedPool))}
 							</td>
 							<td className="center aligned" data-label="Annual BAL">
-								{Number(
-									renderAdjLiquidity(selectedPool, this.props.prices, this.props.sumLiq).toFixed(0)
-								).toLocaleString()}
+								{numberWithCommas(
+									renderAdjLiquidity(
+										selectedPool,
+										this.props.prices,
+										this.props.sumLiq,
+										this.props.caps
+									).toFixed(0)
+								)}
 							</td>
 							<td className="center aligned" data-label="APY">
-								{renderTotalYield(selectedPool, this.props.prices, this.props.sumLiq)}%
+								{renderTotalYield(selectedPool, this.props.prices, this.props.sumLiq, this.props.caps)}%
 							</td>
 							<td className="center aligned" data-label="Lifetime Fees">
-								${renderLifetimeFees(selectedPool)}
+								${numberWithCommas(renderLifetimeFees(selectedPool))}
 							</td>
 							<td className="center aligned" data-label="# of LP's">
 								{renderNumLP(selectedPool, this.props.moreShares)}
@@ -152,9 +173,10 @@ const mapStateToProps = (state, ownProps) => {
 		pools: state.poolReducer,
 		prices: state.coingecko,
 		checkPortfolio: state.portfolio,
-		sumLiq: state.sumLiq,
+		sumLiq: state.sumFinal,
 		allPools: state.balancer.pools,
-		moreShares: state.moreShares
+		moreShares: state.moreShares,
+		caps: state.caps
 	};
 };
 

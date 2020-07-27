@@ -101,6 +101,10 @@ const tokenColors = [
 	'rgb(86%, 34%, 36%)' //SNX
 ];
 
+export const numberWithCommas = (x) => {
+	return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+};
+
 export const renderCapFactor = (address, adjLiq) => {
 	if (unCapped[0].includes(address)) return 1;
 	if (adjLiq > 10000000) return 10000000 / adjLiq;
@@ -155,7 +159,7 @@ export const renderTotalLiquidity = (pool, prices, ownership = 1) => {
 	}
 	if (isNaN(total)) return 'No Data';
 	total = total * ownership;
-	return Number(total.toFixed(2)).toLocaleString();
+	return Number(total.toFixed(2));
 };
 
 export const renderVolume = (pool, ownership = 1) => {
@@ -163,7 +167,7 @@ export const renderVolume = (pool, ownership = 1) => {
 	if (pool.swaps[0] === undefined) return 0;
 	const swap = pool.swaps[0].poolTotalSwapVolume;
 	const volume = (totalSwapVolume - swap) * ownership;
-	return Number(volume.toFixed(2)).toLocaleString();
+	return volume.toFixed(2);
 };
 
 export const renderFees = (pool, ownership = 1) => {
@@ -172,7 +176,7 @@ export const renderFees = (pool, ownership = 1) => {
 	const swap = pool.swaps[0].poolTotalSwapVolume;
 	const volume = totalSwapVolume - swap;
 	const fees = volume * pool.swapFee * ownership;
-	return Number(fees.toFixed(2)).toLocaleString();
+	return fees.toFixed(2);
 };
 
 export const totalFactor = (pool) => {
@@ -260,20 +264,37 @@ function isWrapPair(tokenA, tokenB) {
 	return false;
 }
 
-export const renderAdjLiquidity = (pool, prices, sumLiq, ownership = 1) => {
-	const tFactor = totalFactor(pool);
-	const liquidity = renderTotalLiquidity(pool, prices).split(',').join('');
+export const renderAdjLiquidity = (pool, prices, sumLiq, caps, ownership = 1) => {
+	const liquidity = renderRealAdj(pool, prices, caps, ownership);
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	return liquidity * tFactor / sumLiq * 145000 * 52 * ownership;
+	return liquidity / sumLiq * 145000 * 52 * ownership;
 };
 
-export const renderTotalYield = (pool, prices, sumLiq) => {
-	const liquidity = renderTotalLiquidity(pool, prices).split(',').join('');
+export const renderRealAdj = (pool, prices, caps, ownership = 1) => {
+	let total = 0;
+	const totalFac = totalFactor(pool);
+	for (let token of pool.tokens) {
+		const address = token.address;
+		if (prices === undefined || prices[address] === undefined) return 'No Data';
+		const price = prices[address].usd;
+		const balance = parseFloat(token.balance);
+		const obj = caps.filter((item) => item.addr === address);
+		const capFactor = renderCapFactor(address, obj[0].adj);
+		total += price * balance * capFactor;
+	}
+	if (isNaN(total)) return 'No Data';
+	total = total * totalFac * ownership;
+	return Number(total.toFixed(2));
+};
+
+export const renderTotalYield = (pool, prices, sumLiq, caps) => {
+	const liquidity = renderTotalLiquidity(pool, prices);
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	const annualBAL = renderAdjLiquidity(pool, prices, sumLiq);
+	const annualBAL = renderAdjLiquidity(pool, prices, sumLiq, caps);
 	const feeYield = parseFloat(renderYield(pool, prices)) * 365;
 	const priceBAL = prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
 	const yieldBAL = parseFloat(annualBAL * priceBAL / liquidity * 100);
+
 	const totalYield = yieldBAL + feeYield;
 	return totalYield.toFixed(2);
 };
@@ -287,7 +308,7 @@ export const checkLiquidity = (pool, prices) => {
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}
-	return Number(total.toFixed(2)).toLocaleString();
+	return Number(total.toFixed(2));
 };
 export const renderYield = (pool, prices) => {
 	const totalSwapVolume = pool.totalSwapVolume;
@@ -326,5 +347,5 @@ export const renderNumLP = (pool, moreShares) => {
 export const renderLifetimeFees = (pool) => {
 	const swapFee = pool.swapFee;
 	const totalVolume = pool.totalSwapVolume;
-	return Number((totalVolume * swapFee).toFixed(2)).toLocaleString();
+	return Number((totalVolume * swapFee).toFixed(2));
 };

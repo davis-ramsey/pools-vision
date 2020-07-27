@@ -6,7 +6,8 @@ import {
 	renderVolume,
 	renderFees,
 	renderAdjLiquidity,
-	renderTotalYield
+	renderTotalYield,
+	numberWithCommas
 } from './helpers/balancerHelpers';
 
 class UserTotals extends React.Component {
@@ -36,15 +37,19 @@ class UserTotals extends React.Component {
 					}
 		}
 		if (userBalance !== 0) {
-			this.userSum.Liq.push(
-				parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance).split(',').join(''))
-			);
+			this.userSum.Liq.push(parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance)));
 			if (parseFloat(renderVolume(pool, userBalance)) !== 0)
 				this.userSum.Vol += parseFloat(renderVolume(pool, userBalance).split(',').join(''));
 			if (parseFloat(renderFees(pool, userBalance)) !== 0)
 				this.userSum.Fees += parseFloat(renderFees(pool, userBalance).split(',').join(''));
-			this.userSum.Bal += renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, userBalance);
-			this.userSum.AvgAPY.push(renderTotalYield(pool, this.props.prices, this.props.sumLiq));
+			this.userSum.Bal += renderAdjLiquidity(
+				pool,
+				this.props.prices,
+				this.props.sumLiq,
+				this.props.caps,
+				userBalance
+			);
+			this.userSum.AvgAPY.push(renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps));
 		}
 
 		return userBalance;
@@ -77,7 +82,13 @@ class UserTotals extends React.Component {
 		};
 		const nav = this.props.ownProps.userAddr.location.pathname;
 		if (!nav.includes('/user/')) return null;
-		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.sumLiq > 138683236)
+		if (
+			this.props.pools &&
+			this.props.prices &&
+			this.props.portfolio &&
+			this.props.sumLiq > 138683236 &&
+			this.props.caps[5]
+		)
 			this.props.pools.map((pool) => {
 				this.checker(pool);
 				return null;
@@ -91,16 +102,16 @@ class UserTotals extends React.Component {
 				</td>
 				<td className="center aligned" data-label="Swap Fee" />
 				<td className="center aligned" data-label="Total Liquidity">
-					${Number(this.renderLiq().toFixed(2)).toLocaleString()}
+					${numberWithCommas(this.renderLiq().toFixed(2))}
 				</td>
 				<td className="center aligned" data-label="24h Volume">
-					${Number(this.userSum.Vol.toFixed(2)).toLocaleString()}
+					${numberWithCommas(this.userSum.Vol.toFixed(2))}
 				</td>
 				<td className="center aligned" data-label="24h Fees">
-					${Number(this.userSum.Fees.toFixed(2)).toLocaleString()}
+					${numberWithCommas(this.userSum.Fees.toFixed(2))}
 				</td>
 				<td className="center aligned" data-label="Annual BAL">
-					{Number(this.userSum.Bal.toFixed(0)).toLocaleString()}
+					{numberWithCommas(this.userSum.Bal.toFixed(0))}
 				</td>
 				<td className="center aligned" data-label="APY">
 					{this.renderAvgApy().toFixed(2)}%
@@ -117,10 +128,11 @@ const mapStateToProps = (state, ownProps) => {
 		pools: state.balancer.pools,
 		prices: state.coingecko,
 		portfolio: state.portfolio,
-		sumLiq: state.sumLiq,
+		sumLiq: state.sumFinal,
 		form: state.form.UserInput,
 		moreShares: state.moreShares,
-		ownProps
+		ownProps,
+		caps: state.caps
 	};
 };
 

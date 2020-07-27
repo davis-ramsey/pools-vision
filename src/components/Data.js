@@ -16,9 +16,11 @@ import {
 	deleteShares,
 	removePools,
 	addCaps,
-	removeCaps
+	removeCaps,
+	sumFinal,
+	deleteFinal
 } from '../actions';
-import { renderTotalLiquidity, totalFactor } from './helpers/balancerHelpers';
+import { renderTotalLiquidity, totalFactor, renderRealAdj } from './helpers/balancerHelpers';
 
 class Data extends React.Component {
 	constructor(props) {
@@ -27,6 +29,7 @@ class Data extends React.Component {
 		this.sumTotalAdjLiq = 0;
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
+		this.sumFinalLiq = 0;
 		this.refreshTimer = 300000;
 		this.tokenAdjBalance = [];
 		this.addresses = [];
@@ -78,6 +81,8 @@ class Data extends React.Component {
 		this.props.sumAllLiq(this.sumTotalLiq);
 		this.props.sumAllVol(this.sumVolume);
 		this.props.sumLiquidity(this.sumTotalAdjLiq);
+		for (const pool of this.props.pools) this.capLiquidity(pool, caps);
+		this.props.sumFinal(this.sumFinalLiq);
 		this.timer = setInterval(() => {
 			this.refreshData();
 		}, this.refreshTimer);
@@ -101,13 +106,18 @@ class Data extends React.Component {
 		this.sumTotalAdjLiq = 0;
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
-		this.props.removeCaps();
+		this.sumFinalLiq = 0;
+		this.tokenAdjBalance = [];
+		this.addresses = [];
+		this.tokenNames = [];
 		this.props.removePools();
 		this.props.clearLiquidity();
 		this.props.deleteAllLiq();
 		this.props.deleteAllVol();
 		this.props.deletePrices();
 		this.props.deleteShares();
+		this.props.deleteFinal();
+		this.props.removeCaps();
 		if (this.props.portfolioPools && this.props.poolsList) {
 			this.props.deletePools();
 			for (let pool of this.props.poolsList) await this.props.fetchPool(pool);
@@ -117,7 +127,7 @@ class Data extends React.Component {
 	}
 	adjLiquidity = (pool) => {
 		const totalFac = totalFactor(pool);
-		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
+		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices));
 		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
 		if (isNaN(liquidity * totalFac)) return;
 		const adjLiq = liquidity * totalFac;
@@ -129,6 +139,10 @@ class Data extends React.Component {
 					parseFloat(token.balance) * this.props.prices[token.address].usd * totalFac;
 		}
 		this.sumTotalAdjLiq += adjLiq;
+	};
+
+	capLiquidity = (pool, caps) => {
+		this.sumFinalLiq += renderRealAdj(pool, this.props.prices, caps);
 	};
 
 	getTotalVolume(pool) {
@@ -170,5 +184,7 @@ export default connect(mapStateToProps, {
 	deleteShares,
 	removePools,
 	addCaps,
-	removeCaps
+	removeCaps,
+	sumFinal,
+	deleteFinal
 })(Data);

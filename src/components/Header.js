@@ -55,17 +55,13 @@ class Header extends React.Component {
 				{this.renderMenu()}
 				<div className="ui inverted horizontal divider">Page Last Refreshed: {Date()}</div>
 				<div className="ui black compact message">
-					For the official Balancer Pool interface, please visit
-					<a target="_blank" rel="noopener noreferrer" href={`https://pools.balancer.exchange/#/`}>
-						{' '}
-						https://pools.balancer.exchange/#/
-					</a>
-					<br />
 					APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly BAL
 					distributions.<br />
 					<br />
 					<b>July 22 update:</b> feeFactor, balFactor, wrapFactor (for soft peg assets) have been updated per
-					latest governance changes. Click on a pool's assets to see a breakdown of each factor.
+					latest governance changes. Click on a pool's assets to see a breakdown of each factor.<br />
+					<b>July 27 update:</b> capFactor has been added. The "Adj" liquidity shown for each pool is after
+					ALL factors, including capFactor. Annual BAL & APY is based on this Adj. Liquidity.
 				</div>
 				<HeaderTable />
 			</div>

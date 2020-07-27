@@ -11,7 +11,10 @@ import {
 	renderLifetimeFees,
 	balFactor,
 	wrapFactor,
-	totalFactor
+	totalFactor,
+	renderRealAdj,
+	numberWithCommas,
+	renderCapFactor
 } from './helpers/balancerHelpers';
 import { feeFactor } from './helpers/factorCalcs';
 
@@ -38,7 +41,7 @@ class PoolViewer extends React.Component {
 		if (this.props.prices[address] === undefined) return '0';
 		const price = this.props.prices[address].usd;
 		const balance = parseFloat(token.balance);
-		return Number((price * balance).toFixed(2)).toLocaleString();
+		return numberWithCommas((price * balance).toFixed(2));
 	}
 
 	renderAssetPrice(index) {
@@ -46,7 +49,12 @@ class PoolViewer extends React.Component {
 		const address = token.address;
 		if (this.props.prices[address] === undefined) return '0';
 		const price = this.props.prices[address].usd;
-		return Number(price).toLocaleString();
+		return numberWithCommas(price);
+	}
+
+	renderCap(asset) {
+		const obj = this.props.caps.filter((item) => item.name === asset);
+		return renderCapFactor(obj[0].addr, obj[0].adj).toFixed(4);
 	}
 
 	renderAssetTable() {
@@ -68,9 +76,7 @@ class PoolViewer extends React.Component {
 						${this.renderAssetPrice(index)}
 					</td>
 					<td className="center aligned" data-label="Balance">
-						{Number(
-							parseFloat(this.props.pool[this.props.viewPool].tokens[index].balance).toFixed(2)
-						).toLocaleString()}
+						{parseFloat(this.props.pool[this.props.viewPool].tokens[index].balance).toFixed(2)}
 					</td>
 					<td className="center aligned" data-label="Weight">
 						{output[0]}
@@ -78,13 +84,21 @@ class PoolViewer extends React.Component {
 					<td className="center aligned" data-label="Value">
 						${this.renderAssetValue(index)}
 					</td>
+					<td className="center aligned" data-label="capFactor">
+						{this.renderCap(output[1])}
+					</td>
 				</tr>
 			);
 		});
 	}
 
 	render() {
-		if (this.props.pool[this.props.viewPool] && this.props.prices && this.props.sumLiq > 138683236)
+		if (
+			this.props.pool[this.props.viewPool] &&
+			this.props.prices &&
+			this.props.sumLiq > 138683236 &&
+			this.props.caps[5]
+		)
 			return (
 				<div>
 					<div className="ui inverted horizontal divider">Pool Viewer: {this.props.viewPool}</div>
@@ -108,7 +122,23 @@ class PoolViewer extends React.Component {
 						<tbody>
 							<tr key="main">
 								<td className="center aligned" data-label="Total Liquidity">
-									${renderTotalLiquidity(this.props.pool[this.props.viewPool], this.props.prices)}
+									<div className="ui">
+										${numberWithCommas(
+											renderTotalLiquidity(
+												this.props.pool[this.props.viewPool],
+												this.props.prices
+											)
+										)}
+									</div>
+									<div className="ui" style={{ fontSize: '12px' }}>
+										Adj: ${numberWithCommas(
+											renderRealAdj(
+												this.props.pool[this.props.viewPool],
+												this.props.prices,
+												this.props.caps
+											)
+										)}
+									</div>
 								</td>
 								<td className="center aligned" data-label="Swap Fee">
 									{(this.props.pool[this.props.viewPool].swapFee * 100).toFixed(2)}%
@@ -132,23 +162,25 @@ class PoolViewer extends React.Component {
 									{totalFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
-									{Number(
+									{numberWithCommas(
 										renderAdjLiquidity(
 											this.props.pool[this.props.viewPool],
 											this.props.prices,
-											this.props.sumLiq
+											this.props.sumLiq,
+											this.props.caps
 										).toFixed(0)
-									).toLocaleString()}
+									)}
 								</td>
 								<td className="center aligned" data-label="APY">
 									{renderTotalYield(
 										this.props.pool[this.props.viewPool],
 										this.props.prices,
-										this.props.sumLiq
+										this.props.sumLiq,
+										this.props.caps
 									)}%
 								</td>
 								<td className="center aligned" data-label="Lifetime Fees">
-									${renderLifetimeFees(this.props.pool[this.props.viewPool])}
+									${numberWithCommas(renderLifetimeFees(this.props.pool[this.props.viewPool]))}
 								</td>
 								<td className="center aligned" data-label="# of LP's">
 									{renderNumLP(this.props.pool[this.props.viewPool], this.props.moreShares)}
@@ -164,6 +196,7 @@ class PoolViewer extends React.Component {
 								<th className="center aligned">Balance</th>
 								<th className="center aligned">Weight</th>
 								<th className="center aligned">Value</th>
+								<th className="center aligned">capFactor</th>
 							</tr>
 						</thead>
 						<tbody>{this.renderAssetTable()}</tbody>
@@ -179,9 +212,10 @@ const mapStateToProps = (state, ownProps) => {
 		viewPool: ownProps.match.params.viewPool,
 		prices: state.coingecko,
 		pool: state.poolReducer,
-		sumLiq: state.sumLiq,
+		sumLiq: state.sumFinal,
 		allPools: state.balancer.pools,
-		moreShares: state.moreShares
+		moreShares: state.moreShares,
+		caps: state.caps
 	};
 };
 

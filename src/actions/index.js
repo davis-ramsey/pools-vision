@@ -145,6 +145,14 @@ export const clearLiquidity = () => (dispatch) => {
 	dispatch({ type: 'CLEAR_LIQUIDITY' });
 };
 
+export const sumFinal = (value) => (dispatch) => {
+	dispatch({ type: 'SUM_FINAL', payload: value });
+};
+
+export const deleteFinal = (value) => (dispatch) => {
+	dispatch({ type: 'DELETE_FINAL', payload: value });
+};
+
 export const addCaps = (value) => (dispatch) => {
 	dispatch({ type: 'ADD_CAPS', payload: value });
 };

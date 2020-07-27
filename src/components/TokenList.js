@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { renderCapFactor } from './helpers/balancerHelpers';
+import { renderCapFactor, numberWithCommas } from './helpers/balancerHelpers';
 
 class TokenList extends React.Component {
 	constructor(props) {
@@ -24,16 +24,16 @@ class TokenList extends React.Component {
 							{item.name}
 						</td>
 						<td className="center aligned" data-label="Total Liquidity">
-							${Number(item.total.toFixed(0)).toLocaleString()}
+							${numberWithCommas(item.total.toFixed(0))}
 						</td>
 						<td className="center aligned" data-label="Total Adj. Liquidity">
-							${Number(item.adj.toFixed(0)).toLocaleString()}
+							${numberWithCommas(item.adj.toFixed(0))}
 						</td>
 						<td className="center aligned" data-label="CapFactor">
-							{renderCapFactor(item.addr, item.adj).toFixed(2)}
+							{renderCapFactor(item.addr, item.adj).toFixed(4)}
 						</td>
 						<td className="center aligned" data-label="Final Liquidity">
-							${Number((item.adj * renderCapFactor(item.addr, item.adj)).toFixed(0)).toLocaleString()}
+							${numberWithCommas((item.adj * renderCapFactor(item.addr, item.adj)).toFixed(0))}
 						</td>
 					</tr>
 				);
