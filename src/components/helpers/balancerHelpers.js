@@ -101,6 +101,12 @@ const tokenColors = [
 	'rgb(86%, 34%, 36%)' //SNX
 ];
 
+export const renderCapFactor = (address, adjLiq) => {
+	if (unCapped[0].includes(address)) return 1;
+	if (adjLiq > 10000000) return 10000000 / adjLiq;
+	else return 1;
+};
+
 export const renderAssetsText = (pool) => {
 	const assets = [];
 	const colorPick = [];

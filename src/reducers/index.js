@@ -8,6 +8,7 @@ import liquidityReducer from './liquidityReducer';
 import allLiqReducer from './allLiqReducer';
 import sumVolReducer from './sumVolReducer';
 import shareReducer from './shareReducer';
+import capsReducer from './capsReducer';
 
 export default combineReducers({
 	balancer: balancerReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
 	sumTotalLiq: allLiqReducer,
 	sumVol: sumVolReducer,
 	form: formReducer,
-	moreShares: shareReducer
+	moreShares: shareReducer,
+	caps: capsReducer
 });

@@ -145,6 +145,14 @@ export const clearLiquidity = () => (dispatch) => {
 	dispatch({ type: 'CLEAR_LIQUIDITY' });
 };
 
+export const addCaps = (value) => (dispatch) => {
+	dispatch({ type: 'ADD_CAPS', payload: value });
+};
+
+export const removeCaps = () => (dispatch) => {
+	dispatch({ type: 'REMOVE_CAPS' });
+};
+
 export const fetchPool = (id) => async (dispatch) => {
 	const response = await axios({
 		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',

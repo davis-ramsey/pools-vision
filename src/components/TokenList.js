@@ -1,26 +1,44 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { renderCapFactor } from './helpers/balancerHelpers';
 
 class TokenList extends React.Component {
+	constructor(props) {
+		super(props);
+		this.caps = {};
+	}
+
+	sortCaps() {
+		this.caps = this.props.caps;
+		this.caps.sort((a, b) => b.total - a.total);
+	}
+
 	renderTable() {
-		return (
-			<tr key={'first'}>
-				<td className="center aligned" data-label="Token">
-					WETH
-				</td>
-				<td className="center aligned" data-label="Total Liquidity">
-					$50,000,000
-				</td>
-				<td className="center aligned" data-label="Total Adj. Liquidity">
-					$42,000,000
-				</td>
-				<td className="center aligned" data-label="CapFactor">
-					0.7531
-				</td>
-				<td className="center aligned" data-label="Final Liquidity">
-					$25,000,000
-				</td>
-			</tr>
-		);
+		if (!this.props.caps) return;
+		this.sortCaps();
+		return this.caps.map((item, index) => {
+			if (item.adj)
+				return (
+					<tr key={index}>
+						<td className="center aligned" data-label="Token">
+							{item.name}
+						</td>
+						<td className="center aligned" data-label="Total Liquidity">
+							${Number(item.total.toFixed(0)).toLocaleString()}
+						</td>
+						<td className="center aligned" data-label="Total Adj. Liquidity">
+							${Number(item.adj.toFixed(0)).toLocaleString()}
+						</td>
+						<td className="center aligned" data-label="CapFactor">
+							{renderCapFactor(item.addr, item.adj).toFixed(2)}
+						</td>
+						<td className="center aligned" data-label="Final Liquidity">
+							${Number((item.adj * renderCapFactor(item.addr, item.adj)).toFixed(0)).toLocaleString()}
+						</td>
+					</tr>
+				);
+			else return null;
+		});
 	}
 
 	render() {
@@ -43,4 +61,9 @@ class TokenList extends React.Component {
 		);
 	}
 }
-export default TokenList;
+
+const mapStateToProps = (state) => {
+	return { caps: state.caps };
+};
+
+export default connect(mapStateToProps)(TokenList);

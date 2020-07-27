@@ -14,7 +14,9 @@ import {
 	fetchPool,
 	addShares,
 	deleteShares,
-	removePools
+	removePools,
+	addCaps,
+	removeCaps
 } from '../actions';
 import { renderTotalLiquidity, totalFactor } from './helpers/balancerHelpers';
 
@@ -26,6 +28,9 @@ class Data extends React.Component {
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
 		this.refreshTimer = 300000;
+		this.tokenAdjBalance = [];
+		this.addresses = [];
+		this.tokenNames = [];
 	}
 	componentDidMount() {
 		this.gatherData();
@@ -36,23 +41,40 @@ class Data extends React.Component {
 		for (let i = 1; i < 100; i++) {
 			if (this.props.pools.length > 999 * i) await this.props.fetchPools(i);
 		}
-		const addresses = [];
-		for (let pool of this.props.pools) {
+		const tokenTotalBalance = [];
+		for (const pool of this.props.pools) {
 			if (pool.shares.length > 990) {
 				await this.props.addShares(pool, 1);
 			}
-			for (let token of pool.tokens) {
-				if (addresses.indexOf(token.address) === -1) addresses.push(token.address);
+			for (const token of pool.tokens) {
+				if (this.addresses.indexOf(token.address) === -1) this.addresses.push(token.address);
+				const index = this.addresses.indexOf(token.address);
+				if (!tokenTotalBalance[index]) tokenTotalBalance[index] = 0;
+				tokenTotalBalance[index] += parseFloat(token.balance);
+				this.tokenNames[index] = token.symbol;
 			}
 		}
-		const a1 = addresses.slice(0, addresses.length / 2);
-		const a2 = addresses.slice(addresses.length / 2);
+		const a1 = this.addresses.slice(0, this.addresses.length / 2);
+		const a2 = this.addresses.slice(this.addresses.length / 2);
 		await this.props.fetchPrice(a1.join(','));
 		await this.props.fetchPrice(a2.join(','));
-		for (let pool of this.props.pools) {
+		tokenTotalBalance.forEach((item, index) => {
+			const price = this.addresses[index];
+			if (!this.props.prices[price]) return;
+			tokenTotalBalance[index] = item * this.props.prices[price].usd;
+		});
+		for (const pool of this.props.pools) {
 			this.adjLiquidity(pool);
 			this.getTotalVolume(pool);
 		}
+		const addrs = this.addresses;
+		const tokenAdj = this.tokenAdjBalance;
+		const names = this.tokenNames;
+		const caps = [];
+		tokenTotalBalance.forEach((item, index) =>
+			caps.push({ addr: addrs[index], name: names[index], total: item, adj: tokenAdj[index] })
+		);
+		this.props.addCaps(caps);
 		this.props.sumAllLiq(this.sumTotalLiq);
 		this.props.sumAllVol(this.sumVolume);
 		this.props.sumLiquidity(this.sumTotalAdjLiq);
@@ -79,6 +101,7 @@ class Data extends React.Component {
 		this.sumTotalAdjLiq = 0;
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
+		this.props.removeCaps();
 		this.props.removePools();
 		this.props.clearLiquidity();
 		this.props.deleteAllLiq();
@@ -97,7 +120,15 @@ class Data extends React.Component {
 		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices).split(',').join(''));
 		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
 		if (isNaN(liquidity * totalFac)) return;
-		this.sumTotalAdjLiq += liquidity * totalFac;
+		const adjLiq = liquidity * totalFac;
+		for (const token of pool.tokens) {
+			const index = this.addresses.indexOf(token.address);
+			if (!this.tokenAdjBalance[index]) this.tokenAdjBalance[index] = 0;
+			if (this.props.prices[token.address].usd)
+				this.tokenAdjBalance[index] +=
+					parseFloat(token.balance) * this.props.prices[token.address].usd * totalFac;
+		}
+		this.sumTotalAdjLiq += adjLiq;
 	};
 
 	getTotalVolume(pool) {
@@ -137,5 +168,7 @@ export default connect(mapStateToProps, {
 	fetchPool,
 	addShares,
 	deleteShares,
-	removePools
+	removePools,
+	addCaps,
+	removeCaps
 })(Data);
