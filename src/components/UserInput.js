@@ -33,7 +33,6 @@ class UserInput extends React.Component {
 							if (input.value.includes('.eth')) {
 								try {
 									const address = await ens.resolver(input.value).addr();
-									console.log(address);
 									location.includes('0x')
 										? history.push(`/user/${location + ',' + address}`)
 										: history.push(`/user/${address}`);
