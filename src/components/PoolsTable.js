@@ -23,7 +23,7 @@ import history from '../history';
 class PoolsTable extends React.PureComponent {
 	addressChecker = (pool) => {
 		const nav = this.props.ownProps.userAddr.location.pathname;
-		if (!nav.includes('/user/')) return;
+		if (!nav.includes('/user/')) return 1;
 		let userBalance = 0;
 		const userInput = nav.slice(6).toLowerCase().split(',');
 		for (let share of pool.shares) {
