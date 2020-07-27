@@ -159,13 +159,12 @@ class PoolsTable extends React.PureComponent {
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
 									{numberWithCommas(
-										renderAdjLiquidity(
+										(renderAdjLiquidity(
 											pool,
 											this.props.prices,
 											this.props.sumLiq,
-											this.props.caps,
-											ownership
-										).toFixed(0)
+											this.props.caps
+										) * ownership).toFixed(0)
 									)}
 								</td>
 								<td className="center aligned" data-label="APY">
