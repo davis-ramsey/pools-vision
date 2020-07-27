@@ -5,6 +5,9 @@ import ENS from 'ethereum-ens';
 import Web3 from 'web3';
 import { infura } from './helpers/keys';
 
+const provider = new Web3.providers.HttpProvider(infura);
+const ens = new ENS(provider);
+
 class UserInput extends React.Component {
 	renderError({ error, touched }) {
 		if (touched && error)
@@ -16,8 +19,6 @@ class UserInput extends React.Component {
 	}
 
 	renderInput = ({ input, label, meta }) => {
-		const provider = new Web3.providers.HttpProvider(infura);
-		const ens = new ENS(provider);
 		const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
 		let location = '';
 		if (history.location.pathname.includes('/user/')) location = history.location.pathname.slice(6).toLowerCase();
@@ -33,9 +34,9 @@ class UserInput extends React.Component {
 							if (input.value.includes('.eth')) {
 								try {
 									const address = await ens.resolver(input.value).addr();
-									location.includes('0x')
-										? history.push(`/user/${location + ',' + address}`)
-										: history.push(`/user/${address}`);
+									location.includes('0x') && !location.includes(address.toLowerCase())
+										? history.push(`/user/${location + ',' + address.toLowerCase()}`)
+										: history.push(`/user/${address.toLowerCase()}`);
 								} catch (error) {
 									console.log(error);
 								}
