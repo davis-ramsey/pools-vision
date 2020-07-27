@@ -1,6 +1,9 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import history from '../history';
+import ENS from 'ethereum-ens';
+import Web3 from 'web3';
+import { infura } from './helpers/keys';
 
 class UserInput extends React.Component {
 	renderError({ error, touched }) {
@@ -13,6 +16,8 @@ class UserInput extends React.Component {
 	}
 
 	renderInput = ({ input, label, meta }) => {
+		const provider = new Web3.providers.HttpProvider(infura);
+		const ens = new ENS(provider);
 		const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
 		let location = '';
 		if (history.location.pathname.includes('/user/')) location = history.location.pathname.slice(6).toLowerCase();
@@ -23,11 +28,24 @@ class UserInput extends React.Component {
 				<button
 					style={{ width: '25%', padding: '1%' }}
 					className="ui inverted primary button"
-					onClick={() => {
-						if (!location.includes(input.value.toLowerCase()))
-							location.includes('0x')
-								? history.push(`/user/${location + ',' + input.value}`)
-								: history.push(`/user/${input.value}`);
+					onClick={async () => {
+						if (!location.includes(input.value.toLowerCase())) {
+							if (input.value.includes('.eth')) {
+								try {
+									const address = await ens.resolver(input.value).addr();
+									console.log(address);
+									location.includes('0x')
+										? history.push(`/user/${location + ',' + address}`)
+										: history.push(`/user/${address}`);
+								} catch (error) {
+									console.log(error);
+								}
+							} else {
+								location.includes('0x')
+									? history.push(`/user/${location + ',' + input.value}`)
+									: history.push(`/user/${input.value}`);
+							}
+						}
 					}}
 				>
 					Add Address
