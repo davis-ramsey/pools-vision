@@ -1,8 +1,9 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import history from '../history';
 import ENS from 'ethereum-ens';
 import Web3 from 'web3';
+import DebounceField from 'redux-form-debounce-field';
 import { infura } from './helpers/keys';
 
 const provider = new Web3.providers.HttpProvider(infura);
@@ -110,9 +111,27 @@ class UserInput extends React.Component {
 				className="ui inverted form error"
 				style={{ display: 'flex' }}
 			>
-				<Field name="address" component={this.renderInput} type="text" label="Filter by wallet address" />
-				<Field name="token" component={this.renderSmallInput} type="text" label="Filter by token" />
-				<Field name="apy" component={this.renderSmallInput} type="text" label="Filter by APY" />
+				<DebounceField
+					name="address"
+					wait={250}
+					component={this.renderInput}
+					type="text"
+					label="Filter by wallet address"
+				/>
+				<DebounceField
+					wait={250}
+					name="token"
+					component={this.renderSmallInput}
+					type="text"
+					label="Filter by token"
+				/>
+				<DebounceField
+					wait={250}
+					name="apy"
+					component={this.renderSmallInput}
+					type="text"
+					label="Filter by APY"
+				/>
 			</form>
 		);
 	}
