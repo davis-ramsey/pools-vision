@@ -1,5 +1,5 @@
 import React from 'react';
-import { reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import history from '../history';
 import ENS from 'ethereum-ens';
 import Web3 from 'web3';
@@ -62,7 +62,7 @@ class UserInput extends React.Component {
 						this.props.reset();
 					}}
 				>
-					Remove All Addresses
+					Remove Addresses
 				</button>
 			);
 
@@ -118,6 +118,21 @@ class UserInput extends React.Component {
 					type="text"
 					label="Filter by wallet address"
 				/>
+				<div style={{ flex: '1 1 20%', marginLeft: '3%', marginTop: '1.4%' }}>
+					<label>Sort Columns by</label>
+					<div>
+						<Field name="sortby" component="select">
+							<option />
+							<option value="totalLiq">Total Liquidity</option>
+							<option value="finalAdj">Adjusted Liquidity</option>
+							<option value="volume">24h Volume</option>
+							<option value="fees">24h Fees</option>
+							<option value="annualBAL">Annual BAL</option>
+							<option value="apy">APY</option>
+							<option value="numLP">Number of LP's</option>
+						</Field>
+					</div>
+				</div>
 				<DebounceField
 					wait={250}
 					name="token"

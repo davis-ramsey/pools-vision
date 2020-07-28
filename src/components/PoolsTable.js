@@ -21,15 +21,13 @@ import {
 import history from '../history';
 
 class PoolsTable extends React.Component {
-	constructor(props) {
-		super(props);
-		this.lastSort = {};
-	}
 	shouldComponentUpdate(nextProps) {
 		if (this.props.pools !== nextProps.pools || this.props.caps !== nextProps.caps) return true;
 		else if (this.props.ownProps.userAddr !== nextProps.ownProps.userAddr) return true;
 		else if (this.props.portfolio !== nextProps.portfolio) return true;
 		else if (this.props.moreShares !== nextProps.moreShares) return true;
+		else if (this.props.form && this.props.form.values && this.props.form.values !== nextProps.form.values)
+			return true;
 		else return false;
 	}
 
@@ -128,6 +126,15 @@ class PoolsTable extends React.Component {
 				numLP
 			};
 		});
+		if (this.props.form && this.props.form.values && this.props.form.values.sortby) {
+			const sortMe = this.props.form.values.sortby;
+			sorted.sort((a, b) => {
+				if (a === null) return 1;
+				else if (b === null) return -1;
+				else return b[sortMe] - a[sortMe];
+			});
+		}
+
 		return sorted;
 	}
 
@@ -160,7 +167,7 @@ class PoolsTable extends React.Component {
 		console.log('in render');
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.caps[5])
 			return this.sortPools().map((pool) => {
-				if (pool === null) return <tr />;
+				if (pool === null) return <tr key={Math.random()} />;
 				const isActive = this.portfolioToggle(pool);
 				const button = this.portfolioButton(pool);
 				return (
@@ -230,7 +237,11 @@ class PoolsTable extends React.Component {
 		else
 			return (
 				<tr key={Math.random()}>
-					<td>Loading</td>
+					<td />
+					<td>
+						Gathering Data! This may take a few seconds. Check the network tab of your console to see
+						status.
+					</td>
 				</tr>
 			);
 	}
