@@ -101,6 +101,25 @@ const tokenColors = [
 	'rgb(86%, 34%, 36%)' //SNX
 ];
 
+// async function fetchWhitelist() {
+// 	const response = await fetch(
+// 		`https://raw.githubusercontent.com/balancer-labs/pool-management/master/src/deployed.json`,
+// 		{
+// 			headers: {
+// 				Accept: 'application/json',
+// 				'Content-Type': 'application/json'
+// 			}
+// 		}
+// 	);
+
+// 	let whitelistResponse = await response.json();
+// 	const whitelist = whitelistResponse.mainnet.tokens.slice(1).flatMap((a) => a.address);
+
+// 	return whitelist;
+// }
+
+// const whiteList = fetchWhitelist();
+
 export const numberWithCommas = (x) => {
 	return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 };

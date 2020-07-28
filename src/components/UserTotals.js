@@ -26,16 +26,17 @@ class UserTotals extends React.Component {
 				if (share.userAddress.id === input && shareBalance !== 0) {
 					userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
 				}
-			for (let anotherPool of this.props.moreShares)
-				if (pool.id === anotherPool.id)
-					for (let share of anotherPool.shares) {
-						const shareBalance = parseFloat(share.balance);
-						for (let input of userInput)
-							if (share.userAddress.id === input && shareBalance !== 0) {
-								userBalance += shareBalance / parseFloat(anotherPool.totalShares).toFixed(4);
-							}
-					}
 		}
+		for (let anotherPool of this.props.moreShares)
+			if (pool.id === anotherPool.id)
+				for (let share of anotherPool.shares) {
+					const shareBalance = parseFloat(share.balance);
+					for (let input of userInput)
+						if (share.userAddress.id === input && shareBalance !== 0) {
+							userBalance += shareBalance / parseFloat(anotherPool.totalShares).toFixed(4);
+						}
+				}
+
 		if (userBalance !== 0) {
 			this.userSum.Liq.push(parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance)));
 			if (parseFloat(renderVolume(pool, userBalance)) !== 0)

@@ -41,15 +41,15 @@ class PoolsTable extends React.Component {
 			for (let input of userInput)
 				if (share.userAddress.id === input && shareBalance !== 0)
 					userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
-			for (let anotherPool of this.props.moreShares)
-				if (pool.id === anotherPool.id)
-					for (let share of anotherPool.shares) {
-						const shareBalance = parseFloat(share.balance);
-						for (let input of userInput)
-							if (share.userAddress.id === input && shareBalance !== 0)
-								userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
-					}
 		}
+		for (let anotherPool of this.props.moreShares)
+			if (pool.id === anotherPool.id)
+				for (let share of anotherPool.shares) {
+					const shareBalance = parseFloat(share.balance);
+					for (let input of userInput)
+						if (share.userAddress.id === input && shareBalance !== 0)
+							userBalance += shareBalance / parseFloat(pool.totalShares).toFixed(4);
+				}
 		return userBalance;
 	};
 
@@ -164,7 +164,6 @@ class PoolsTable extends React.Component {
 	}
 
 	render() {
-		console.log('in render');
 		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.caps[5])
 			return this.sortPools().map((pool) => {
 				if (pool === null) return <tr key={Math.random()} />;
