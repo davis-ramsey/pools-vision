@@ -20,7 +20,19 @@ import {
 
 import history from '../history';
 
-class PoolsTable extends React.PureComponent {
+class PoolsTable extends React.Component {
+	constructor(props) {
+		super(props);
+		this.lastSort = {};
+	}
+	shouldComponentUpdate(nextProps) {
+		if (this.props.pools !== nextProps.pools || this.props.caps !== nextProps.caps) return true;
+		else if (this.props.ownProps.userAddr !== nextProps.ownProps.userAddr) return true;
+		else if (this.props.portfolio !== nextProps.portfolio) return true;
+		else if (this.props.moreShares !== nextProps.moreShares) return true;
+		else return false;
+	}
+
 	addressChecker = (pool) => {
 		const nav = this.props.ownProps.userAddr.location.pathname;
 		if (!nav.includes('/user/')) return 1;
@@ -82,188 +94,142 @@ class PoolsTable extends React.PureComponent {
 		);
 	}
 
+	sortPools() {
+		const sorted = this.props.pools.map((pool) => {
+			const ownership = this.addressChecker(pool);
+			if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool)) return null;
+			const check = parseFloat(checkLiquidity(pool, this.props.prices));
+			if (check === 0) return null;
+			const id = pool.id;
+			const chartAssets = renderAssets(pool);
+			const assetText = renderAssetsText(pool);
+			const swapFee = (pool.swapFee * 100).toFixed(2);
+			const totalLiq = renderTotalLiquidity(pool, this.props.prices, ownership);
+			const finalAdj = renderRealAdj(pool, this.props.prices, this.props.caps, ownership);
+			const volume = renderVolume(pool, ownership);
+			const fees = renderFees(pool, ownership);
+			const annualBAL = (renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, this.props.caps) *
+				ownership).toFixed(0);
+			const apy = renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps);
+			const toggleUserHoldings = this.renderToggle(pool, ownership);
+			const numLP = renderNumLP(pool, this.props.moreShares);
+			return {
+				id,
+				chartAssets,
+				assetText,
+				swapFee,
+				totalLiq,
+				finalAdj,
+				volume,
+				fees,
+				annualBAL,
+				apy,
+				toggleUserHoldings,
+				numLP
+			};
+		});
+		return sorted;
+	}
+
+	portfolioToggle(pool) {
+		if (this.props.portfolio.indexOf(pool.id) === -1) return '';
+		else return `active`;
+	}
+	portfolioButton(pool) {
+		if (this.props.portfolio.indexOf(pool.id) === -1)
+			return (
+				<button
+					onClick={() => this.props.selectPool(pool.id)}
+					className="ui small inverted floating compact centered button"
+				>
+					Add
+				</button>
+			);
+		else
+			return (
+				<button
+					onClick={() => this.props.deletePool(pool.id)}
+					className="ui small floating compact centered button"
+				>
+					Remove
+				</button>
+			);
+	}
+
 	render() {
-		if (
-			this.props.pools &&
-			this.props.prices &&
-			this.props.portfolio &&
-			this.props.sumLiq > 150683236 &&
-			this.props.caps[5]
-		)
-			return this.props.pools.map((pool) => {
-				const ownership = this.addressChecker(pool);
-				if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool)) return null;
-				const check = parseFloat(checkLiquidity(pool, this.props.prices));
-				if (check !== 0) {
-					if (this.props.portfolio.indexOf(pool.id) === -1)
-						return (
-							<tr key={pool.id}>
-								<td className="center aligned" data-label="Pool Address">
-									<a
-										target="_blank"
-										rel="noopener noreferrer"
-										href={`https://pools.balancer.exchange/#/pool/${pool.id}`}
-									>
-										<button className="ui small inverted floating compact centered button">
-											...{pool.id.slice(-8)}
-										</button>{' '}
-									</a>
-
-									<button
-										onClick={() => this.props.selectPool(pool.id)}
-										className="ui small inverted floating compact centered button"
-									>
-										Add
-									</button>
-								</td>
-								<td
-									className="mini center aligned selectable"
-									data-label="Assets"
+		console.log('in render');
+		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.caps[5])
+			return this.sortPools().map((pool) => {
+				if (pool === null) return <tr />;
+				const isActive = this.portfolioToggle(pool);
+				const button = this.portfolioButton(pool);
+				return (
+					<tr key={pool.id} className={isActive}>
+						<td className="center aligned" data-label="Pool Address">
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								href={`https://pools.balancer.exchange/#/pool/${pool.id}`}
+							>
+								<button className="ui small inverted floating compact centered button">
+									...{pool.id.slice(-8)}
+								</button>{' '}
+							</a>
+							{button}
+						</td>
+						<td
+							className="mini center aligned selectable"
+							data-label="Assets"
+							onClick={() => history.push(`/pool/${pool.id}`)}
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								fontFamily: 'Roboto Condensed, sans-serif',
+								letterSpacing: 1.3,
+								fontSize: '12px'
+							}}
+						>
+							<div className="ui">
+								<PieChart
+									className="ui tiny circular image"
+									data={pool.chartAssets}
 									onClick={() => history.push(`/pool/${pool.id}`)}
-									style={{
-										display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-										fontFamily: 'Roboto Condensed, sans-serif',
-										letterSpacing: 1.3,
-										fontSize: '12px'
-									}}
-								>
-									<div className="ui">
-										<PieChart
-											className="ui tiny circular image"
-											data={renderAssets(pool)}
-											onClick={() => history.push(`/pool/${pool.id}`)}
-										/>
-									</div>
-									<div className="ui">&nbsp;&nbsp;{renderAssetsText(pool)}</div>
-								</td>
-								<td className="center aligned" data-label="Swap Fee">
-									{(pool.swapFee * 100).toFixed(2)}%
-								</td>
-								<td className="center aligned" data-label="Total Liquidity">
-									<div className="ui">
-										${numberWithCommas(renderTotalLiquidity(pool, this.props.prices, ownership))}
-									</div>
-									<div className="ui" style={{ fontSize: '12px' }}>
-										Adj: ${numberWithCommas(
-											renderRealAdj(pool, this.props.prices, this.props.caps, ownership)
-										)}
-									</div>
-								</td>
-								<td className="center aligned" data-label="24h Volume">
-									${numberWithCommas(renderVolume(pool, ownership))}
-								</td>
-								<td className="center aligned" data-label="24h Fees">
-									${numberWithCommas(renderFees(pool, ownership))}
-								</td>
-								<td className="center aligned" data-label="Annual BAL">
-									{numberWithCommas(
-										(renderAdjLiquidity(
-											pool,
-											this.props.prices,
-											this.props.sumLiq,
-											this.props.caps
-										) * ownership).toFixed(0)
-									)}
-								</td>
-								<td className="center aligned" data-label="APY">
-									{renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps)}%
-								</td>
-								{this.renderToggle(pool, ownership)}
-								<td className="center aligned" data-label="# of LP's">
-									{renderNumLP(pool, this.props.moreShares)}
-								</td>
-							</tr>
-						);
-					else
-						return (
-							<tr className="active" key={pool.id}>
-								<td className="center aligned" data-label="Pool Address">
-									<a
-										target="_blank"
-										rel="noopener noreferrer"
-										href={`https://pools.balancer.exchange/#/pool/${pool.id}`}
-									>
-										<button className="ui small floating compact centered button">
-											...{pool.id.slice(-8)}
-										</button>{' '}
-									</a>
-
-									<button
-										onClick={() => this.props.deletePool(pool.id)}
-										className="ui small floating compact centered button"
-									>
-										Remove
-									</button>
-								</td>
-								<td
-									className="mini center aligned selectable"
-									data-label="Assets"
-									onClick={() => history.push(`/pool/${pool.id}`)}
-									style={{
-										display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-										fontFamily: 'Roboto Condensed, sans-serif',
-										letterSpacing: 1.3,
-										fontSize: '12px'
-									}}
-								>
-									<div className="ui">
-										<PieChart
-											className="ui tiny circular image"
-											data={renderAssets(pool)}
-											onClick={() => history.push(`/pool/${pool.id}`)}
-										/>
-									</div>
-									<div className="ui">&nbsp;&nbsp;{renderAssetsText(pool)}</div>
-								</td>
-								<td className="center aligned" data-label="Swap Fee">
-									{(pool.swapFee * 100).toFixed(2)}%
-								</td>
-								<td className="center aligned" data-label="Total Liquidity">
-									<div className="ui">
-										${numberWithCommas(renderTotalLiquidity(pool, this.props.prices, ownership))}
-									</div>
-									<div className="ui" style={{ fontSize: '12px' }}>
-										Adj: ${numberWithCommas(
-											renderRealAdj(pool, this.props.prices, this.props.caps, ownership)
-										)}
-									</div>
-								</td>
-								<td className="center aligned" data-label="24h Volume">
-									${numberWithCommas(renderVolume(pool, ownership))}
-								</td>
-								<td className="center aligned" data-label="24h Fees">
-									${numberWithCommas(renderFees(pool, ownership))}
-								</td>
-								<td className="center aligned" data-label="Annual BAL">
-									{numberWithCommas(
-										renderAdjLiquidity(
-											pool,
-											this.props.prices,
-											this.props.sumLiq,
-											this.props.caps,
-											ownership
-										).toFixed(0)
-									)}
-								</td>
-								<td className="center aligned" data-label="APY">
-									{renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps)}%
-								</td>
-								{this.renderToggle(pool, ownership)}
-								<td className="center aligned" data-label="# of LP's">
-									{renderNumLP(pool, this.props.moreShares)}
-								</td>
-							</tr>
-						);
-				}
-				return null;
+								/>
+							</div>
+							<div className="ui">&nbsp;&nbsp;{pool.assetText}</div>
+						</td>
+						<td className="center aligned" data-label="Swap Fee">
+							{pool.swapFee}%
+						</td>
+						<td className="center aligned" data-label="Total Liquidity">
+							<div className="ui">${numberWithCommas(pool.totalLiq)}</div>
+							<div className="ui" style={{ fontSize: '12px' }}>
+								Adj: ${numberWithCommas(pool.finalAdj)}
+							</div>
+						</td>
+						<td className="center aligned" data-label="24h Volume">
+							${numberWithCommas(pool.volume)}
+						</td>
+						<td className="center aligned" data-label="24h Fees">
+							${numberWithCommas(pool.fees)}
+						</td>
+						<td className="center aligned" data-label="Annual BAL">
+							{numberWithCommas(pool.annualBAL)}
+						</td>
+						<td className="center aligned" data-label="APY">
+							{pool.apy}%
+						</td>
+						{pool.toggleUserHoldings}
+						<td className="center aligned" data-label="# of LP's">
+							{pool.numLP}
+						</td>
+					</tr>
+				);
 			});
 		else
 			return (
-				<tr>
+				<tr key={Math.random()}>
 					<td>Loading</td>
 				</tr>
 			);
