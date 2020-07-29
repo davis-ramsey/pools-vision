@@ -20,7 +20,7 @@ import {
 	sumFinal,
 	deleteFinal
 } from '../actions';
-import { renderTotalLiquidity, totalFactor, renderCapFactor } from './helpers/balancerHelpers';
+import { renderTotalLiquidity, totalFactor, renderCapFactor, whiteList } from './helpers/balancerHelpers';
 
 class Data extends React.Component {
 	constructor(props) {
@@ -50,7 +50,8 @@ class Data extends React.Component {
 				await this.props.addShares(pool, 1);
 			}
 			for (const token of pool.tokens) {
-				if (this.addresses.indexOf(token.address) === -1) this.addresses.push(token.address);
+				if (this.addresses.indexOf(token.address) === -1 && whiteList.includes(token.address))
+					this.addresses.push(token.address);
 				const index = this.addresses.indexOf(token.address);
 				if (!tokenTotalBalance[index]) tokenTotalBalance[index] = 0;
 				tokenTotalBalance[index] += parseFloat(token.balance);
@@ -135,7 +136,7 @@ class Data extends React.Component {
 		for (const token of pool.tokens) {
 			const index = this.addresses.indexOf(token.address);
 			if (!this.tokenAdjBalance[index]) this.tokenAdjBalance[index] = 0;
-			if (this.props.prices[token.address].usd)
+			if (this.props.prices[token.address])
 				this.tokenAdjBalance[index] +=
 					parseFloat(token.balance) * this.props.prices[token.address].usd * totalFac;
 		}

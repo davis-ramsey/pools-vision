@@ -1,5 +1,6 @@
 import { feeFactor } from './factorCalcs';
 import React from 'react';
+import axios from 'axios';
 
 const colors = [
 	'darkorange',
@@ -104,24 +105,24 @@ const tokenColors = [
 	'rgb(86%, 34%, 36%)' //SNX
 ];
 
-// async function fetchWhitelist() {
-// 	const response = await fetch(
-// 		`https://raw.githubusercontent.com/balancer-labs/pool-management/master/src/deployed.json`,
-// 		{
-// 			headers: {
-// 				Accept: 'application/json',
-// 				'Content-Type': 'application/json'
-// 			}
-// 		}
-// 	);
+async function fetchWhitelist() {
+	const response = await axios.get(
+		`https://raw.githubusercontent.com/balancer-labs/pool-management/master/src/deployed.json`,
+		{
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			}
+		}
+	);
+	const whitelist = response.data.mainnet.tokens.slice(1).flatMap((a) => a.address.toLowerCase());
 
-// 	let whitelistResponse = await response.json();
-// 	const whitelist = whitelistResponse.mainnet.tokens.slice(1).flatMap((a) => a.address);
+	return whitelist;
+}
 
-// 	return whitelist;
-// }
+export let whiteList = null;
 
-// const whiteList = fetchWhitelist();
+fetchWhitelist().then((whitelist) => (whiteList = whitelist));
 
 export const numberWithCommas = (num) => {
 	var parts = ('' + (num < 0 ? -num : num)).split('.'),
@@ -182,12 +183,12 @@ export const renderTotalLiquidity = (pool, prices, ownership = 1) => {
 	let total = 0;
 	for (let token of pool.tokens) {
 		const address = token.address;
-		if (prices === undefined || prices[address] === undefined) return 'No Data';
-		const price = prices[address].usd;
+		let price = 0;
+		if (prices !== undefined && prices[address] !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}
-	if (isNaN(total)) return 'No Data';
+	if (isNaN(total)) return 0;
 	total = total * ownership;
 	return Number(total.toFixed(2));
 };
@@ -214,11 +215,14 @@ export const totalFactor = (pool) => {
 	const addresses = [];
 	const weights = [];
 	for (let token of pool.tokens) {
-		addresses.push(token.address.toLowerCase());
-		weights.push(parseFloat(token.denormWeight));
+		if (whiteList.includes(token.address.toLowerCase())) {
+			addresses.push(token.address.toLowerCase());
+			weights.push(parseFloat(token.denormWeight));
+		}
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair);
 	const wrapFactor = getWrapFactor(addresses, weights, isWrapPair, 0.7);
+	if (isNaN(balFactor * fee * wrapFactor)) return 'Not Whitelisted';
 	return balFactor * fee * wrapFactor;
 };
 
@@ -226,20 +230,27 @@ export const wrapFactor = (pool) => {
 	const addresses = [];
 	const weights = [];
 	for (let token of pool.tokens) {
-		addresses.push(token.address.toLowerCase());
-		weights.push(parseFloat(token.denormWeight));
+		if (whiteList.includes(token.address.toLowerCase())) {
+			addresses.push(token.address.toLowerCase());
+			weights.push(parseFloat(token.denormWeight));
+		}
 	}
-	return getWrapFactor(addresses, weights, isWrapPair, 0.7);
+	const wrapF = getWrapFactor(addresses, weights, isWrapPair, 0.7);
+	if (isNaN(wrapF)) return 'Not Whitelisted';
+	return wrapF;
 };
 
 export const balFactor = (pool) => {
 	const addresses = [];
 	const weights = [];
 	for (let token of pool.tokens) {
-		addresses.push(token.address.toLowerCase());
-		weights.push(parseFloat(token.denormWeight));
+		if (whiteList.includes(token.address.toLowerCase())) {
+			addresses.push(token.address.toLowerCase());
+			weights.push(parseFloat(token.denormWeight));
+		}
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair);
+	if (isNaN(balFactor)) return 'Not Whitelisted';
 	return balFactor;
 };
 
@@ -305,14 +316,15 @@ export const renderRealAdj = (pool, prices, caps, ownership = 1) => {
 	const totalFac = totalFactor(pool);
 	for (let token of pool.tokens) {
 		const address = token.address;
-		if (prices === undefined || prices[address] === undefined) return 'No Data';
-		const price = prices[address].usd;
+		let price = 0;
+		if (prices !== undefined && prices[address] !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		const obj = caps.filter((item) => item.addr === address);
-		const capFactor = renderCapFactor(address, obj[0].adj);
+		let capFactor = 1;
+		if (obj[0]) capFactor = renderCapFactor(address, obj[0].adj);
 		total += price * balance * capFactor;
 	}
-	if (isNaN(total)) return 'No Data';
+	if (isNaN(total) || isNaN(totalFac)) return 0;
 	total = total * totalFac * ownership;
 	return Number(total.toFixed(2));
 };
@@ -333,8 +345,8 @@ export const checkLiquidity = (pool, prices) => {
 	let total = 0;
 	for (let token of pool.tokens) {
 		const address = token.address;
-		if (prices[address] === undefined) return 0;
-		const price = prices[address].usd;
+		let price = 0;
+		if (prices[address] !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}
@@ -349,8 +361,8 @@ export const renderYield = (pool, prices) => {
 	let total = 0;
 	for (let token of pool.tokens) {
 		const address = token.address;
-		if (prices === undefined) return '0';
-		const price = prices[address].usd;
+		let price = 0;
+		if (prices !== undefined && prices[address] !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}

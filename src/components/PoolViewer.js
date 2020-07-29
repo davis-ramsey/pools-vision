@@ -54,6 +54,7 @@ class PoolViewer extends React.Component {
 
 	renderCap(asset) {
 		const obj = this.props.caps.filter((item) => item.name === asset);
+		if (!obj[0]) return `Asset Not Whitelisted`;
 		return renderCapFactor(obj[0].addr, obj[0].adj).toFixed(4);
 	}
 
@@ -95,7 +96,7 @@ class PoolViewer extends React.Component {
 	render() {
 		if (
 			this.props.pool[this.props.viewPool] &&
-			this.props.prices &&
+			this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'] &&
 			this.props.sumLiq > 138683236 &&
 			this.props.caps[5]
 		)
