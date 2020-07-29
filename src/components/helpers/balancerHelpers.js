@@ -222,7 +222,7 @@ export const totalFactor = (pool) => {
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair);
 	const wrapFactor = getWrapFactor(addresses, weights, isWrapPair, 0.7);
-	if (isNaN(balFactor * fee * wrapFactor)) return 'Not Whitelisted';
+	if (isNaN(balFactor * fee * wrapFactor)) return 0;
 	return balFactor * fee * wrapFactor;
 };
 
@@ -236,7 +236,7 @@ export const wrapFactor = (pool) => {
 		}
 	}
 	const wrapF = getWrapFactor(addresses, weights, isWrapPair, 0.7);
-	if (isNaN(wrapF)) return 'Not Whitelisted';
+	if (isNaN(wrapF)) return 0;
 	return wrapF;
 };
 
@@ -250,7 +250,7 @@ export const balFactor = (pool) => {
 		}
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair);
-	if (isNaN(balFactor)) return 'Not Whitelisted';
+	if (isNaN(balFactor)) return 0;
 	return balFactor;
 };
 
@@ -367,7 +367,7 @@ export const renderYield = (pool, prices) => {
 		total += price * balance;
 	}
 	const feeYield = fees / total * 100;
-	if (isNaN(feeYield)) return '0';
+	if (isNaN(feeYield)) return 0;
 	return feeYield.toFixed(4);
 };
 
