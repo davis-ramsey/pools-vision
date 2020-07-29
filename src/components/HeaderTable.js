@@ -39,7 +39,12 @@ class HeaderTable extends React.Component {
 			<div style={{ width: '100%' }}>
 				<table
 					className="ui collapsing padded inverted celled table"
-					style={{ margin: 'auto', border: '1px solid white' }}
+					style={{
+						margin: 'auto',
+						border: '1px solid white',
+						boxShadow: '0 0 0.5rem black',
+						borderRadius: '10px'
+					}}
 				>
 					<thead>
 						<tr>

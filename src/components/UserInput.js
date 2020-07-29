@@ -71,7 +71,6 @@ class UserInput extends React.Component {
 				className={className}
 				style={{
 					flex: '1 1 40%',
-					marginLeft: '3%',
 					marginTop: '1%',
 					display: 'flex',
 					flexWrap: 'wrap',
@@ -90,7 +89,7 @@ class UserInput extends React.Component {
 	renderSmallInput = ({ input, label, meta }) => {
 		const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
 		return (
-			<div className={className} style={{ flex: '1 1 10%', marginLeft: '3%', marginTop: '1%' }}>
+			<div className={className} style={{ flex: '1 1 10%', marginTop: '1%', marginLeft: '1%' }}>
 				<label>{label}</label>
 				<input {...input} autoComplete="off" />
 				{this.renderError(meta)}
@@ -109,7 +108,15 @@ class UserInput extends React.Component {
 			<form
 				onSubmit={this.props.handleSubmit(this.onSubmit)}
 				className="ui inverted form error"
-				style={{ display: 'flex' }}
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					boxShadow: '0 0 0.5rem black',
+					paddingLeft: '2%',
+					paddingRight: '2%',
+					marginTop: '1%',
+					borderRadius: '10px'
+				}}
 			>
 				<DebounceField
 					name="address"
@@ -118,7 +125,7 @@ class UserInput extends React.Component {
 					type="text"
 					label="Filter by wallet address"
 				/>
-				<div style={{ flex: '1 1 20%', marginLeft: '3%', marginTop: '1.4%' }}>
+				<div style={{ flex: '1 1 10%', marginTop: '1.4%', marginLeft: '1%' }}>
 					<label>Sort Columns by</label>
 					<div>
 						<Field name="sortby" component="select">
@@ -139,6 +146,13 @@ class UserInput extends React.Component {
 					component={this.renderSmallInput}
 					type="text"
 					label="Filter by token"
+				/>
+				<DebounceField
+					wait={250}
+					name="totalLiq"
+					component={this.renderSmallInput}
+					type="text"
+					label="Filter by Liquidity"
 				/>
 				<DebounceField
 					wait={250}

@@ -71,6 +71,13 @@ class PoolsTable extends React.Component {
 		else return true;
 	};
 
+	totalLiqChecker = (pool) => {
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.totalLiq) return true;
+		const userInput = parseInt(this.props.form.values.totalLiq);
+		if (userInput >= parseFloat(renderTotalLiquidity(pool, this.props.prices))) return false;
+		else return true;
+	};
+
 	renderToggle(pool, ownership) {
 		const nav = this.props.ownProps.userAddr.location.pathname;
 		if (parseFloat(renderLifetimeFees(pool)) > 100000000)
@@ -95,7 +102,8 @@ class PoolsTable extends React.Component {
 	sortPools() {
 		const sorted = this.props.pools.map((pool) => {
 			const ownership = this.addressChecker(pool);
-			if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool)) return null;
+			if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool) || !this.totalLiqChecker(pool))
+				return null;
 			const check = parseFloat(checkLiquidity(pool, this.props.prices));
 			if (check === 0) return null;
 			const id = pool.id;
