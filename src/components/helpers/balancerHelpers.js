@@ -123,8 +123,16 @@ const tokenColors = [
 
 // const whiteList = fetchWhitelist();
 
-export const numberWithCommas = (x) => {
-	return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+export const numberWithCommas = (num) => {
+	var parts = ('' + (num < 0 ? -num : num)).split('.'),
+		s = parts[0],
+		L,
+		i = (L = s.length),
+		o = '';
+	while (i--) {
+		o = (i === 0 ? '' : (L - i) % 3 ? '' : ',') + s.charAt(i) + o;
+	}
+	return (num < 0 ? '-' : '') + o + (parts[1] ? '.' + parts[1] : '');
 };
 
 export const renderCapFactor = (address, adjLiq) => {
