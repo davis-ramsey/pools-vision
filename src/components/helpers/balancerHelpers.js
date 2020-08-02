@@ -222,7 +222,7 @@ export const totalFactor = (pool) => {
 		}
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair);
-	const wrapFactor = getWrapFactor(addresses, weights, isWrapPair, 0.7);
+	const wrapFactor = getWrapFactor(addresses, weights, isWrapPair, 0.2);
 	if (isNaN(balFactor * fee * wrapFactor)) return 0;
 	return balFactor * fee * wrapFactor;
 };
@@ -236,7 +236,7 @@ export const wrapFactor = (pool) => {
 			weights.push(parseFloat(token.denormWeight));
 		}
 	}
-	const wrapF = getWrapFactor(addresses, weights, isWrapPair, 0.7);
+	const wrapF = getWrapFactor(addresses, weights, isWrapPair, 0.2);
 	if (isNaN(wrapF)) return 0;
 	return wrapF;
 };
