@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { renderCapFactor, numberWithCommas } from './helpers/balancerHelpers';
 
-class TokenList extends React.Component {
+class TokenList extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.caps = {};
@@ -14,7 +14,6 @@ class TokenList extends React.Component {
 	}
 
 	renderTable() {
-		if (!this.props.caps) return;
 		this.sortCaps();
 		return this.caps.map((item, index) => {
 			if (item.adj)
@@ -42,6 +41,20 @@ class TokenList extends React.Component {
 	}
 
 	render() {
+		if (!this.props.caps[5])
+			return (
+				<tr key={Math.random()}>
+					<td />
+					<td>
+						<div class="ui active dimmer">
+							<div class="ui text loader">
+								Gathering data from the balancer subgraph! This may take a few seconds. Data will
+								automatically refresh every 5 minutes.
+							</div>
+						</div>
+					</td>
+				</tr>
+			);
 		return (
 			<div>
 				<div className="ui inverted horizontal divider">Capped Tokens</div>

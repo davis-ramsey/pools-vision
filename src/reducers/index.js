@@ -10,6 +10,7 @@ import sumVolReducer from './sumVolReducer';
 import shareReducer from './shareReducer';
 import capsReducer from './capsReducer';
 import finalReducer from './finalReducer';
+import feeReducer from './feeReducer';
 
 export default combineReducers({
 	balancer: balancerReducer,
@@ -22,5 +23,6 @@ export default combineReducers({
 	form: formReducer,
 	moreShares: shareReducer,
 	caps: capsReducer,
-	sumFinal: finalReducer
+	sumFinal: finalReducer,
+	fees: feeReducer
 });

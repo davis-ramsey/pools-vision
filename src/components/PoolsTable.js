@@ -209,6 +209,7 @@ class PoolsTable extends React.Component {
 									className="ui tiny circular image"
 									data={pool.chartAssets}
 									onClick={() => history.push(`/pool/${pool.id}`)}
+									style={{ padding: '5%' }}
 								/>
 							</div>
 							<div className="ui">&nbsp;&nbsp;{pool.assetText}</div>
@@ -246,8 +247,12 @@ class PoolsTable extends React.Component {
 				<tr key={Math.random()}>
 					<td />
 					<td>
-						Gathering Data! This may take a few seconds. Check the network tab of your console to see
-						status.
+						<div class="ui active dimmer">
+							<div class="ui text loader">
+								Gathering data from the balancer subgraph! This may take a few seconds. Data will
+								automatically refresh every 5 minutes.
+							</div>
+						</div>
 					</td>
 				</tr>
 			);

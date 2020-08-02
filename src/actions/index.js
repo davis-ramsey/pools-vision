@@ -153,6 +153,14 @@ export const deleteFinal = (value) => (dispatch) => {
 	dispatch({ type: 'DELETE_FINAL', payload: value });
 };
 
+export const sumFees = (value) => (dispatch) => {
+	dispatch({ type: 'SUM_FEES', payload: value });
+};
+
+export const removeFees = () => (dispatch) => {
+	dispatch({ type: 'REMOVE_FEES' });
+};
+
 export const addCaps = (value) => (dispatch) => {
 	dispatch({ type: 'ADD_CAPS', payload: value });
 };

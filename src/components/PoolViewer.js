@@ -204,7 +204,15 @@ class PoolViewer extends React.Component {
 					</table>
 				</div>
 			);
-		else return <div className="ui inverted horizontal divider">Pool Viewer is loading! Standby..</div>;
+		else
+			return (
+				<div class="ui active dimmer">
+					<div class="ui text loader">
+						Gathering data from the balancer subgraph! This may take a few seconds. Data will automatically
+						refresh every 5 minutes.
+					</div>
+				</div>
+			);
 	}
 }
 

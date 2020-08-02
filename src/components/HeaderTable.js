@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import history from '../history';
 import { numberWithCommas } from './helpers/balancerHelpers';
 
-class HeaderTable extends React.Component {
+class HeaderTable extends React.PureComponent {
 	renderHeaderTable() {
 		if (this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'] && this.props.sumAdjLiq > 140683236)
 			return (
@@ -11,8 +11,11 @@ class HeaderTable extends React.Component {
 					<td className="center aligned" data-label="BAL Price">
 						${this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd.toFixed(2)}
 					</td>
-					<td className="center aligned" data-label="Total Volume">
+					<td className="center aligned" data-label="24h Volume">
 						${numberWithCommas(this.props.sumVol.toFixed(0))}
+					</td>
+					<td className="center aligned" data-label="24h Fees Earned">
+						${numberWithCommas(this.props.fees.toFixed(0))}
 					</td>
 					<td className="center aligned" data-label="Total Liquidity">
 						${numberWithCommas(this.props.sumTotalLiq.toFixed(0))}
@@ -49,7 +52,8 @@ class HeaderTable extends React.Component {
 					<thead>
 						<tr>
 							<th className="center aligned">BAL Price</th>
-							<th className="center aligned">Total Volume</th>
+							<th className="center aligned">24h Volume</th>
+							<th className="center aligned">24h Fees Earned</th>
 							<th className="center aligned">Total Liquidity</th>
 							<th className="center aligned">Total Adj. Liquidity</th>
 							<th className="center aligned">Adj. Liquidity w/CapFactor</th>
@@ -69,7 +73,8 @@ const mapStateToProps = (state) => {
 		sumTotalLiq: state.sumTotalLiq,
 		sumVol: state.sumVol,
 		prices: state.coingecko,
-		sumFinal: state.sumFinal
+		sumFinal: state.sumFinal,
+		fees: state.fees
 	};
 };
 

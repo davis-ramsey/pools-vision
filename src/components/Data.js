@@ -18,7 +18,9 @@ import {
 	addCaps,
 	removeCaps,
 	sumFinal,
-	deleteFinal
+	deleteFinal,
+	sumFees,
+	removeFees
 } from '../actions';
 import { renderTotalLiquidity, totalFactor, renderCapFactor } from './helpers/balancerHelpers';
 
@@ -29,6 +31,7 @@ class Data extends React.Component {
 		this.sumTotalAdjLiq = 0;
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
+		this.sumFees = 0;
 		this.sumFinalLiq = 0;
 		this.refreshTimer = 300000;
 		this.tokenAdjBalance = [];
@@ -81,6 +84,7 @@ class Data extends React.Component {
 		this.props.sumAllLiq(this.sumTotalLiq);
 		this.props.sumAllVol(this.sumVolume);
 		this.props.sumLiquidity(this.sumTotalAdjLiq);
+		this.props.sumFees(this.sumFees);
 		for (let cap of caps) if (cap.adj) this.sumFinalLiq += renderCapFactor(cap.addr, cap.adj) * cap.adj;
 		this.props.sumFinal(this.sumFinalLiq);
 
@@ -108,6 +112,7 @@ class Data extends React.Component {
 		this.sumTotalLiq = 0;
 		this.sumVolume = 0;
 		this.sumFinalLiq = 0;
+		this.sumFees = 0;
 		this.tokenAdjBalance = [];
 		this.addresses = [];
 		this.tokenNames = [];
@@ -119,6 +124,7 @@ class Data extends React.Component {
 		this.props.deleteShares();
 		this.props.deleteFinal();
 		this.props.removeCaps();
+		this.props.removeFees();
 		if (this.props.portfolioPools && this.props.poolsList) {
 			this.props.deletePools();
 			for (let pool of this.props.poolsList) await this.props.fetchPool(pool);
@@ -148,6 +154,7 @@ class Data extends React.Component {
 		const swap = pool.swaps[0].poolTotalSwapVolume;
 		const volume = totalSwapVolume - swap;
 		this.sumVolume += volume;
+		this.sumFees += volume * pool.swapFee;
 	}
 
 	render() {
@@ -183,5 +190,7 @@ export default connect(mapStateToProps, {
 	addCaps,
 	removeCaps,
 	sumFinal,
-	deleteFinal
+	deleteFinal,
+	sumFees,
+	removeFees
 })(Data);

@@ -82,6 +82,7 @@ class PortfolioView extends React.Component {
 										className="ui tiny circular image"
 										data={renderAssets(selectedPool)}
 										onClick={() => history.push(`/pool/${selectedPool.id}`)}
+										style={{ padding: '5%' }}
 									/>
 								</div>
 								<div className="ui">&nbsp;&nbsp;{renderAssetsText(selectedPool)}</div>
@@ -128,14 +129,30 @@ class PortfolioView extends React.Component {
 					);
 				else
 					return (
-						<tr key={selectedPool.id}>
-							<td>Loading!</td>
+						<tr key={Math.random()}>
+							<td />
+							<td>
+								<div class="ui active dimmer">
+									<div class="ui text loader">
+										Gathering data from the balancer subgraph! This may take a few seconds. Data
+										will automatically refresh every 5 minutes.
+									</div>
+								</div>
+							</td>
 						</tr>
 					);
 			} else
 				return (
 					<tr key={Math.random()}>
-						<td>Loading!</td>
+						<td />
+						<td>
+							<div class="ui active dimmer">
+								<div class="ui text loader">
+									Gathering data from the balancer subgraph! This may take a few seconds. Data will
+									automatically refresh every 5 minutes.
+								</div>
+							</div>
+						</td>
 					</tr>
 				);
 		});
