@@ -61,10 +61,8 @@ class Header extends React.Component {
 					APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly BAL
 					distributions.<br />
 					<br />
-					<b>July 22 update:</b> feeFactor, balFactor, wrapFactor (for soft peg assets) have been updated per
-					latest governance changes. Click on a pool's assets to see a breakdown of each factor.<br />
-					<b>July 27 update:</b> capFactor has been added. The "Adj" liquidity shown for each pool is after
-					ALL factors, including capFactor. Annual BAL & APY is based on this Adj. Liquidity.
+					<b>August 2nd Update:</b> wrapFactor for soft peg assets has been updated to 0.2 per latest
+					governance changes. Click on a pool's assets to see a breakdown of each factor.<br />
 				</div>
 				<HeaderTable />
 			</div>
