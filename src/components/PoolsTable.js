@@ -116,7 +116,8 @@ class PoolsTable extends React.Component {
 			const fees = renderFees(pool, ownership);
 			const annualBAL = (renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, this.props.caps) *
 				ownership).toFixed(0);
-			const apy = renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps);
+			let apy = renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps);
+			if (isNaN(apy)) apy = 0;
 			const toggleUserHoldings = this.renderToggle(pool, ownership);
 			const numLP = renderNumLP(pool, this.props.moreShares);
 			return {
