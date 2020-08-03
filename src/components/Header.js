@@ -54,10 +54,7 @@ class Header extends React.Component {
 			<div>
 				{this.renderMenu()}
 				<div className="ui inverted horizontal divider">Page Last Refreshed: {Date()}</div>
-				<div
-					className="ui black compact message"
-					style={{ boxShadow: '0 0 0.5rem white', borderRadius: '10px' }}
-				>
+				<div className="ui black message" style={{ boxShadow: '0 0 0.5rem white', borderRadius: '10px' }}>
 					APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly BAL
 					distributions.<br />
 					<br />
