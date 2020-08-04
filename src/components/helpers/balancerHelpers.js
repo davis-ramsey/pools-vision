@@ -379,10 +379,10 @@ export const renderOwnership = (ownership) => {
 
 export const renderNumLP = (pool, moreShares) => {
 	let count = 0;
-	for (let share of pool.shares) if (parseInt(share.balance) !== 0) count++;
+	for (let share of pool.shares) if (parseFloat(share.balance) !== 0) count++;
 	for (let anotherPool of moreShares)
 		if (anotherPool.id === pool.id)
-			for (let share of anotherPool.shares) if (parseInt(share.balance) !== 0) count++;
+			for (let share of anotherPool.shares) if (parseFloat(share.balance) !== 0) count++;
 	if (count === 0) return 1;
 	else return count;
 };
