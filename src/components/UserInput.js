@@ -134,6 +134,7 @@ class UserInput extends React.Component {
 							<option value="finalAdj">Adjusted Liquidity</option>
 							<option value="volume">24h Volume</option>
 							<option value="fees">24h Fees</option>
+							<option value="swapFee">Swap Fee</option>
 							<option value="annualBAL">Annual BAL</option>
 							<option value="apy">APY</option>
 							<option value="numLP">Number of LP's</option>
