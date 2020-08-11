@@ -58,10 +58,12 @@ export const fetchPools = (num) => async (dispatch) => {
 		method: 'post',
 		data: {
 			query: `{
-				pools (first: 1000, skip: ${num * 1000}, where: {publicSwap: true},orderBy: liquidity, orderDirection: desc) {
+				pools (first: 1000, skip: ${num *
+					1000}, where:{liquidity_gt: "0", publicSwap: true},orderBy: liquidity, orderDirection: desc) {
 					id
 				 publicSwap
 				 finalized
+				 liquidity
 				 swapFee
 				 totalWeight
 				 totalShares
@@ -75,7 +77,7 @@ export const fetchPools = (num) => async (dispatch) => {
 					 symbol
 					 denormWeight
 				 }
-				 shares (first: 1000) {
+				 shares (first: 1000, where:{balance_gt:"0"}) {
 					id
 					userAddress {
 						id
