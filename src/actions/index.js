@@ -58,8 +58,7 @@ export const fetchPools = (num) => async (dispatch) => {
 		method: 'post',
 		data: {
 			query: `{
-				pools (first: 1000, skip: ${num *
-					1000}, where:{liquidity_gt: "0", publicSwap: true},orderBy: liquidity, orderDirection: desc) {
+				pools (first: 1000, skip: ${num * 1000}, where:{publicSwap: true},orderBy: liquidity, orderDirection: desc) {
 					id
 				 publicSwap
 				 finalized
