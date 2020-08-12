@@ -108,7 +108,7 @@ const tokenColors = [
 
 async function fetchWhitelist() {
 	const response = await axios.get(
-		`https://raw.githubusercontent.com/balancer-labs/pool-management/master/src/deployed.json`,
+		`https://raw.githubusercontent.com/balancer-labs/assets/master/lists/eligible.json`,
 		{
 			headers: {
 				Accept: 'application/json',
@@ -116,7 +116,7 @@ async function fetchWhitelist() {
 			}
 		}
 	);
-	const whitelist = response.data.mainnet.tokens.slice(1).flatMap((a) => a.address.toLowerCase());
+	const whitelist = response.data.homestead.flatMap((a) => a.toLowerCase());
 
 	return whitelist;
 }
