@@ -15,7 +15,7 @@ const colors = [
 
 const softWrap = [
 	[
-		//stablecoin soft pegs USDC, mUSD, sUSD, DAI, cUSDC, cUSDT,cDAI,yUSD-Sep20,USD++,TUSD, yToken,aUSDC,aDAI
+		//stablecoin soft pegs USDC, mUSD, sUSD, DAI, cUSDC, cUSDT,cDAI,yUSD-Sep20,USD++,TUSD, yToken,aUSDC,aDAI,aTUSD,aSUSD,aBUSD,aUSDT
 		'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
 		'0xe2f2a5c287993345a840db3b0845fbc70f5935a5',
 		'0x57ab1ec28d129707052df4df418d58a2d46d5f51',
@@ -28,7 +28,11 @@ const softWrap = [
 		'0x0000000000085d4780b73119b644ae5ecd22b376',
 		'0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8',
 		'0x9ba00d6856a4edf4665bca2c2309936572473b7e',
-		'0xfc1e690f61efd961294b3e1ce3313fbd8aa4f85d'
+		'0xfc1e690f61efd961294b3e1ce3313fbd8aa4f85d',
+		'0x4da9b813057d04baef4e5800e36083717b4a0341',
+		'0x625ae63000f46200499120b906716420bd059240',
+		'0x6ee0f7bb50a54ab5253da0667b0dc2ee526c30a8',
+		'0x71fc860f7d3a592a4a98740e39db31d25db65ae8'
 	], //WETH soft pegs sETH, WETH
 	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ],
 	//WBTC soft pegs wBTC, renBTC, imBTC,pBTC,sBTC
