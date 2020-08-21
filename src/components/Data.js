@@ -66,10 +66,14 @@ class Data extends React.Component {
 				this.tokenNames[index] = token.symbol;
 			}
 		}
-		const a1 = this.addresses.slice(0, this.addresses.length / 2);
-		const a2 = this.addresses.slice(this.addresses.length / 2);
+		const a1 = this.addresses.slice(0, this.addresses.length / 4);
+		const a2 = this.addresses.slice(this.addresses.length / 4, this.addresses.length / 4);
+		const a3 = this.addresses.slice(this.addresses.length / 2, this.addresses.length / 4);
+		const a4 = this.addresses.slice(3 * this.addresses.length / 4, this.addresses.length / 4);
 		await this.props.fetchPrice(a1.join(','));
 		await this.props.fetchPrice(a2.join(','));
+		await this.props.fetchPrice(a3.join(','));
+		await this.props.fetchPrice(a4.join(','));
 		tokenTotalBalance.forEach((item, index) => {
 			const price = this.addresses[index];
 			if (!this.props.prices[price]) return;
