@@ -14,8 +14,8 @@ import {
 	renderOwnership,
 	renderNumLP,
 	renderLifetimeFees,
-	renderRealAdj,
-	numberWithCommas
+	numberWithCommas,
+	newTotalLiquidity
 } from './helpers/balancerHelpers';
 
 import history from '../history';
@@ -25,10 +25,9 @@ class PoolsTable extends React.Component {
 		if (this.props.pools !== nextProps.pools || this.props.caps !== nextProps.caps) return true;
 		else if (this.props.ownProps.userAddr !== nextProps.ownProps.userAddr) return true;
 		else if (this.props.portfolio !== nextProps.portfolio) return true;
-		else if (this.props.moreShares !== nextProps.moreShares) return true;
-		else if (this.props.sumLiq !== nextProps.sumLiq) return true;
 		else if (this.props.form && this.props.form.values && this.props.form.values !== nextProps.form.values)
 			return true;
+		else if (this.props.balMultiplier !== nextProps.balMultiplier) return true;
 		else return false;
 	}
 
@@ -79,6 +78,12 @@ class PoolsTable extends React.Component {
 		else return true;
 	};
 
+	renderAPY = (pool) => {
+		if (!this.props.form || !this.props.form.values || !this.props.form.values.display) return pool.totalAPY;
+		const userInput = this.props.form.values.display;
+		return pool[userInput];
+	};
+
 	renderToggle(pool, ownership) {
 		const nav = this.props.ownProps.userAddr.location.pathname;
 		if (parseFloat(renderLifetimeFees(pool)) > 100000000)
@@ -107,18 +112,38 @@ class PoolsTable extends React.Component {
 				return null;
 			const check = parseFloat(checkLiquidity(pool, this.props.prices));
 			if (check === 0) return null;
+			const liquidity = newTotalLiquidity(pool, this.props.prices, this.props.caps, this.props.balMultiplier);
 			const id = pool.id;
 			const chartAssets = renderAssets(pool);
 			const assetText = renderAssetsText(pool);
 			const swapFee = (pool.swapFee * 100).toFixed(2);
 			const totalLiq = renderTotalLiquidity(pool, this.props.prices, ownership);
-			const finalAdj = renderRealAdj(pool, this.props.prices, this.props.caps, ownership);
+			const finalAdj = (liquidity[0] + liquidity[1]).toFixed(2);
 			const volume = renderVolume(pool, ownership);
 			const fees = renderFees(pool, ownership);
-			const annualBAL = (renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, this.props.caps) *
-				ownership).toFixed(0);
-			let apy = renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps);
-			if (isNaN(apy)) apy = 0;
+			const annualBAL = (renderAdjLiquidity(
+				pool,
+				this.props.prices,
+				this.props.sumLiq,
+				this.props.caps,
+				1,
+				this.props.balMultiplier
+			) * ownership).toFixed(0);
+			let apy = renderTotalYield(
+				pool,
+				this.props.prices,
+				this.props.sumLiq,
+				this.props.caps,
+				this.props.balMultiplier
+			);
+			if (isNaN(apy[0]) || isNaN(apy[1]) || isNaN(apy[2])) {
+				apy[0] = 0;
+				apy[1] = 0;
+				apy[2] = 0;
+			}
+			const balAPY = apy[0];
+			const feeAPY = apy[1];
+			const totalAPY = apy[2];
 			const toggleUserHoldings = this.renderToggle(pool, ownership);
 			const numLP = renderNumLP(pool, this.props.moreShares);
 			return {
@@ -131,7 +156,9 @@ class PoolsTable extends React.Component {
 				volume,
 				fees,
 				annualBAL,
-				apy,
+				balAPY,
+				feeAPY,
+				totalAPY,
 				toggleUserHoldings,
 				numLP
 			};
@@ -235,7 +262,7 @@ class PoolsTable extends React.Component {
 							{numberWithCommas(pool.annualBAL)}
 						</td>
 						<td className="center aligned" data-label="APY">
-							{pool.apy}%
+							{this.renderAPY(pool)}%
 						</td>
 						{pool.toggleUserHoldings}
 						<td className="center aligned" data-label="# of LP's">
@@ -270,7 +297,8 @@ const mapStateToProps = (state, ownProps) => {
 		form: state.form.UserInput,
 		moreShares: state.moreShares,
 		ownProps,
-		caps: state.caps
+		caps: state.caps,
+		balMultiplier: state.balMultiplier
 	};
 };
 

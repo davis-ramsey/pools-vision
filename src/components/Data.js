@@ -20,9 +20,17 @@ import {
 	sumFinal,
 	deleteFinal,
 	sumFees,
-	removeFees
+	removeFees,
+	addBalMultiplier
 } from '../actions';
-import { renderTotalLiquidity, totalFactor, renderCapFactor } from './helpers/balancerHelpers';
+import {
+	renderTotalLiquidity,
+	totalFactor,
+	renderCapFactor,
+	splitLiquidityProviders,
+	stakerOwnership,
+	renderRealAdj
+} from './helpers/balancerHelpers';
 
 class Data extends React.Component {
 	constructor(props) {
@@ -91,7 +99,14 @@ class Data extends React.Component {
 		this.props.sumFees(this.sumFees);
 		for (let cap of caps) if (cap.adj) this.sumFinalLiq += renderCapFactor(cap.addr, cap.adj) * cap.adj;
 		this.props.sumFinal(this.sumFinalLiq);
-
+		const stakerShare = this.sumFinalLiq / (1 - 45000 / 145000); //target liquidity
+		const tempLiquidity = this.newTotalLiquidity(3);
+		const stakingBoost =
+			3 * (stakerShare - this.sumFinalLiq) / (tempLiquidity[0] + tempLiquidity[1] - this.sumFinalLiq);
+		const finalLiquidity = this.newTotalLiquidity(stakingBoost);
+		this.props.deleteFinal();
+		this.props.sumFinal(finalLiquidity[0] + finalLiquidity[1]);
+		this.props.addBalMultiplier(stakingBoost);
 		this.timer = setInterval(() => {
 			this.refreshData();
 		}, this.refreshTimer);
@@ -108,6 +123,21 @@ class Data extends React.Component {
 			}
 			if (exit) break;
 		}
+	}
+
+	newTotalLiquidity(balMultiplier) {
+		let userLiquidity = 0;
+		let shareHolderLiquidity = 0;
+		for (const pool of this.props.pools) {
+			let lpOwnership = null;
+			const subpoolLiquidityProviders = splitLiquidityProviders(pool);
+			if (subpoolLiquidityProviders.length !== 1) {
+				lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
+				userLiquidity += renderRealAdj(pool, this.props.prices, this.props.caps, lpOwnership, balMultiplier);
+				shareHolderLiquidity += renderRealAdj(pool, this.props.prices, this.props.caps, 1 - lpOwnership, 1);
+			} else userLiquidity += renderRealAdj(pool, this.props.prices, this.props.caps, 1, balMultiplier);
+		}
+		return [ userLiquidity, shareHolderLiquidity ];
 	}
 
 	async refreshData() {
@@ -136,8 +166,8 @@ class Data extends React.Component {
 
 		this.gatherData();
 	}
-	adjLiquidity = (pool) => {
-		const totalFac = totalFactor(pool);
+	adjLiquidity = (pool, balMultiplier = 1) => {
+		const totalFac = totalFactor(pool, balMultiplier);
 		const liquidity = parseFloat(renderTotalLiquidity(pool, this.props.prices));
 		if (!isNaN(liquidity)) this.sumTotalLiq += liquidity;
 		if (isNaN(liquidity * totalFac)) return;
@@ -172,7 +202,8 @@ const mapStateToProps = (state) => {
 		prices: state.coingecko,
 		portfolioPools: state.poolReducer,
 		poolsList: state.portfolio,
-		moreShares: state.moreShares
+		moreShares: state.moreShares,
+		caps: state.caps
 	};
 };
 
@@ -196,5 +227,6 @@ export default connect(mapStateToProps, {
 	sumFinal,
 	deleteFinal,
 	sumFees,
-	removeFees
+	removeFees,
+	addBalMultiplier
 })(Data);

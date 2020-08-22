@@ -23,8 +23,11 @@ class HeaderTable extends React.PureComponent {
 					<td className="center aligned" data-label="Total Adj. Liquidity">
 						${numberWithCommas(this.props.sumAdjLiq.toFixed(0))}
 					</td>
-					<td className="center aligned" data-label="Adj. Liquidity w/CapFactor">
+					<td className="center aligned" data-label="Adj. Liquidity w/Staking">
 						${numberWithCommas(this.props.sumFinal.toFixed(0))}
+					</td>
+					<td className="center aligned" data-label="BAL Multiplier">
+						{this.props.balMultiplier.toFixed(2)}
 					</td>
 					<td className="center aligned" data-label="Top Tokens & CapFactors">
 						<button
@@ -55,8 +58,9 @@ class HeaderTable extends React.PureComponent {
 							<th className="center aligned">24h Volume</th>
 							<th className="center aligned">24h Fees Earned</th>
 							<th className="center aligned">Total Liquidity</th>
-							<th className="center aligned">Total Adj. Liquidity</th>
-							<th className="center aligned">Adj. Liquidity w/CapFactor</th>
+							<th className="center aligned">Adj. Liquidity</th>
+							<th className="center aligned">Adj. Liquidity w/Staking</th>
+							<th className="center aligned">BAL Multiplier</th>
 							<th className="center aligned">Top Tokens & CapFactors</th>
 						</tr>
 					</thead>
@@ -74,7 +78,8 @@ const mapStateToProps = (state) => {
 		sumVol: state.sumVol,
 		prices: state.coingecko,
 		sumFinal: state.sumFinal,
-		fees: state.fees
+		fees: state.fees,
+		balMultiplier: state.balMultiplier
 	};
 };
 

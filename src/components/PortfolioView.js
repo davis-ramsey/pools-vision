@@ -14,8 +14,8 @@ import {
 	renderAssetsText,
 	renderNumLP,
 	renderLifetimeFees,
-	renderRealAdj,
-	numberWithCommas
+	numberWithCommas,
+	newTotalLiquidity
 } from './helpers/balancerHelpers';
 
 class PortfolioView extends React.Component {
@@ -96,7 +96,18 @@ class PortfolioView extends React.Component {
 								</div>
 								<div className="ui" style={{ fontSize: '12px' }}>
 									Adj: ${numberWithCommas(
-										renderRealAdj(selectedPool, this.props.prices, this.props.caps)
+										(newTotalLiquidity(
+											selectedPool,
+											this.props.prices,
+											this.props.caps,
+											this.props.balMultiplier
+										)[0] +
+											newTotalLiquidity(
+												selectedPool,
+												this.props.prices,
+												this.props.caps,
+												this.props.balMultiplier
+											)[1]).toFixed(2)
 									)}
 								</div>
 							</td>
@@ -112,12 +123,22 @@ class PortfolioView extends React.Component {
 										selectedPool,
 										this.props.prices,
 										this.props.sumLiq,
-										this.props.caps
+										this.props.caps,
+										1,
+										this.props.balMultiplier
 									).toFixed(0)
 								)}
 							</td>
-							<td className="center aligned" data-label="APY">
-								{renderTotalYield(selectedPool, this.props.prices, this.props.sumLiq, this.props.caps)}%
+							<td className="center aligned" data-label="Total APY">
+								{
+									renderTotalYield(
+										selectedPool,
+										this.props.prices,
+										this.props.sumLiq,
+										this.props.caps,
+										this.props.balMultiplier
+									)[2]
+								}%
 							</td>
 							<td className="center aligned" data-label="Lifetime Fees">
 								${numberWithCommas(renderLifetimeFees(selectedPool))}
@@ -172,7 +193,7 @@ class PortfolioView extends React.Component {
 							<th className="center aligned">24h Volume</th>
 							<th className="center aligned">24h Fees</th>
 							<th className="center aligned">Annual BAL</th>
-							<th className="center aligned">APY</th>
+							<th className="center aligned">Total APY</th>
 							<th className="center aligned">Lifetime Fees</th>
 							<th className="center aligned"># of LP's</th>
 						</tr>
@@ -193,7 +214,8 @@ const mapStateToProps = (state, ownProps) => {
 		sumLiq: state.sumFinal,
 		allPools: state.balancer.pools,
 		moreShares: state.moreShares,
-		caps: state.caps
+		caps: state.caps,
+		balMultiplier: state.balMultiplier
 	};
 };
 

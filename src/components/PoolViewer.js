@@ -12,9 +12,9 @@ import {
 	balFactor,
 	wrapFactor,
 	totalFactor,
-	renderRealAdj,
 	numberWithCommas,
-	renderCapFactor
+	renderCapFactor,
+	newTotalLiquidity
 } from './helpers/balancerHelpers';
 import { feeFactor } from './helpers/factorCalcs';
 
@@ -115,7 +115,7 @@ class PoolViewer extends React.Component {
 								<th className="center aligned">Wrap Factor</th>
 								<th className="center aligned">Total Factor</th>
 								<th className="center aligned">Annual BAL</th>
-								<th className="center aligned">APY</th>
+								<th className="center aligned">Total APY</th>
 								<th className="center aligned">Lifetime Fees</th>
 								<th className="center aligned"># of LP's</th>
 							</tr>
@@ -133,11 +133,18 @@ class PoolViewer extends React.Component {
 									</div>
 									<div className="ui" style={{ fontSize: '12px' }}>
 										Adj: ${numberWithCommas(
-											renderRealAdj(
+											(newTotalLiquidity(
 												this.props.pool[this.props.viewPool],
 												this.props.prices,
-												this.props.caps
-											)
+												this.props.caps,
+												this.props.balMultiplier
+											)[0] +
+												newTotalLiquidity(
+													this.props.pool[this.props.viewPool],
+													this.props.prices,
+													this.props.caps,
+													this.props.balMultiplier
+												)[1]).toFixed(2)
 										)}
 									</div>
 								</td>
@@ -154,13 +161,18 @@ class PoolViewer extends React.Component {
 									{feeFactor(this.props.pool[this.props.viewPool].swapFee).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Bal Factor">
-									{balFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
+									{balFactor(this.props.pool[this.props.viewPool], this.props.balMultiplier).toFixed(
+										4
+									)}
 								</td>
 								<td className="center aligned" data-label="Wrap Factor">
 									{wrapFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Total Factor">
-									{totalFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
+									{totalFactor(
+										this.props.pool[this.props.viewPool],
+										this.props.balMultiplier
+									).toFixed(4)}
 								</td>
 								<td className="center aligned" data-label="Annual BAL">
 									{numberWithCommas(
@@ -168,17 +180,22 @@ class PoolViewer extends React.Component {
 											this.props.pool[this.props.viewPool],
 											this.props.prices,
 											this.props.sumLiq,
-											this.props.caps
+											this.props.caps,
+											1,
+											this.props.balMultiplier
 										).toFixed(0)
 									)}
 								</td>
-								<td className="center aligned" data-label="APY">
-									{renderTotalYield(
-										this.props.pool[this.props.viewPool],
-										this.props.prices,
-										this.props.sumLiq,
-										this.props.caps
-									)}%
+								<td className="center aligned" data-label="Total APY">
+									{
+										renderTotalYield(
+											this.props.pool[this.props.viewPool],
+											this.props.prices,
+											this.props.sumLiq,
+											this.props.caps,
+											this.props.balMultiplier
+										)[2]
+									}%
 								</td>
 								<td className="center aligned" data-label="Lifetime Fees">
 									${numberWithCommas(renderLifetimeFees(this.props.pool[this.props.viewPool]))}
@@ -224,7 +241,8 @@ const mapStateToProps = (state, ownProps) => {
 		sumLiq: state.sumFinal,
 		allPools: state.balancer.pools,
 		moreShares: state.moreShares,
-		caps: state.caps
+		caps: state.caps,
+		balMultiplier: state.balMultiplier
 	};
 };
 

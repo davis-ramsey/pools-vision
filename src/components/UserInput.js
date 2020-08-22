@@ -126,6 +126,17 @@ class UserInput extends React.Component {
 					label="Filter by wallet address"
 				/>
 				<div style={{ flex: '1 1 10%', marginTop: '1.4%', marginLeft: '1%' }}>
+					<label>Select APY</label>
+					<div>
+						<Field name="display" component="select">
+							<option />
+							<option value="balAPY">BAL APY</option>
+							<option value="feeAPY">24h Fee APY</option>
+							<option value="totalAPY">Total APY</option>
+						</Field>
+					</div>
+				</div>
+				<div style={{ flex: '1 1 10%', marginTop: '1.4%', marginLeft: '1%' }}>
 					<label>Sort Columns by</label>
 					<div>
 						<Field name="sortby" component="select">
@@ -136,7 +147,9 @@ class UserInput extends React.Component {
 							<option value="fees">24h Fees</option>
 							<option value="swapFee">Swap Fee</option>
 							<option value="annualBAL">Annual BAL</option>
-							<option value="apy">APY</option>
+							<option value="balAPY">BAL APY</option>
+							<option value="feeAPY">Fee APY</option>
+							<option value="totalAPY">Total APY</option>
 							<option value="numLP">Number of LP's</option>
 						</Field>
 					</div>

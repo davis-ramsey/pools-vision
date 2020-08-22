@@ -4,6 +4,7 @@ import axios from 'axios';
 import { colors, tokenAddresses, tokenColors } from './colors';
 import { softWrap } from './softWraps';
 import { unCapped } from './unCapped';
+import { BLACKLISTED_SHAREHOLDERS } from './shareHolders';
 
 async function fetchWhitelist() {
 	const response = await axios.get(
@@ -110,7 +111,7 @@ export const renderFees = (pool, ownership = 1) => {
 	return fees.toFixed(2);
 };
 
-export const totalFactor = (pool) => {
+export const totalFactor = (pool, balMultiplier) => {
 	const fee = feeFactor(pool.swapFee);
 	const addresses = [];
 	const weights = [];
@@ -120,7 +121,7 @@ export const totalFactor = (pool) => {
 			weights.push(parseFloat(token.denormWeight));
 		}
 	}
-	const balFactor = getBalFactor(addresses, weights, balPair);
+	const balFactor = getBalFactor(addresses, weights, balPair, balMultiplier);
 	const wrapFactor = getWrapFactor(addresses, weights, isWrapPair, 0.2);
 	if (isNaN(balFactor * fee * wrapFactor)) return 0;
 	return balFactor * fee * wrapFactor;
@@ -140,7 +141,7 @@ export const wrapFactor = (pool) => {
 	return wrapF;
 };
 
-export const balFactor = (pool) => {
+export const balFactor = (pool, balMultiplier = 2) => {
 	const addresses = [];
 	const weights = [];
 	for (let token of pool.tokens) {
@@ -149,7 +150,7 @@ export const balFactor = (pool) => {
 			weights.push(parseFloat(token.denormWeight));
 		}
 	}
-	const balFactor = getBalFactor(addresses, weights, balPair);
+	const balFactor = getBalFactor(addresses, weights, balPair, balMultiplier);
 	if (isNaN(balFactor)) return 0;
 	return balFactor;
 };
@@ -171,7 +172,7 @@ function getWrapFactor(tokens, weights, factor, value) {
 	return wrapFactor;
 }
 
-function getBalFactor(tokens, weights, factor) {
+function getBalFactor(tokens, weights, factor, balMultiplier) {
 	let ratioFactorSum = 0;
 	let pairWeightSum = 0;
 	let n = weights.length;
@@ -180,165 +181,73 @@ function getBalFactor(tokens, weights, factor) {
 			let pairWeight = weights[x] * weights[y];
 			let normalizedWeight1 = weights[x] / (weights[x] + weights[y]);
 			let normalizedWeight2 = weights[y] / (weights[x] + weights[y]);
-			let balFactor = factor(tokens[x], weights[x], tokens[y], weights[y]);
+			let balFactor = factor(tokens[x], weights[x], tokens[y], weights[y], balMultiplier);
 			ratioFactorSum += balFactor * (4 * normalizedWeight1 * normalizedWeight2) * pairWeight;
 			pairWeightSum += pairWeight;
 		}
 	}
 	return ratioFactorSum / pairWeightSum;
 }
-// new calcs start
-function getAdjustedLiquidityForPair(rawLiquidityPair, feeFactor, balMultiplier, token1, weight1, token2, weight2) {
-	let wrapFactorForPair = isWrapPair(token1, token2) ? 0.2 : 1;
-	let balAndRatioFactorForPair = getBalAndRatioFactorForPair(balMultiplier, token1, weight1, token2, weight2);
 
-	return rawLiquidityPair * wrapFactorForPair * balAndRatioFactorForPair * feeFactor;
-}
-
-function getAdjustedLiquidity(rawLiquidity, pools, poolOwnershipSharePerLP, tokenCapFactors, balMultiplier) {
-	// First adjust the liquidity according to tokenCapFactors
-	let poolRawLiquidityAfterTokenCap = {};
-	for (const pool of pools) {
-		poolRawLiquidityAfterTokenCap[pool.id] = 0;
-		for (const token of pool.tokens) {
-			poolRawLiquidityAfterTokenCap[pool.id] =
-				poolRawLiquidityAfterTokenCap[pool.id] +
-				rawLiquidity[pool.address][token.address] * tokenCapFactors[token.address];
-		}
-	}
-
-	// Now we calculate the adjusted liquidity for each pool after all the factors
-	let totalAdjustedLiquidityAfterTokenCapAndFactors = 0;
-	let poolAdjustedLiquidityAfterTokenCapAndFactors = {};
-	for (const pool of pools) {
-		let feeFac = feeFactor(pool.swapFee);
-		let wrapFac = wrapFactor(pool);
-		const addresses = [];
-		const weights = [];
-		for (let token of pool.tokens) {
-			if (whiteList.includes(token.address.toLowerCase())) {
-				addresses.push(token.address.toLowerCase());
-				weights.push(parseFloat(token.denormWeight));
-			}
-		}
-		let balAndRatioFactor = getBalAndRatioFactor(balMultiplier, addresses, weights);
-
-		poolAdjustedLiquidityAfterTokenCapAndFactors[pool.address] =
-			poolRawLiquidityAfterTokenCap[pool.address] * feeFac * wrapFac * balAndRatioFactor;
-
-		totalAdjustedLiquidityAfterTokenCapAndFactors =
-			totalAdjustedLiquidityAfterTokenCapAndFactors + poolAdjustedLiquidityAfterTokenCapAndFactors;
-	}
-
-	// Now we calculate the amount of BAL each LP gets
-	let balAmountPerLP = {}; // Object with amount of BAL each LP (key) gets
-	for (const pool of pools) {
-		for (const LP of poolOwnershipSharePerLP[pool.address]) {
-			let balForLpInPool =
-				poolOwnershipSharePerLP[pool.address][LP] *
-				poolAdjustedLiquidityAfterTokenCapAndFactors[pool.address] /
-				totalAdjustedLiquidityAfterTokenCapAndFactors *
-				145000;
-			if (balAmountPerLP[LP]) {
-				balAmountPerLP[LP] = balForLpInPool;
-			} else {
-				balAmountPerLP[LP] = balAmountPerLP[LP] + balForLpInPool;
-			}
-		}
-	}
-	return [ totalAdjustedLiquidityAfterTokenCapAndFactors, balAmountPerLP ];
-}
-
-export function getTotalTokenAdjustedLiquidity(rawLiquidity, pools, prices) {
-	let totalTokenAdjustedLiquidity = {};
-	for (const pool of pools) {
-		// For each pool we check all pairs that contain token 1
-		// and add up its adjusted liquidity
-		let feeFac = feeFactor(pool.swapFee);
-		for (const token1 of pool.tokens) {
-			let sumPairWeightToken1 = 0;
-			let sumAdjustedLiquidityToken1 = 0;
-			for (const token2 of pool.tokens) {
-				if (token1 !== token2) {
-					let weight1 = parseFloat(token1.denormWeight) / parseFloat(pool.totalWeight);
-					let weight2 = parseFloat(token2.denormWeight) / parseFloat(pool.totalWeight);
-					let pairWeight = weight1 * weight2;
-					sumPairWeightToken1 = sumPairWeightToken1 + pairWeight;
-
-					let rawLiquidityPair = 0;
-					if (prices[token1.address] && prices[token2.address]) {
-						rawLiquidityPair =
-							prices[token1.address].usd * parseFloat(token1.balance) +
-							prices[token2.address].usd * parseFloat(token2.balance);
-					}
-					let adjustedLiquidityPair = getAdjustedLiquidityForPair(
-						rawLiquidityPair,
-						feeFac,
-						1, // balMultiplier = 1
-						token1,
-						weight1,
-						token2,
-						weight2
-					);
-					// Only add the proportion of this pair that is token1:
-					let token1Proportion = weight1 / (weight1 + weight2);
-					sumAdjustedLiquidityToken1 =
-						sumAdjustedLiquidityToken1 + adjustedLiquidityPair * token1Proportion * pairWeight;
+export const splitLiquidityProviders = (pool) => {
+	let includesBal = null;
+	let includesUncappedTokenPair = null;
+	for (const token1 of pool.tokens) {
+		for (const token2 of pool.tokens) {
+			if (token1.address !== token2.address) {
+				if (
+					token1.address === '0xba100000625a3754423978a60c9317c58a424e3d' ||
+					token2.address === '0xba100000625a3754423978a60c9317c58a424e3d'
+				) {
+					includesBal = true;
 				}
-			}
-			//	console.log(sumAdjustedLiquidityToken1);
-			if (totalTokenAdjustedLiquidity[token1.address]) {
-				totalTokenAdjustedLiquidity[token1.address] =
-					totalTokenAdjustedLiquidity[token1.address] + sumAdjustedLiquidityToken1 / sumPairWeightToken1;
-			} else {
-				totalTokenAdjustedLiquidity[token1.address] = sumAdjustedLiquidityToken1 / sumPairWeightToken1;
+				if (
+					(token2.address === '0xba100000625a3754423978a60c9317c58a424e3d' &&
+						unCapped[0].includes(token1.address)) ||
+					(token1.address === '0xba100000625a3754423978a60c9317c58a424e3d' &&
+						unCapped[0].includes(token2.address))
+				)
+					includesUncappedTokenPair = true;
 			}
 		}
 	}
-	return totalTokenAdjustedLiquidity;
-}
-
-function getBalAndRatioFactor(balMultiplier, tokens, weights) {
-	let balAndRatioFactorSum = 0;
-	let pairWeightSum = 0;
-	let n = weights.length;
-	for (let j = 0; j < n; j++) {
-		for (let k = j + 1; k < n; k++) {
-			let pairWeight = weights[j] * weights[k];
-			pairWeightSum = pairWeightSum + pairWeight;
-
-			let balAndRatioFactorForPair = getBalAndRatioFactorForPair(
-				balMultiplier,
-				tokens[j],
-				weights[j],
-				tokens[k],
-				weights[k]
-			);
-			balAndRatioFactorSum = balAndRatioFactorSum + balAndRatioFactorForPair * pairWeight;
-		}
+	const poolLiquidityProviders = pool.shares;
+	if (includesBal && includesUncappedTokenPair) {
+		let shareHolderLiquidityProviders = poolLiquidityProviders.filter((share) =>
+			BLACKLISTED_SHAREHOLDERS.includes(share.userAddress.id)
+		);
+		let nonshareholderLiquidityProviders = poolLiquidityProviders.filter(
+			(share) => !BLACKLISTED_SHAREHOLDERS.includes(share.userAddress.id)
+		);
+		if (shareHolderLiquidityProviders.length > 0 && nonshareholderLiquidityProviders.length > 0)
+			return [ nonshareholderLiquidityProviders, shareHolderLiquidityProviders ];
 	}
+	return [ poolLiquidityProviders ];
+};
 
-	const ratioFactor = balAndRatioFactorSum / pairWeightSum;
+export const newTotalLiquidity = (pool, prices, caps, balMultiplier) => {
+	let userLiquidity = 0;
+	let shareHolderLiquidity = 0;
+	let lpOwnership = null;
+	const subpoolLiquidityProviders = splitLiquidityProviders(pool);
+	if (subpoolLiquidityProviders.length !== 1) {
+		lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
+		userLiquidity += renderRealAdj(pool, prices, caps, lpOwnership, balMultiplier);
+		shareHolderLiquidity += renderRealAdj(pool, prices, caps, 1 - lpOwnership, 1);
+	} else userLiquidity += renderRealAdj(pool, prices, caps, 1, balMultiplier);
+	return [ userLiquidity, shareHolderLiquidity ];
+};
 
-	return ratioFactor;
-}
+export const stakerOwnership = (pool, lps) => {
+	let lpShares = 0;
+	for (const lp of lps) {
+		lpShares += parseFloat(lp.balance);
+	}
+	const lpOwnership = lpShares / parseFloat(pool.totalShares);
+	return lpOwnership;
+};
 
-function getRatioFactorForPair(token1, weight1, token2, weight2) {
-	let normalizedWeight1 = weight1 / (weight1 + weight2);
-
-	let normalizedWeight2 = weight2 / (weight1 + weight2);
-	return 4 * normalizedWeight1 * normalizedWeight2;
-}
-
-function getBalAndRatioFactorForPair(balMultiplier, token1, weight1, token2, weight2) {
-	let balMultiplierForPair = balPair(balMultiplier, token1, weight1, token2, weight2);
-
-	let ratioFactorForPair = getRatioFactorForPair(token1, weight1, token2, weight2);
-
-	return balMultiplierForPair * ratioFactorForPair;
-}
-// new calcs end
-function balPair(token1, weight1, token2, weight2, balMultiplier = 2) {
+function balPair(token1, weight1, token2, weight2, balMultiplier) {
 	if (token1 === '0xba100000625a3754423978a60c9317c58a424e3d' && unCapped[0].includes(token2))
 		return (balMultiplier * weight1 + weight2) / (weight1 + weight2);
 	else if (token2 === '0xba100000625a3754423978a60c9317c58a424e3d' && unCapped[0].includes(token1))
@@ -355,15 +264,17 @@ function isWrapPair(tokenA, tokenB) {
 	return false;
 }
 
-export const renderAdjLiquidity = (pool, prices, sumLiq, caps, ownership = 1) => {
-	const liquidity = renderRealAdj(pool, prices, caps, ownership);
-	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	return liquidity / sumLiq * 145000 * 52 * ownership;
+export const renderAdjLiquidity = (pool, prices, sumLiq, caps, ownership = 1, balMultiplier) => {
+	const liquidity = newTotalLiquidity(pool, prices, caps, balMultiplier);
+	const totalLiquidity = liquidity[0] + liquidity[1];
+	// renderRealAdj(pool, prices, caps, ownership, balMultiplier);
+	if (isNaN(totalLiquidity / sumLiq * 14500)) return 0;
+	return totalLiquidity / sumLiq * 145000 * 52 * ownership;
 };
 
-export const renderRealAdj = (pool, prices, caps, ownership = 1) => {
+export const renderRealAdj = (pool, prices, caps, ownership = 1, balMultiplier) => {
 	let total = 0;
-	const totalFac = totalFactor(pool);
+	const totalFac = totalFactor(pool, balMultiplier);
 	for (let token of pool.tokens) {
 		const address = token.address;
 		let price = 0;
@@ -379,16 +290,22 @@ export const renderRealAdj = (pool, prices, caps, ownership = 1) => {
 	return Number(total.toFixed(2));
 };
 
-export const renderTotalYield = (pool, prices, sumLiq, caps) => {
-	const liquidity = renderTotalLiquidity(pool, prices);
+export const renderTotalYield = (pool, prices, sumLiq, caps, balMultiplier) => {
+	const totalLiquidity = newTotalLiquidity(pool, prices, caps, 1); // calc user Liquidity & shareholder Liquidity with BAL Multiplier = 1
+	let liquidity = renderTotalLiquidity(pool, prices); // calc pool liquidity using token price * token balance, no factors
+	let annualBAL = renderAdjLiquidity(pool, prices, sumLiq, caps, 1, balMultiplier); // annual BAL for the pool with full BAL multiplier + all factors
+	if (totalLiquidity[1] !== 0) {
+		//if pool contains shareholders
+		liquidity = totalLiquidity[0]; //set pool liquidity equal to user Liquidity with BAL Multiplier = 1
+		annualBAL = newTotalLiquidity(pool, prices, caps, balMultiplier)[0] / sumLiq * 145000 * 52; //set annual BAL to user Liquidity w/full multiplier
+	}
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
-	const annualBAL = renderAdjLiquidity(pool, prices, sumLiq, caps);
+
 	const feeYield = parseFloat(renderYield(pool, prices)) * 365;
 	const priceBAL = prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
 	const yieldBAL = parseFloat(annualBAL * priceBAL / liquidity * 100);
-
 	const totalYield = yieldBAL + feeYield;
-	return totalYield.toFixed(2);
+	return [ yieldBAL.toFixed(2), feeYield.toFixed(2), totalYield.toFixed(2) ];
 };
 
 export const checkLiquidity = (pool, prices) => {

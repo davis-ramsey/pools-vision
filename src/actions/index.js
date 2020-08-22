@@ -24,7 +24,7 @@ export const addShares = ({ id }, num) => async (dispatch) => {
 					symbol
 					denormWeight
 				}
-       shares (first: 1000, skip: ${1000 * num}) {
+       shares (first: 1000, skip: ${1000 * num}, orderBy: balance, orderDirection: desc, where:{balance_gt:"0"}) {
         id
         userAddress {
           id
@@ -76,7 +76,7 @@ export const fetchPools = (num) => async (dispatch) => {
 					 symbol
 					 denormWeight
 				 }
-				 shares (first: 1000, where:{balance_gt:"0"}) {
+				 shares (first: 1000, where:{balance_gt:"0"}, orderBy: balance, orderDirection: desc) {
 					id
 					userAddress {
 						id
@@ -170,6 +170,10 @@ export const removeCaps = () => (dispatch) => {
 	dispatch({ type: 'REMOVE_CAPS' });
 };
 
+export const addBalMultiplier = (value) => (dispatch) => {
+	dispatch({ type: 'ADD_BAL_MULTIPLIER', payload: value });
+};
+
 export const fetchPool = (id) => async (dispatch) => {
 	const response = await axios({
 		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
@@ -190,7 +194,7 @@ export const fetchPool = (id) => async (dispatch) => {
              symbol
              denormWeight
 					 }
-					 shares (first: 1000) {
+					 shares (first: 1000, where:{balance_gt:"0"}, orderBy: balance, orderDirection: desc) {
 						id
 						poolId {
 							id
