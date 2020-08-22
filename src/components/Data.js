@@ -22,12 +22,7 @@ import {
 	sumFees,
 	removeFees
 } from '../actions';
-import {
-	renderTotalLiquidity,
-	totalFactor,
-	renderCapFactor,
-	getTotalTokenAdjustedLiquidity
-} from './helpers/balancerHelpers';
+import { renderTotalLiquidity, totalFactor, renderCapFactor } from './helpers/balancerHelpers';
 
 class Data extends React.Component {
 	constructor(props) {
@@ -42,7 +37,6 @@ class Data extends React.Component {
 		this.tokenAdjBalance = [];
 		this.addresses = [];
 		this.tokenNames = [];
-		this.totalTokenAdjustedLiquidity = null;
 	}
 	componentDidMount() {
 		this.gatherData();
@@ -79,8 +73,6 @@ class Data extends React.Component {
 			if (!this.props.prices[price]) return;
 			tokenTotalBalance[index] = item * this.props.prices[price].usd;
 		});
-		// this.totalTokenAdjustedLiquidity = getTotalTokenAdjustedLiquidity(1, this.props.pools, this.props.prices);
-		// console.log(this.totalTokenAdjustedLiquidity);
 		for (const pool of this.props.pools) {
 			this.adjLiquidity(pool);
 			this.getTotalVolume(pool);
