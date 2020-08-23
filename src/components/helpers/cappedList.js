@@ -16,4 +16,12 @@ export const cap1 = [
 	'0x6b785a0322126826d8226d77e173d75DAfb84d11', //VLT
 	'0xAba8cAc6866B83Ae4eec97DD07ED254282f6aD8A', //YAMv2
 	'0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83' //YFII
-];
+].map((item) => item.toLowerCase());
+
+export const cap2 = [
+	'0xb4efd85c19999d84251304bda99e90b92300bd93' //RPL
+].map((item) => item.toLowerCase());
+
+export const cap4 = [
+	'0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2' //MKR
+].map((item) => item.toLowerCase());
