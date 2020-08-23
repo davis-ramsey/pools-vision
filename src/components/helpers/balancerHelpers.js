@@ -17,8 +17,8 @@ async function fetchWhitelist() {
 			}
 		}
 	);
-	const whitelist = response.data.homestead.flatMap((a) => a.toLowerCase());
 
+	const whitelist = Object.keys(response.data.homestead).map((item) => item.toLowerCase());
 	return whitelist;
 }
 
