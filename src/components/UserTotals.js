@@ -44,8 +44,23 @@ class UserTotals extends React.Component {
 			if (parseFloat(renderFees(pool, userBalance)) !== 0)
 				this.userSum.Fees += parseFloat(renderFees(pool, userBalance).split(',').join(''));
 			this.userSum.Bal +=
-				renderAdjLiquidity(pool, this.props.prices, this.props.sumLiq, this.props.caps) * userBalance;
-			this.userSum.AvgAPY.push(renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps));
+				renderAdjLiquidity(
+					pool,
+					this.props.prices,
+					this.props.sumLiq,
+					this.props.caps,
+					1,
+					this.props.balMultiplier
+				) * userBalance;
+			this.userSum.AvgAPY.push(
+				renderTotalYield(
+					pool,
+					this.props.prices,
+					this.props.sumLiq,
+					this.props.caps,
+					this.props.balMultiplier
+				)[2]
+			);
 		}
 
 		return userBalance;
@@ -128,7 +143,8 @@ const mapStateToProps = (state, ownProps) => {
 		form: state.form.UserInput,
 		moreShares: state.moreShares,
 		ownProps,
-		caps: state.caps
+		caps: state.caps,
+		balMultiplier: state.balMultiplier
 	};
 };
 

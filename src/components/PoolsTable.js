@@ -66,8 +66,17 @@ class PoolsTable extends React.Component {
 	apyChecker = (pool) => {
 		if (!this.props.form || !this.props.form.values || !this.props.form.values.apy) return true;
 		const userInput = this.props.form.values.apy;
-		if (userInput >= parseFloat(renderTotalYield(pool, this.props.prices, this.props.sumLiq, this.props.caps)))
-			return false;
+		const userSelection = this.props.form.values.display;
+		const yields = renderTotalYield(
+			pool,
+			this.props.prices,
+			this.props.sumLiq,
+			this.props.caps,
+			this.props.balMultiplier
+		);
+		if (userSelection === 'balAPY' && userInput >= parseFloat(yields[0])) return false;
+		else if (userSelection === 'feeAPY' && userInput >= parseFloat(yields[1])) return false;
+		else if (userSelection === 'totalAPY' && userInput >= parseFloat(yields[2])) return false;
 		else return true;
 	};
 

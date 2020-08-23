@@ -59,7 +59,7 @@ class Header extends React.Component {
 					BAL distributions.<br />
 					<br />
 					<b>August 23rd Update:</b> Calculations updated to reflect recent governance changes with staking
-					boost and BAL Multiplier.<br />
+					boost and BAL Multiplier. To filter by APY, first select an APY.<br />
 				</div>
 				<HeaderTable />
 			</div>
