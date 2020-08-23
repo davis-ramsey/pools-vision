@@ -55,11 +55,11 @@ class Header extends React.Component {
 				{this.renderMenu()}
 				<div className="ui inverted horizontal divider">Page Last Refreshed: {Date()}</div>
 				<div className="ui black message" style={{ boxShadow: '0 0 0.5rem white', borderRadius: '10px' }}>
-					APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly BAL
-					distributions.<br />
+					Total APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly
+					BAL distributions.<br />
 					<br />
-					<b>August 2nd Update:</b> wrapFactor for soft peg assets has been updated to 0.2 per latest
-					governance changes. Click on a pool's assets to see a breakdown of each factor.<br />
+					<b>August 23rd Update:</b> Calculations updated to reflect recent governance changes with staking
+					boost and BAL Multiplier.<br />
 				</div>
 				<HeaderTable />
 			</div>
