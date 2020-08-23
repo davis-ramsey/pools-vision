@@ -225,6 +225,13 @@ export const splitLiquidityProviders = (pool) => {
 	return [ poolLiquidityProviders ];
 };
 
+const lpOwnership = (pool) => {
+	let lpOwnership = 0;
+	const subpoolLiquidityProviders = splitLiquidityProviders(pool);
+	if (subpoolLiquidityProviders.length !== 1) lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
+	return lpOwnership;
+};
+
 export const newTotalLiquidity = (pool, prices, caps, balMultiplier) => {
 	let userLiquidity = 0;
 	let shareHolderLiquidity = 0;
@@ -291,13 +298,13 @@ export const renderRealAdj = (pool, prices, caps, ownership = 1, balMultiplier) 
 };
 
 export const renderTotalYield = (pool, prices, sumLiq, caps, balMultiplier) => {
-	const totalLiquidity = newTotalLiquidity(pool, prices, caps, 1); // calc user Liquidity & shareholder Liquidity with BAL Multiplier = 1
-	let liquidity = renderTotalLiquidity(pool, prices); // calc pool liquidity using token price * token balance, no factors
-	let annualBAL = renderAdjLiquidity(pool, prices, sumLiq, caps, 1, balMultiplier); // annual BAL for the pool with full BAL multiplier + all factors
+	const totalLiquidity = newTotalLiquidity(pool, prices, caps, 1);
+	let liquidity = renderTotalLiquidity(pool, prices);
+	let annualBAL = renderAdjLiquidity(pool, prices, sumLiq, caps, 1, balMultiplier);
 	if (totalLiquidity[1] !== 0) {
-		//if pool contains shareholders
-		liquidity = totalLiquidity[0]; //set pool liquidity equal to user Liquidity with BAL Multiplier = 1
-		annualBAL = newTotalLiquidity(pool, prices, caps, balMultiplier)[0] / sumLiq * 145000 * 52; //set annual BAL to user Liquidity w/full multiplier
+		const lpOwners = lpOwnership(pool);
+		liquidity = liquidity * lpOwners;
+		annualBAL = newTotalLiquidity(pool, prices, caps, balMultiplier)[0] / sumLiq * 145000 * 52;
 	}
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
 
