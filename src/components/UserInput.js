@@ -175,6 +175,25 @@ class UserInput extends React.Component {
 					type="text"
 					label="Filter by APY"
 				/>
+				<div
+					style={{
+						width: '5%',
+						margin: '1% auto',
+						marginLeft: '1%'
+					}}
+				>
+					<label htmlFor="refresh">Disable Refresh</label>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignContent: 'center',
+							marginTop: '4%'
+						}}
+					>
+						<Field name="refresh" id="refresh" component="input" type="checkbox" />
+					</div>
+				</div>
 			</form>
 		);
 	}

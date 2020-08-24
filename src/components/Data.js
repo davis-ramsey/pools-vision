@@ -191,7 +191,25 @@ class Data extends React.Component {
 		this.sumFees += volume * pool.swapFee;
 	}
 
+	disableRefresh = () => {
+		clearInterval(this.timer);
+		console.log('auto refresh disabled!');
+	};
+
+	enableRefresh = () => {
+		if (this.sumTotalAdjLiq !== 0) this.refreshData();
+		console.log('auto refresh enabled!');
+	};
+	shouldComponentUpdate(nextProps) {
+		if (this.props.form && nextProps.form && nextProps.form.values) {
+			if (this.props.form.values && this.props.form.values.refresh !== nextProps.form.values.refresh) return true;
+			else if (!this.props.form.values && nextProps.form.values && nextProps.form.values.refresh) return true;
+			else return false;
+		} else return false;
+	}
 	render() {
+		if (this.props.form && this.props.form.values && this.props.form.values.refresh) this.disableRefresh();
+		else if (this.props.form && this.props.form.values && !this.props.form.values.refresh) this.enableRefresh();
 		return null;
 	}
 }
@@ -203,7 +221,8 @@ const mapStateToProps = (state) => {
 		portfolioPools: state.poolReducer,
 		poolsList: state.portfolio,
 		moreShares: state.moreShares,
-		caps: state.caps
+		caps: state.caps,
+		form: state.form.UserInput
 	};
 };
 
