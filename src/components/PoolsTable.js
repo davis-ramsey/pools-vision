@@ -127,7 +127,7 @@ class PoolsTable extends React.Component {
 			const assetText = renderAssetsText(pool);
 			const swapFee = (pool.swapFee * 100).toFixed(2);
 			const totalLiq = renderTotalLiquidity(pool, this.props.prices, ownership);
-			const finalAdj = (liquidity[0] + liquidity[1]).toFixed(2);
+			const finalAdj = ((liquidity[0] + liquidity[1]) * ownership).toFixed(2);
 			const volume = renderVolume(pool, ownership);
 			const fees = renderFees(pool, ownership);
 			const annualBAL = (renderAdjLiquidity(
