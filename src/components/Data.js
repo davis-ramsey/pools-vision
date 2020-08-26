@@ -102,7 +102,7 @@ class Data extends React.Component {
 		const stakerShare = this.sumFinalLiq / (1 - 45000 / 145000); //target liquidity
 		const tempLiquidity = this.newTotalLiquidity(3);
 		const stakingBoost =
-			3 * (stakerShare - this.sumFinalLiq) / (tempLiquidity[0] + tempLiquidity[1] - this.sumFinalLiq);
+			1 + (3 - 1) * (stakerShare - this.sumFinalLiq) / (tempLiquidity[0] + tempLiquidity[1] - this.sumFinalLiq);
 		const finalLiquidity = this.newTotalLiquidity(stakingBoost);
 		this.props.deleteFinal();
 		this.props.sumFinal(finalLiquidity[0] + finalLiquidity[1]);
