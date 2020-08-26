@@ -145,11 +145,12 @@ class PoolsTable extends React.Component {
 				this.props.caps,
 				this.props.balMultiplier
 			);
-			if (isNaN(apy[0]) || isNaN(apy[1]) || isNaN(apy[2])) {
-				apy[0] = 0;
-				apy[1] = 0;
-				apy[2] = 0;
-			}
+			if (isNaN(apy[0]) || isNaN(apy[1]) || isNaN(apy[2]))
+				if (apy !== 0) {
+					apy[0] = 0;
+					apy[1] = 0;
+					apy[2] = 0;
+				}
 			const balAPY = apy[0];
 			const feeAPY = apy[1];
 			const totalAPY = apy[2];
