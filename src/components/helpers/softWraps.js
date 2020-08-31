@@ -1,6 +1,6 @@
 export const softWrap = [
 	[
-		//stablecoin soft pegs USDC, mUSD, sUSD, DAI, cUSDC, cUSDT,cDAI,yUSD-Sep20,USD++,TUSD, yToken,aUSDC,aDAI,aTUSD,aSUSD,aBUSD,aUSDT, y-USD Oct20
+		//stablecoin soft pegs USDC, mUSD, sUSD, DAI, cUSDC, cUSDT,cDAI,yUSD-Sep20,USD++,TUSD, yToken,aUSDC,aDAI,aTUSD,aSUSD,aBUSD,aUSDT, y-USD Oct20, yyCRV
 		'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
 		'0xe2f2a5c287993345a840db3b0845fbc70f5935a5',
 		'0x57ab1ec28d129707052df4df418d58a2d46d5f51',
@@ -18,7 +18,8 @@ export const softWrap = [
 		'0x625ae63000f46200499120b906716420bd059240',
 		'0x6ee0f7bb50a54ab5253da0667b0dc2ee526c30a8',
 		'0x71fc860f7d3a592a4a98740e39db31d25db65ae8',
-		'0xB2FdD60AD80ca7bA89B9BAb3b5336c2601C020b4'
+		'0xB2FdD60AD80ca7bA89B9BAb3b5336c2601C020b4',
+		'0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c'
 	].map((item) => item.toLowerCase()), //WETH soft pegs sETH, WETH
 	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ],
 	//WBTC soft pegs wBTC, renBTC, imBTC,pBTC,sBTC
