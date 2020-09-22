@@ -19,7 +19,9 @@ export const softWrap = [
 		'0x6ee0f7bb50a54ab5253da0667b0dc2ee526c30a8',
 		'0x71fc860f7d3a592a4a98740e39db31d25db65ae8',
 		'0xB2FdD60AD80ca7bA89B9BAb3b5336c2601C020b4',
-		'0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c'
+		'0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c',
+		'0x4Fabb145d64652a948d72533023f6E7A623C7C53', //BUSD
+		'0x5BC25f649fc4e26069dDF4cF4010F9f706c23831' //DUSD
 	].map((item) => item.toLowerCase()), //WETH soft pegs sETH, WETH
 	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ],
 	//WBTC soft pegs wBTC, renBTC, imBTC,pBTC,sBTC
