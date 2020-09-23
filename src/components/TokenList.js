@@ -10,7 +10,9 @@ class TokenList extends React.PureComponent {
 
 	sortCaps() {
 		this.caps = this.props.caps;
-		this.caps.sort((a, b) => b.total - a.total);
+		this.caps.sort((a, b) => {
+			return b.adj - a.adj;
+		});
 	}
 
 	renderTable() {
