@@ -312,7 +312,12 @@ export const renderTotalYield = (pool, prices, sumLiq, caps, balMultiplier) => {
 	if (totalLiquidity[1] !== 0) {
 		const lpOwners = lpOwnership(pool);
 		liquidity = liquidity * lpOwners;
+		if (pool.id === '0x59a19d8c652fa0284f44113d0ff9aba70bd46fb4') {
+			console.log(liquidity);
+			console.log(totalLiquidity);
+		}
 		annualBAL = newTotalLiquidity(pool, prices, caps, balMultiplier)[0] / sumLiq * 145000 * 52;
+		if (pool.id === '0x59a19d8c652fa0284f44113d0ff9aba70bd46fb4') console.log(annualBAL);
 	}
 	if (isNaN(liquidity / sumLiq * 14500)) return 0;
 
