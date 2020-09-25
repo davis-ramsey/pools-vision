@@ -52,7 +52,7 @@ class UserTotals extends React.Component {
 				this.userSum.Vol += parseFloat(renderVolume(pool, userBalance).split(',').join(''));
 			if (parseFloat(renderFees(pool, userBalance)) !== 0)
 				this.userSum.Fees += parseFloat(renderFees(pool, userBalance).split(',').join(''));
-			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership))
+			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
 				this.userSum.Bal += totalLiquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership;
 			else
 				this.userSum.Bal +=

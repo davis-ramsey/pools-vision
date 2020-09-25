@@ -117,9 +117,8 @@ class PoolsTable extends React.Component {
 	}
 
 	sortPools() {
-		let lpOwnership = null;
-
 		const sorted = this.props.pools.map((pool) => {
+			let lpOwnership = null;
 			const subpoolLiquidityProviders = splitLiquidityProviders(pool);
 			if (subpoolLiquidityProviders.length !== 1) {
 				lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
@@ -149,7 +148,7 @@ class PoolsTable extends React.Component {
 				1,
 				this.props.balMultiplier
 			) * ownership).toFixed(0);
-			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership))
+			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
 				annualBAL = (liquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership).toFixed(0);
 			let apy = renderTotalYield(
 				pool,
