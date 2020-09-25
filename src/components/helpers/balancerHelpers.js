@@ -279,11 +279,13 @@ function isWrapPair(tokenA, tokenB) {
 	return false;
 }
 
-export const renderAdjLiquidity = (pool, prices, sumLiq, caps, ownership = 1, balMultiplier) => {
+export const renderAdjLiquidity = (pool, prices, sumLiq, caps, ownership = 1, balMultiplier, user = false) => {
 	const liquidity = newTotalLiquidity(pool, prices, caps, balMultiplier);
 	const totalLiquidity = liquidity[0] + liquidity[1];
 	// renderRealAdj(pool, prices, caps, ownership, balMultiplier);
 	if (isNaN(totalLiquidity / sumLiq * 14500)) return 0;
+	const lpOwners = lpOwnership(pool);
+	if (user === true) return totalLiquidity * lpOwners / sumLiq * 145000 * 52 * ownership;
 	return totalLiquidity / sumLiq * 145000 * 52 * ownership;
 };
 

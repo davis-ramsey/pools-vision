@@ -7,7 +7,10 @@ import {
 	renderFees,
 	renderAdjLiquidity,
 	renderTotalYield,
-	numberWithCommas
+	numberWithCommas,
+	splitLiquidityProviders,
+	stakerOwnership,
+	newTotalLiquidity
 } from './helpers/balancerHelpers';
 
 class UserTotals extends React.Component {
@@ -36,22 +39,31 @@ class UserTotals extends React.Component {
 							userBalance += shareBalance / parseFloat(anotherPool.totalShares).toFixed(4);
 						}
 				}
-
+		let lpOwnership = null;
+		const subpoolLiquidityProviders = splitLiquidityProviders(pool);
+		if (subpoolLiquidityProviders.length !== 1) {
+			lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
+		}
+		const totalLiquidity = newTotalLiquidity(pool, this.props.prices, this.props.caps, this.props.balMultiplier);
+		const userLiqOwnership = userBalance * pool.totalShares / (lpOwnership * pool.totalShares);
 		if (userBalance !== 0) {
 			this.userSum.Liq.push(parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance)));
 			if (parseFloat(renderVolume(pool, userBalance)) !== 0)
 				this.userSum.Vol += parseFloat(renderVolume(pool, userBalance).split(',').join(''));
 			if (parseFloat(renderFees(pool, userBalance)) !== 0)
 				this.userSum.Fees += parseFloat(renderFees(pool, userBalance).split(',').join(''));
-			this.userSum.Bal +=
-				renderAdjLiquidity(
-					pool,
-					this.props.prices,
-					this.props.sumLiq,
-					this.props.caps,
-					1,
-					this.props.balMultiplier
-				) * userBalance;
+			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership))
+				this.userSum.Bal += totalLiquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership;
+			else
+				this.userSum.Bal +=
+					renderAdjLiquidity(
+						pool,
+						this.props.prices,
+						this.props.sumLiq,
+						this.props.caps,
+						1,
+						this.props.balMultiplier
+					) * userBalance;
 			this.userSum.AvgAPY.push(
 				renderTotalYield(
 					pool,

@@ -15,7 +15,9 @@ import {
 	renderNumLP,
 	renderLifetimeFees,
 	numberWithCommas,
-	newTotalLiquidity
+	newTotalLiquidity,
+	splitLiquidityProviders,
+	stakerOwnership
 } from './helpers/balancerHelpers';
 
 import history from '../history';
@@ -115,8 +117,15 @@ class PoolsTable extends React.Component {
 	}
 
 	sortPools() {
+		let lpOwnership = null;
+
 		const sorted = this.props.pools.map((pool) => {
+			const subpoolLiquidityProviders = splitLiquidityProviders(pool);
+			if (subpoolLiquidityProviders.length !== 1) {
+				lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
+			}
 			const ownership = this.addressChecker(pool);
+			const userLiqOwnership = ownership * pool.totalShares / (lpOwnership * pool.totalShares);
 			if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool) || !this.totalLiqChecker(pool))
 				return null;
 			const check = parseFloat(checkLiquidity(pool, this.props.prices));
@@ -127,10 +136,12 @@ class PoolsTable extends React.Component {
 			const assetText = renderAssetsText(pool);
 			const swapFee = (pool.swapFee * 100).toFixed(2);
 			const totalLiq = renderTotalLiquidity(pool, this.props.prices, ownership);
-			const finalAdj = ((liquidity[0] + liquidity[1]) * ownership).toFixed(2);
+			let finalAdj = ((liquidity[0] + liquidity[1]) * ownership).toFixed(2);
+			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership))
+				finalAdj = (liquidity[0] * userLiqOwnership).toFixed(2);
 			const volume = renderVolume(pool, ownership);
 			const fees = renderFees(pool, ownership);
-			const annualBAL = (renderAdjLiquidity(
+			let annualBAL = (renderAdjLiquidity(
 				pool,
 				this.props.prices,
 				this.props.sumLiq,
@@ -138,6 +149,8 @@ class PoolsTable extends React.Component {
 				1,
 				this.props.balMultiplier
 			) * ownership).toFixed(0);
+			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership))
+				annualBAL = (liquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership).toFixed(0);
 			let apy = renderTotalYield(
 				pool,
 				this.props.prices,
