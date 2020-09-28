@@ -112,7 +112,6 @@ class Data extends React.Component {
 			const finalLiquidity = this.newTotalLiquidity(stakingBoost);
 			this.props.deleteFinal();
 			this.props.sumFinal(finalLiquidity[0] + finalLiquidity[1]);
-			this.props.addBalMultiplier(stakingBoost);
 			this.timer = setInterval(() => {
 				this.refreshData();
 			}, this.refreshTimer);
@@ -129,6 +128,7 @@ class Data extends React.Component {
 				}
 				if (exit) break;
 			}
+			this.props.addBalMultiplier(stakingBoost);
 		} catch (error) {
 			console.log(error);
 			this.props.errorMessage(

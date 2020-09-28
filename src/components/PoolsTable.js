@@ -19,13 +19,11 @@ import {
 	splitLiquidityProviders,
 	stakerOwnership
 } from './helpers/balancerHelpers';
-
 import history from '../history';
 
 class PoolsTable extends React.Component {
 	shouldComponentUpdate(nextProps) {
-		if (this.props.pools !== nextProps.pools || this.props.caps !== nextProps.caps) return true;
-		else if (this.props.ownProps.userAddr !== nextProps.ownProps.userAddr) return true;
+		if (this.props.ownProps.userAddr !== nextProps.ownProps.userAddr) return true;
 		else if (this.props.portfolio !== nextProps.portfolio) return true;
 		else if (this.props.form && this.props.form.values && this.props.form.values !== nextProps.form.values)
 			return true;
@@ -223,7 +221,7 @@ class PoolsTable extends React.Component {
 	}
 
 	render() {
-		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.caps[5])
+		if (this.props.pools && this.props.prices && this.props.portfolio && this.props.caps[5]) {
 			return this.sortPools().map((pool) => {
 				if (pool === null) return <tr key={Math.random()} />;
 				const isActive = this.portfolioToggle(pool);
@@ -293,7 +291,7 @@ class PoolsTable extends React.Component {
 					</tr>
 				);
 			});
-		else
+		} else
 			return (
 				<tr key={Math.random()}>
 					<td />

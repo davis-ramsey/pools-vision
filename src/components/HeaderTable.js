@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import history from '../history';
 import { numberWithCommas } from './helpers/balancerHelpers';
 
-class HeaderTable extends React.PureComponent {
+class HeaderTable extends React.Component {
+	shouldComponentUpdate(nextProps) {
+		if (this.props.balMultiplier !== nextProps.balMultiplier) return true;
+		else return false;
+	}
+
 	renderHeaderTable() {
 		if (this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'] && this.props.sumAdjLiq > 140683236)
 			return (
