@@ -224,10 +224,7 @@ class PoolViewer extends React.Component {
 		else
 			return (
 				<div class="ui active dimmer">
-					<div class="ui text loader">
-						Gathering data from the balancer subgraph! This may take a few seconds. Data will automatically
-						refresh every 5 minutes.
-					</div>
+					<div class="ui text loader">{this.props.error}</div>
 				</div>
 			);
 	}
@@ -242,7 +239,8 @@ const mapStateToProps = (state, ownProps) => {
 		allPools: state.balancer.pools,
 		moreShares: state.moreShares,
 		caps: state.caps,
-		balMultiplier: state.balMultiplier
+		balMultiplier: state.balMultiplier,
+		error: state.error
 	};
 };
 

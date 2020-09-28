@@ -12,6 +12,7 @@ import capsReducer from './capsReducer';
 import finalReducer from './finalReducer';
 import feeReducer from './feeReducer';
 import balMultiplierReducer from './balMultiplierReducer';
+import errorReducer from './errorReducer';
 
 export default combineReducers({
 	balancer: balancerReducer,
@@ -26,5 +27,6 @@ export default combineReducers({
 	caps: capsReducer,
 	sumFinal: finalReducer,
 	fees: feeReducer,
-	balMultiplier: balMultiplierReducer
+	balMultiplier: balMultiplierReducer,
+	error: errorReducer
 });

@@ -49,10 +49,7 @@ class TokenList extends React.PureComponent {
 					<td />
 					<td>
 						<div class="ui active dimmer">
-							<div class="ui text loader">
-								Gathering data from the balancer subgraph! This may take a few seconds. Data will
-								automatically refresh every 5 minutes.
-							</div>
+							<div class="ui text loader">{this.props.error}</div>
 						</div>
 					</td>
 				</tr>
@@ -78,7 +75,10 @@ class TokenList extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-	return { caps: state.caps };
+	return {
+		caps: state.caps,
+		error: state.error
+	};
 };
 
 export default connect(mapStateToProps)(TokenList);

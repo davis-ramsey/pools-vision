@@ -215,3 +215,7 @@ export const fetchPool = (id) => async (dispatch) => {
 	});
 	dispatch({ type: 'FETCH_POOL', payload: response.data });
 };
+
+export const errorMessage = (value) => (dispatch) => {
+	dispatch({ type: 'ERROR_MESSAGE', payload: value });
+};
