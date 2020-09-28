@@ -134,7 +134,7 @@ class Data extends React.Component {
 			this.props.errorMessage(
 				'An error occurred while trying to gather data. Another attempt will be made in 10 seconds. If this error persists, the subgraph or coingecko are likely experiencing downtime.'
 			);
-			setTimeout(() => this.gatherData(), 10000);
+			setTimeout(() => this.refreshData(), 10000);
 		}
 	}
 
