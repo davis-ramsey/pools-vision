@@ -54,7 +54,7 @@ class Data extends React.Component {
 	async gatherData() {
 		try {
 			this.props.errorMessage(
-				'Gathering data from the balancer subgraph! This may take a few seconds. Data will automatically refresh every 5 minutes.'
+				'Gathering data from the balancer subgraph! This may take a few seconds. Data will automatically refresh in the background every 5 minutes.'
 			);
 			await this.props.fetchPools(0);
 			for (let i = 1; i < 100; i++) {
