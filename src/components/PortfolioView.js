@@ -19,12 +19,6 @@ import {
 } from './helpers/balancerHelpers';
 
 class PortfolioView extends React.Component {
-	shouldComponentUpdate(nextProps) {
-		if (this.props.portfolio !== nextProps.portfolio) return true;
-		else if (this.props.balMultiplier !== nextProps.balMultiplier) return true;
-		else return false;
-	}
-
 	async componentDidMount() {
 		const pools = this.props.portfolio.split(',');
 		for (let pool of pools) {
