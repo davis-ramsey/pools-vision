@@ -20,10 +20,7 @@ import {
 
 class PortfolioView extends React.Component {
 	shouldComponentUpdate(nextProps) {
-		if (this.props.ownProps.userAddr !== nextProps.ownProps.userAddr) return true;
-		else if (this.props.portfolio !== nextProps.portfolio) return true;
-		else if (this.props.form && this.props.form.values && this.props.form.values !== nextProps.form.values)
-			return true;
+		if (this.props.portfolio !== nextProps.portfolio) return true;
 		else if (this.props.balMultiplier !== nextProps.balMultiplier) return true;
 		else return false;
 	}
