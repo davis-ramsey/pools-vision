@@ -23,10 +23,6 @@ class PoolViewer extends React.Component {
 		super(props);
 		this.timer = null;
 	}
-	shouldComponentUpdate(nextProps) {
-		if (this.props.balMultiplier !== nextProps.balMultiplier) return true;
-		else return false;
-	}
 	async componentDidMount() {
 		await this.props.fetchPool(this.props.viewPool);
 		this.timer = setInterval(async () => {
