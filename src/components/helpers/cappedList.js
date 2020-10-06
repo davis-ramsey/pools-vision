@@ -93,8 +93,7 @@ export const cap1 = [
 
 export const cap2 = [
 	'0xb4efd85c19999d84251304bda99e90b92300bd93', //RPL
-	'0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', //UNI
-	'0xbC396689893D065F41bc2C6EcbeE5e0085233447' //PERP
+	'0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984' //UNI
 ].map((item) => item.toLowerCase());
 
 export const cap4 = [
