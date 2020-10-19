@@ -28,13 +28,16 @@ export const softWrap = [
 		'0xF06DdacF71e2992E2122A1a0168C6967aFdf63ce', //uUSDrBTC-DEC
 		'0xD16c79c8A39D44B2F3eB45D2019cd6A42B03E2A9' //uUSDwETH-DEC
 	].map((item) => item.toLowerCase()), //WETH soft pegs sETH, WETH
-	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ],
+	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ].map((item) =>
+		item.toLowerCase()
+	),
 	//WBTC soft pegs wBTC, renBTC, imBTC,pBTC,sBTC
 	[
 		'0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
 		'0xeb4c2781e4eba804ce9a9803c67d0893436bb27d',
 		'0x3212b29e33587a00fb1c83346f5dbfa69a458923',
 		'0x5228a22e72ccc52d415ecfd199f99d0665e7733b',
-		'0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6'
-	]
+		'0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6',
+		'0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa' //tBTC
+	].map((item) => item.toLowerCase())
 ];
