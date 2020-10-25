@@ -93,7 +93,7 @@ export const renderTotalLiquidity = (pool, prices, ownership = 1) => {
 	for (let token of pool.tokens) {
 		const address = token.address;
 		let price = 0;
-		if (prices !== undefined && prices[address] !== undefined) price = prices[address].usd;
+		if (prices !== undefined && prices[address] !== undefined && prices[address].usd !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}
