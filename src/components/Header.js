@@ -56,10 +56,9 @@ class Header extends React.Component {
 				<div className="ui inverted horizontal divider">Page Last Refreshed: {Date()}</div>
 				<div className="ui black message" style={{ boxShadow: '0 0 0.5rem white', borderRadius: '10px' }}>
 					Total APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly
-					BAL distributions.<br />
+					BAL distributions. To filter by APY, first select an APY.<br />
 					<br />
-					<b>August 23rd Update:</b> Calculations updated to reflect recent governance changes with staking
-					boost and BAL Multiplier. To filter by APY, first select an APY.<br />
+					<b>October 31 Update:</b> Reward calculations are unlikely to change in the future but I continue to update caps and the whitelist each week. Still here, still hodling. <br />
 				</div>
 				<HeaderTable />
 			</div>
