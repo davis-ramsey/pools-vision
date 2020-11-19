@@ -73,14 +73,26 @@ class Data extends React.Component {
 					this.tokenNames[index] = token.symbol;
 				}
 			}
-			const a1 = this.addresses.slice(0, this.addresses.length / 4);
-			const a2 = this.addresses.slice(this.addresses.length / 4, this.addresses.length / 2);
-			const a3 = this.addresses.slice(this.addresses.length / 2, 3 * this.addresses.length / 4);
-			const a4 = this.addresses.slice(3 * this.addresses.length / 4, this.addresses.length);
+			const a1 = this.addresses.slice(0, this.addresses.length / 10);
+			const a2 = this.addresses.slice(this.addresses.length / 10, 2*this.addresses.length / 10);
+			const a3 = this.addresses.slice(2*this.addresses.length / 10, 3 * this.addresses.length / 10);
+			const a4 = this.addresses.slice(3 * this.addresses.length / 10, 4*this.addresses.length/10);
+			const a5 = this.addresses.slice(4 * this.addresses.length / 10, 5*this.addresses.length/10);
+			const a6 = this.addresses.slice(5 * this.addresses.length / 10, 6*this.addresses.length/10);
+			const a7 = this.addresses.slice(6 * this.addresses.length / 10, 7*this.addresses.length/10);
+			const a8 = this.addresses.slice(7 * this.addresses.length / 10, 8*this.addresses.length/10);
+			const a9 = this.addresses.slice(8 * this.addresses.length / 10, 9*this.addresses.length/10);
+			const a10 = this.addresses.slice(9 * this.addresses.length / 10, this.addresses.length);
 			await this.props.fetchPrice(a1.join(','));
 			await this.props.fetchPrice(a2.join(','));
 			await this.props.fetchPrice(a3.join(','));
 			await this.props.fetchPrice(a4.join(','));
+			await this.props.fetchPrice(a5.join(','));
+			await this.props.fetchPrice(a6.join(','));
+			await this.props.fetchPrice(a7.join(','));
+			await this.props.fetchPrice(a8.join(','));
+			await this.props.fetchPrice(a9.join(','));
+			await this.props.fetchPrice(a10.join(','));
 			tokenTotalBalance.forEach((item, index) => {
 				const price = this.addresses[index];
 				if (!this.props.prices[price]) return;
