@@ -105,10 +105,11 @@ class Data extends React.Component {
 			for (let cap of caps) if (cap.adj) this.sumFinalLiq += renderCapFactor(cap.addr, cap.adj) * cap.adj;
 			this.props.sumFinal(this.sumFinalLiq);
 			const stakerShare = this.sumFinalLiq / (1 - 45000 / 145000); //target liquidity
-			const tempLiquidity = this.newTotalLiquidity(3);
+                      const tempBoost = 3;
+                      const tempLiquidity = this.newTotalLiquidity(tempBoost);
 			const stakingBoost =
 				1 +
-				(3 - 1) * (stakerShare - this.sumFinalLiq) / (tempLiquidity[0] + tempLiquidity[1] - this.sumFinalLiq);
+				(tempBoost - 1) * (stakerShare - this.sumFinalLiq) / (tempLiquidity[0] + tempLiquidity[1] - this.sumFinalLiq);
 			const finalLiquidity = this.newTotalLiquidity(stakingBoost);
 			this.props.deleteFinal();
 			this.props.sumFinal(finalLiquidity[0] + finalLiquidity[1]);
