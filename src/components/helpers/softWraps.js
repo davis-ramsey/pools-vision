@@ -32,6 +32,10 @@ export const softWrap = [
 	[ '0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ].map((item) =>
 		item.toLowerCase()
 	),
+	// HEGIC & zHEGIC - should be hard
+	[ '0x584bC13c7D411c00c01A62e8019472dE68768430', '0x837010619aeb2ae24141605afc8f66577f6fb2e7' ].map((item) =>
+		item.toLowerCase()
+	),
 	//WBTC soft pegs wBTC, renBTC, imBTC,pBTC,sBTC
 	[
 		'0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
