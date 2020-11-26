@@ -14,6 +14,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+### (Prerequisite) Add Infura key
+
+#### Create keyfile
+`touch src/components/helpers/keys.js`
+
+#### Add following line to file (replace `<INFURA_ID>` with your Mainnet Infura ID)
+`export const infura = 'https://mainnet.infura.io/v3/<INFURA_ID>';`
+
 In the project directory, you can run:
 
 ### `npm start`
@@ -75,6 +83,12 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ad
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
 
+## Troubleshooting
+
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+### Chrome never loads
+
+The PrivacyBadger extension block requests to the CoinGecko API. Add the `pools.vision` to it's whitelist to bypass this.
