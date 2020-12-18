@@ -90,14 +90,17 @@ export const renderAssets = (pool) => {
 
 export const renderTotalLiquidity = (pool, prices, ownership = 1) => {
 	let total = 0;
+	let missingPrices = false;
 	for (let token of pool.tokens) {
 		const address = token.address;
 		let price = 0;
 		if (prices !== undefined && prices[address] !== undefined && prices[address].usd !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
+		if(price === 0) missingPrices = true;
 		total += price * balance;
 	}
 	if (isNaN(total)) return 0;
+	if(missingPrices) total = parseFloat(pool.liquidity)
 	total = total * ownership;
 	return Number(total.toFixed(2));
 };
@@ -327,13 +330,16 @@ export const renderTotalYield = (pool, prices, sumLiq, caps, balMultiplier) => {
 
 export const checkLiquidity = (pool, prices) => {
 	let total = 0;
+	let missingPrices = false;
 	for (let token of pool.tokens) {
 		const address = token.address;
 		let price = 0;
 		if (prices[address] !== undefined) price = prices[address].usd;
+		if (price ===0)missingPrices = true;
 		const balance = parseFloat(token.balance);
 		total += price * balance;
 	}
+	if(missingPrices) total = parseFloat(pool.liquidity)
 	return Number(total.toFixed(2));
 };
 export const renderYield = (pool, prices) => {
