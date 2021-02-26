@@ -192,6 +192,7 @@ export const cap2 = [
 export const cap4 = [
 	'0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', //MKR
 	'0xD46bA6D942050d489DBd938a2C909A5d5039A161', //AMPL
+	'0x6810e776880c02933d47db1b9fc05908e5386b96' //GNO
 ].map((item) => item.toLowerCase());
 
 export const cap5 = [
