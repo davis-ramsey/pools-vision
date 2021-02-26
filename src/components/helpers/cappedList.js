@@ -192,7 +192,6 @@ export const cap2 = [
 export const cap4 = [
 	'0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', //MKR
 	'0xD46bA6D942050d489DBd938a2C909A5d5039A161', //AMPL
-	'0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' //AAVE
 ].map((item) => item.toLowerCase());
 
 export const cap5 = [
