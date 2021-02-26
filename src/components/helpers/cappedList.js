@@ -194,3 +194,7 @@ export const cap4 = [
 	'0xD46bA6D942050d489DBd938a2C909A5d5039A161', //AMPL
 	'0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' //AAVE
 ].map((item) => item.toLowerCase());
+
+export const cap5 = [
+	'0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' //AAVE
+].map((item) => item.toLowerCase());

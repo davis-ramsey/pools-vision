@@ -5,7 +5,7 @@ import { colors, tokenAddresses, tokenColors } from './colors';
 import { softWrap } from './softWraps';
 import { unCapped } from './unCapped';
 import { BLACKLISTED_SHAREHOLDERS } from './shareHolders';
-import { cap1, cap2, cap4 } from './cappedList';
+import { cap1, cap2, cap4, cap5 } from './cappedList';
 
 async function fetchWhitelist() {
 	const response = await axios.get(
@@ -46,6 +46,8 @@ export const renderCapFactor = (address, adjLiq) => {
 		if (adjLiq > 3000000) return 3000000 / adjLiq;
 	} else if (cap4.includes(address)) {
 		if (adjLiq > 40000000) return 40000000 / adjLiq;
+	} else if (cap5.includes(address)) {
+		if (adjLiq > 100000000) return 100000000 / adjLiq;
 	} else if (adjLiq > 10000000) return 10000000 / adjLiq;
 	else return 1;
 	return 1;
