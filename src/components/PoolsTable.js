@@ -134,8 +134,8 @@ class PoolsTable extends React.Component {
 			const swapFee = (pool.swapFee * 100).toFixed(2);
 			const totalLiq = renderTotalLiquidity(pool, this.props.prices, ownership);
 			let finalAdj = ((liquidity[0] + liquidity[1]) * ownership).toFixed(2);
-			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
-				finalAdj = (liquidity[0] * userLiqOwnership).toFixed(2);
+			 if (ownership !== 1 && userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
+			 	finalAdj = (liquidity[0] * userLiqOwnership).toFixed(2);
 			const volume = renderVolume(pool, ownership);
 			const fees = renderFees(pool, ownership);
 			let annualBAL = (renderAdjLiquidity(
@@ -146,9 +146,9 @@ class PoolsTable extends React.Component {
 				1,
 				this.props.balMultiplier
 			) * ownership).toFixed(0);
-			if (userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
-				annualBAL = (liquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership).toFixed(0);
-			let apy = renderTotalYield(
+		 if (ownership !== 1 && userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
+		 	annualBAL = (liquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership).toFixed(0);
+				let apy = renderTotalYield(
 				pool,
 				this.props.prices,
 				this.props.sumLiq,
@@ -226,6 +226,7 @@ class PoolsTable extends React.Component {
 				if (pool === null) return <tr key={Math.random()} />;
 				const isActive = this.portfolioToggle(pool);
 				const button = this.portfolioButton(pool);
+				
 				return (
 					<tr key={pool.id} className={isActive}>
 						<td className="center aligned" data-label="Pool Address">
