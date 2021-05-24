@@ -121,6 +121,7 @@ class PoolsTable extends React.Component {
 			if (subpoolLiquidityProviders.length !== 1) {
 				lpOwnership = stakerOwnership(pool, subpoolLiquidityProviders[0]);
 			}
+			
 			const ownership = this.addressChecker(pool);
 			const userLiqOwnership = ownership * pool.totalShares / (lpOwnership * pool.totalShares);
 			if (ownership === 0 || !this.tokenChecker(pool) || !this.apyChecker(pool) || !this.totalLiqChecker(pool))
@@ -147,7 +148,7 @@ class PoolsTable extends React.Component {
 				this.props.balMultiplier
 			) * ownership).toFixed(0);
 		 if (ownership !== 1 && userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
-		 	annualBAL = (liquidity[0] / this.props.sumLiq * 145000 * 52 * userLiqOwnership).toFixed(0);
+		 	annualBAL = (liquidity[0] / this.props.sumLiq * 137500 * 52 * userLiqOwnership).toFixed(0);
 				let apy = renderTotalYield(
 				pool,
 				this.props.prices,
