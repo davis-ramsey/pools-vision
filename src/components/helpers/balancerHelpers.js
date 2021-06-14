@@ -288,10 +288,10 @@ export const renderAdjLiquidity = (pool, prices, sumLiq, caps, ownership = 1, ba
 	const liquidity = newTotalLiquidity(pool, prices, caps, balMultiplier);
 	const totalLiquidity = liquidity[0] + liquidity[1];
 	// renderRealAdj(pool, prices, caps, ownership, balMultiplier);
-	if (isNaN(totalLiquidity / sumLiq * 95000)) return 0;
+	if (isNaN(totalLiquidity / sumLiq * 77500)) return 0;
 	const lpOwners = lpOwnership(pool);
-	if (user === true) return totalLiquidity * lpOwners / sumLiq * 95000 * 52 * ownership;
-	return totalLiquidity / sumLiq * 95000 * 52 * ownership;
+	if (user === true) return totalLiquidity * lpOwners / sumLiq * 77500 * 52 * ownership;
+	return totalLiquidity / sumLiq * 77500 * 52 * ownership;
 };
 
 export const renderRealAdj = (pool, prices, caps, ownership = 1, balMultiplier) => {
@@ -319,9 +319,9 @@ export const renderTotalYield = (pool, prices, sumLiq, caps, balMultiplier) => {
 	if (totalLiquidity[1] !== 0) {
 		const lpOwners = lpOwnership(pool);
 		liquidity = liquidity * lpOwners;
-		annualBAL = newTotalLiquidity(pool, prices, caps, balMultiplier)[0] / sumLiq * 95000 * 52;
+		annualBAL = newTotalLiquidity(pool, prices, caps, balMultiplier)[0] / sumLiq * 77500 * 52;
 	}
-	if (isNaN(liquidity / sumLiq * 95000)) return 0;
+	if (isNaN(liquidity / sumLiq * 77500)) return 0;
 
 	const feeYield = parseFloat(renderYield(pool, prices)) * 365;
 	const priceBAL = prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
