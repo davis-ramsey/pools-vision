@@ -148,7 +148,8 @@ class PoolsTable extends React.Component {
 				this.props.balMultiplier
 			) * ownership).toFixed(0);
 		 if (ownership !== 1 && userLiqOwnership !== 0 && !isNaN(userLiqOwnership) && userLiqOwnership !== Infinity)
-		 	annualBAL = (liquidity[0] / this.props.sumLiq * 77500 * 52 * userLiqOwnership).toFixed(0);
+		 	annualBAL = (liquidity[0] / this.props.sumLiq * 55500 * 52 * userLiqOwnership).toFixed(0);
+			 if(pool.id === '0xc697051d1c6296c24ae3bcef39aca743861d9a81') annualBAL = 12500*52
 				let apy = renderTotalYield(
 				pool,
 				this.props.prices,

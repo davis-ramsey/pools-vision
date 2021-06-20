@@ -58,7 +58,7 @@ class Header extends React.Component {
 					Total APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly
 					BAL distributions. To filter by APY, first select an APY.<br />
 					<br />
-					<b>October 31 Update:</b> Reward calculations are unlikely to change in the future but I continue to update caps and the whitelist each week. Still here, still hodling. <br />
+					<b>June 19th, 2021 Update:</b> This pool explorer will continue to support Balancer v1. For Balancer v2 pools, please see the main UI https://app.balancer.fi/ <br />
 				</div>
 				<HeaderTable />
 			</div>
