@@ -17,7 +17,8 @@ import {
 	numberWithCommas,
 	newTotalLiquidity,
 	splitLiquidityProviders,
-	stakerOwnership
+	stakerOwnership,
+	balPerDay
 } from './helpers/balancerHelpers';
 import history from '../history';
 
@@ -139,6 +140,7 @@ class PoolsTable extends React.Component {
 			 	finalAdj = (liquidity[0] * userLiqOwnership).toFixed(2);
 			const volume = renderVolume(pool, ownership);
 			const fees = renderFees(pool, ownership);
+			let days = Math.floor((Math.floor(Date.now() / 1000) - pool.createTime)/86400)
 			let annualBAL = (renderAdjLiquidity(
 				pool,
 				this.props.prices,
@@ -164,9 +166,12 @@ class PoolsTable extends React.Component {
 				}
 			const balAPY = apy[0];
 			const feeAPY = apy[1];
-			const totalAPY = apy[2];
+			const totalAPY = apy[2];			
 			const toggleUserHoldings = this.renderToggle(pool, ownership);
 			const numLP = renderNumLP(pool, this.props.moreShares);
+			const feesPerDay = (Number((pool.totalSwapFee*1)) / days).toFixed(2);
+			const bpd = balPerDay(pool)
+			const pnl = (feesPerDay - (bpd * this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd)).toFixed(2)
 			return {
 				id,
 				chartAssets,
@@ -175,13 +180,14 @@ class PoolsTable extends React.Component {
 				totalLiq,
 				finalAdj,
 				volume,
-				fees,
-				annualBAL,
+				fees,annualBAL,
+				days,
 				balAPY,
 				feeAPY,
 				totalAPY,
 				toggleUserHoldings,
-				numLP
+				numLP,
+				feesPerDay,bpd,pnl
 			};
 		});
 		if (this.props.form && this.props.form.values && this.props.form.values.sortby) {
@@ -270,25 +276,22 @@ class PoolsTable extends React.Component {
 						</td>
 						<td className="center aligned" data-label="Total Liquidity">
 							<div className="ui">${numberWithCommas(pool.totalLiq)}</div>
-							<div className="ui" style={{ fontSize: '12px' }}>
-								Adj: ${numberWithCommas(pool.finalAdj)}
-							</div>
 						</td>
-						<td className="center aligned" data-label="24h Volume">
-							${numberWithCommas(pool.volume)}
+						<td className="center aligned" data-label="Days Passed">
+							{numberWithCommas(pool.days)}
 						</td>
-						<td className="center aligned" data-label="24h Fees">
-							${numberWithCommas(pool.fees)}
-						</td>
-						<td className="center aligned" data-label="Annual BAL">
-							{numberWithCommas(pool.annualBAL)}
-						</td>
-						<td className="center aligned" data-label="APY">
-							{this.renderAPY(pool)}%
+						<td className="center aligned" data-label="FPD">
+							${numberWithCommas(pool.feesPerDay)}
 						</td>
 						{pool.toggleUserHoldings}
 						<td className="center aligned" data-label="# of LP's">
 							{pool.numLP}
+						</td>
+						<td className="center aligned" data-label="BAL/day">
+							{pool.bpd}
+						</td>
+						<td className="center aligned" data-label="P/L">
+							${numberWithCommas(pool.pnl)}
 						</td>
 					</tr>
 				);

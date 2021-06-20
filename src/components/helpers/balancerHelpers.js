@@ -60,7 +60,7 @@ export const renderAssetsText = (pool) => {
 		if (tokenAddresses.indexOf(token.address) !== -1)
 			colorPick.push(tokenColors[tokenAddresses.findIndex((value) => value === token.address)]);
 		else colorPick.push(colors[index]);
-		const weight = token.denormWeight / pool.totalWeight;
+		const weight = token.weight / pool.totalWeight;
 		let percentage = (weight * 100).toFixed(2);
 		percentage = Number(percentage).toString() + '%';
 		assets.push(percentage + ' ' + token.symbol);
@@ -82,7 +82,7 @@ export const renderAssets = (pool) => {
 		if (tokenAddresses.indexOf(token.address) !== -1)
 			colorPick = tokenColors[tokenAddresses.findIndex((value) => value === token.address)];
 		else colorPick = colors[index];
-		const weight = token.denormWeight / pool.totalWeight;
+		const weight = token.weight / pool.totalWeight;
 		const percentage = parseFloat((weight * 100).toFixed(2));
 		const entry = { title: token.symbol, value: percentage, color: colorPick };
 		assets.push(entry);
@@ -131,7 +131,7 @@ export const totalFactor = (pool, balMultiplier) => {
 	for (let token of pool.tokens) {
 		if (whiteList.includes(token.address.toLowerCase())) {
 			addresses.push(token.address.toLowerCase());
-			weights.push(parseFloat(token.denormWeight));
+			weights.push(parseFloat(token.weight));
 		}
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair, balMultiplier);
@@ -146,7 +146,7 @@ export const wrapFactor = (pool) => {
 	for (let token of pool.tokens) {
 		if (whiteList.includes(token.address.toLowerCase())) {
 			addresses.push(token.address.toLowerCase());
-			weights.push(parseFloat(token.denormWeight));
+			weights.push(parseFloat(token.weight));
 		}
 	}
 	const wrapF = getWrapFactor(addresses, weights, isWrapPair, 0.2);
@@ -160,7 +160,7 @@ export const balFactor = (pool, balMultiplier = 2) => {
 	for (let token of pool.tokens) {
 		if (whiteList.includes(token.address.toLowerCase())) {
 			addresses.push(token.address.toLowerCase());
-			weights.push(parseFloat(token.denormWeight));
+			weights.push(parseFloat(token.weight));
 		}
 	}
 	const balFactor = getBalFactor(addresses, weights, balPair, balMultiplier);
@@ -380,6 +380,19 @@ export const renderNumLP = (pool, moreShares) => {
 
 export const renderLifetimeFees = (pool) => {
 	const swapFee = pool.swapFee;
-	const totalVolume = pool.totalSwapVolume;
-	return Number((totalVolume * swapFee).toFixed(2));
+	const totalVolume = pool.totalSwapFee;
+	return Number((totalVolume*1).toFixed(2));
+};
+
+export const balPerDay = (pool) => {
+	const tier1 = ['0xa6f548df93de924d73be7d25dc02554c6bd66db500020000000000000000000e','0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014','0x0b09dea16768f0799065c475be02919503cb2a3500020000000000000000001a'];
+	const tier2 = ['0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014','0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014','0x96646936b91d6b9d7d0c47c496afbf3d6ec7b6f8000200000000000000000019']
+	const tier3 = ['0xaac98ee71d4f8a156b6abaa6844cdb7789d086ce00020000000000000000001b','0xff083f57a556bfb3bbe46ea1b4fa154b2b1fbe88000200000000000000000030','0xec60a5fef79a92c741cb74fdd6bfc340c0279b01000200000000000000000015','0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027','0xe99481dc77691d8e2456e5f3f61c1810adfc1503000200000000000000000018','0xefaa1604e82e1b3af8430b90192c1b9e8197e377000200000000000000000021']
+	const tier4 = ['0xa02e4b3d18d4e6b8d18ac421fbc3dfff8933c40a00020000000000000000004b','0x61d5dc44849c9c87b0856a2a311536205c96c7fd000100000000000000000001']
+	let balPerDay = 0;
+	for(let pool1 of tier1) if (pool1 === pool.id) balPerDay = balPerDay + 15000/7;
+	for(let pool2 of tier2) if (pool2 === pool.id) balPerDay = balPerDay + 5000/7;
+	for(let pool3 of tier3) if (pool3 === pool.id) balPerDay = balPerDay + 2500/7;
+	for(let pool4 of tier4) if (pool4 === pool.id) balPerDay = balPerDay + 1000/7;
+	return balPerDay.toFixed(2);
 };

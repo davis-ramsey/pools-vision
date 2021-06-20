@@ -10,7 +10,7 @@ class HeaderTable extends React.Component {
 	}
 
 	renderHeaderTable() {
-		if (this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'] && this.props.sumAdjLiq > 140683236)
+		if (this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'])
 			return (
 				<tr key={'first'}>
 					<td className="center aligned" data-label="BAL Price">
@@ -32,7 +32,7 @@ class HeaderTable extends React.Component {
 						${numberWithCommas(this.props.sumFinal.toFixed(0))}
 					</td>
 					<td className="center aligned" data-label="BAL Multiplier">
-						{this.props.balMultiplier.toFixed(2)}
+						{0}
 					</td>
 					<td className="center aligned" data-label="Top Tokens & CapFactors">
 						<button

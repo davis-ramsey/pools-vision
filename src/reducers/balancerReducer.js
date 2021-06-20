@@ -9,7 +9,8 @@ export default (state = INITIAL_STATE, action) => {
 			const check = state['pools'];
 			if (check !== 0) pools = [ ...state.pools, ...action.payload.data.pools ];
 			else pools = action.payload.data.pools;
-			return { ...state, pools };
+			let balancers = action.payload.data.balancers
+			return { ...state, pools, balancers };
 		}
 
 		case 'REMOVE_POOLS':

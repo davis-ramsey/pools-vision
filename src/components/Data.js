@@ -98,10 +98,10 @@ class Data extends React.Component {
 				if (!this.props.prices[price]) return;
 				tokenTotalBalance[index] = item * this.props.prices[price].usd;
 			});
-			for (const pool of this.props.pools) {
-				this.adjLiquidity(pool);
-				this.getTotalVolume(pool);
-			}
+for (const pool of this.props.pools) {
+	this.adjLiquidity(pool);
+	this.getTotalVolume(pool);
+}
 			const addrs = this.addresses;
 			const tokenAdj = this.tokenAdjBalance;
 			const names = this.tokenNames;
@@ -110,12 +110,13 @@ class Data extends React.Component {
 				caps.push({ addr: addrs[index], name: names[index], total: item, adj: tokenAdj[index] })
 			);
 			this.props.addCaps(caps);
-			this.props.sumAllLiq(this.sumTotalLiq);
-			this.props.sumAllVol(this.sumVolume);
-			this.props.sumLiquidity(this.sumTotalAdjLiq);
-			this.props.sumFees(this.sumFees);
+			this.props.sumAllLiq(this.props.balancers[0].totalLiquidity);
+			this.props.sumAllVol(0);
+			this.props.sumLiquidity(0);
+			this.props.sumFees(0);
 			for (let cap of caps) if (cap.adj) this.sumFinalLiq += renderCapFactor(cap.addr, cap.adj) * cap.adj;
-			this.props.sumFinal(this.sumFinalLiq);
+			this.sumFinalLiq = this.props.balancers.totalLiquidity
+			this.props.sumFinal(0);
 			const stakerShare = this.sumFinalLiq / (1 - 45000 / 145000); //target liquidity
                       const tempBoost = 3;
                       const tempLiquidity = this.newTotalLiquidity(tempBoost);
@@ -210,11 +211,9 @@ class Data extends React.Component {
 
 	getTotalVolume(pool) {
 		const totalSwapVolume = pool.totalSwapVolume;
-		if (pool.swaps[0] === undefined) return;
-		const swap = pool.swaps[0].poolTotalSwapVolume;
+		const swap = pool.totalSwapVolume;
 		const volume = totalSwapVolume - swap;
-		this.sumVolume += volume;
-		this.sumFees += volume * pool.swapFee;
+		
 	}
 
 	disableRefresh = () => {
@@ -243,6 +242,7 @@ class Data extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		pools: state.balancer.pools,
+		balancers: state.balancer.balancers,
 		prices: state.coingecko,
 		portfolioPools: state.poolReducer,
 		poolsList: state.portfolio,

@@ -3,26 +3,27 @@ import axios from 'axios';
 
 export const addShares = ({ id }, num) => async (dispatch) => {
 	const response = await axios({
-		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
 		method: 'post',
 		data: {
 			query: `{
       pools (where: {id: "${id}"}) {
 				id
-				publicSwap
-				finalized
 				swapFee
-				totalWeight
 				totalShares
 				totalSwapVolume
 				tokensList
+				totalWeight
+				totalSwapFee
+				totalSwapVolume
+				createTime
 				tokens {
 					id
 					address
 					balance
 					decimals
 					symbol
-					denormWeight
+					weight
 				}
        shares (first: 1000, skip: ${1000 * num}, orderBy: balance, orderDirection: desc, where:{balance_gt:"0"}) {
         id
@@ -39,7 +40,6 @@ export const addShares = ({ id }, num) => async (dispatch) => {
 					 tokenOut
 					 tokenOutSym
 					 tokenAmountOut
-					 poolTotalSwapVolume
 				 }
      }
    }`
@@ -54,27 +54,27 @@ export const deleteShares = () => (dispatch) => {
 
 export const fetchPools = (num) => async (dispatch) => {
 	const response = await axios({
-		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
 		method: 'post',
 		data: {
 			query: `{
-				pools (first: 1000, skip: ${num * 1000}, where:{publicSwap: true},orderBy: liquidity, orderDirection: desc) {
+				pools (first: 1000, skip: ${num * 1000}, orderBy: totalLiquidity, orderDirection: desc) {
 					id
-				 publicSwap
-				 finalized
-				 liquidity
+					totalLiquidity
 				 swapFee
-				 totalWeight
 				 totalShares
+				 totalWeight
 				 totalSwapVolume
+				 totalSwapFee
 				 tokensList
+				 createTime
 				 tokens {
 					 id
 					 address
 					 balance
 					 decimals
 					 symbol
-					 denormWeight
+					 weight
 				 }
 				 shares (first: 1000, where:{balance_gt:"0"}, orderBy: balance, orderDirection: desc) {
 					id
@@ -91,9 +91,13 @@ export const fetchPools = (num) => async (dispatch) => {
 					 tokenOut
 					 tokenOutSym
 					 tokenAmountOut
-					 poolTotalSwapVolume
 				 }
 			 }
+balancers {
+	totalLiquidity
+	totalSwapVolume
+	totalSwapFee
+}
 		 }`
 		}
 	});
@@ -192,7 +196,7 @@ export const fetchPool = (id) => async (dispatch) => {
              balance
              decimals
              symbol
-             denormWeight
+             weight
 					 }
 					 shares (first: 1000, where:{balance_gt:"0"}, orderBy: balance, orderDirection: desc) {
 						id

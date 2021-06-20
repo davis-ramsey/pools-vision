@@ -62,7 +62,7 @@ class PoolViewer extends React.Component {
 		const pool = this.props.pool[this.props.viewPool];
 		const assets = [];
 		for (let token of pool.tokens) {
-			const weight = token.denormWeight / pool.totalWeight;
+			const weight = token.weight / pool.totalWeight;
 			const percentage = (weight * 100).toFixed(2) + '%';
 			assets.push(percentage + ' ' + token.symbol);
 		}

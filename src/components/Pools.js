@@ -25,12 +25,12 @@ class Pools extends React.Component {
 							<th className="center aligned">Assets</th>
 							<th className="center aligned">Swap Fee</th>
 							<th className="center aligned">Total Liquidity</th>
-							<th className="center aligned">24h Volume</th>
-							<th className="center aligned">24h Fees</th>
-							<th className="center aligned">Annual BAL</th>
-							<th className="center aligned">APY</th>
+							<th className="center aligned">Days Passed</th>
+							<th className="center aligned">FPD</th>
 							{this.renderToggle()}
 							<th className="center aligned"># of LP's</th>
+							<th className="center aligned">BAL/day</th>
+							<th className="center aligned">P/L</th>
 						</tr>
 					</thead>
 					<tbody>

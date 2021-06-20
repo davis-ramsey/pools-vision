@@ -5,7 +5,7 @@ export const feeFactor = (swapFee) => {
 // const ratioFactor = (pool) => {
 // 	const w = [];
 // 	for (let token of pool.tokens) {
-// 		w.push(token.denormWeight / pool.totalWeight);
+// 		w.push(token.weight / pool.totalWeight);
 // 	}
 // 	if (w.length === 2) return 4 * (w[0] * w[1]) * w[0] * w[1] / (w[0] * w[1]);
 // 	if (w.length === 3)
