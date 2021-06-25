@@ -10,11 +10,11 @@ class HeaderTable extends React.Component {
 	}
 
 	renderHeaderTable() {
-		if (this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'])
+		if (this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'])
 			return (
 				<tr key={'first'}>
 					<td className="center aligned" data-label="BAL Price">
-						${this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd.toFixed(2)}
+						${this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd.toFixed(2)}
 					</td>
 					<td className="center aligned" data-label="24h Volume">
 						${numberWithCommas(this.props.sumVol.toFixed(0))}

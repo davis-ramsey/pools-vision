@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const addShares = ({ id }, num) => async (dispatch) => {
 	const response = await axios({
-		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2',
 		method: 'post',
 		data: {
 			query: `{
@@ -54,7 +54,7 @@ export const deleteShares = () => (dispatch) => {
 
 export const fetchPools = (num) => async (dispatch) => {
 	const response = await axios({
-		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2',
 		method: 'post',
 		data: {
 			query: `{
@@ -113,7 +113,7 @@ export const deletePrices = () => (dispatch) => {
 };
 
 export const fetchPrice = (address) => async (dispatch) => {
-	const response = await coingecko.get(`/ethereum?contract_addresses=${address}&vs_currencies=usd`);
+	const response = await coingecko.get(`/polygon-pos?contract_addresses=${address}&vs_currencies=usd`);
 	dispatch({ type: 'FETCH_PRICE', payload: response.data });
 };
 

@@ -171,7 +171,7 @@ class PoolsTable extends React.Component {
 			const numLP = renderNumLP(pool, this.props.moreShares);
 			const feesPerDay = (Number((pool.totalSwapFee*1)) / days).toFixed(2);
 			const bpd = balPerDay(pool)
-			const pnl = (feesPerDay - (bpd * this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd)).toFixed(2)
+			const pnl = (feesPerDay - (bpd * this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd)).toFixed(2)
 			return {
 				id,
 				chartAssets,
