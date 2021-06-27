@@ -55,10 +55,13 @@ class Header extends React.Component {
 				{this.renderMenu()}
 				<div className="ui inverted horizontal divider">Page Last Refreshed: {Date()}</div>
 				<div className="ui black message" style={{ boxShadow: '0 0 0.5rem white', borderRadius: '10px' }}>
-					Total APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly
-					BAL distributions. To filter by APY, first select an APY.<br />
+Est Liquidity: Liquidity calculated by multiplying USDC balance in the pool. If no USDC in pool, then 0.<br />
+Days Passed: Days since pool creation<br/>
+FPD: Average Fees Per Day over pool's lifetime. <br/>
+Avg APY: Average Fee APY since pool creation <br/>
+Total APY: All rewards APY plus Avg. Fee APY<br/>
 					<br />
-					<b>THIS IS V2 - POLYGON</b> <br />
+					<b>Welcome to Balancer v2 on Polygon!</b> Click a pool address to see that pool on the main UI at https://polygon.balancer.fi/#/<br />
 				</div>
 				<HeaderTable />
 			</div>

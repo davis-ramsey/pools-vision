@@ -174,14 +174,19 @@ class PoolsTable extends React.Component {
 					apy[1] = 0;
 					apy[2] = 0;
 				}
-			const balAPY = apy[0];
-			const feeAPY = (Number((pool.totalSwapFee*1)) / days * 365 *100 / totalLiq).toFixed(2);
+			const feeAPY = (Number((pool.totalSwapFee*1)) / days * 365 *100 / renderTotalLiquidity(pool, this.props.prices)).toFixed(2);
 			const totalAPY = apy[2];			
 			const toggleUserHoldings = this.renderToggle(pool, ownership);
 			const numLP = renderNumLP(pool, this.props.moreShares);
 			const feesPerDay = (Number((pool.totalSwapFee*1)) / days).toFixed(2);
 			const bpd = balPerDay(pool)
-			const pnl = (feesPerDay - (bpd * this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd)).toFixed(2)
+			const balAPY = (bpd * this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd / renderTotalLiquidity(pool, this.props.prices) * 365 * 100).toFixed(2)
+			const maticPerDay = 53571.42 * bpd/3071.42;
+			const maticAPY = (maticPerDay * this.props.prices['0x0000000000000000000000000000000000001010'].usd / renderTotalLiquidity(pool, this.props.prices) * 365 * 100).toFixed(2)
+			let qiAPY = 0;
+			if(id==='0xf461f2240b66d55dcf9059e26c022160c06863bf000100000000000000000006') qiAPY = (15000/7 * this.props.prices['0x580a84c73811e1839f75d86d75d88cca0c241ff4'].usd / renderTotalLiquidity(pool, this.props.prices) * 365 * 100).toFixed(2)
+			//const pnl = (feesPerDay - (bpd * this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd)).toFixed(2)
+			const sumAPY = (parseFloat(balAPY) + parseFloat(maticAPY) + parseFloat(qiAPY) + parseFloat(feeAPY)).toFixed(2);
 			return {
 				id,
 				chartAssets,
@@ -194,11 +199,13 @@ class PoolsTable extends React.Component {
 				fees,annualBAL,
 				days,
 				balAPY,
+				qiAPY,
+				maticAPY,
 				feeAPY,
 				totalAPY,
 				toggleUserHoldings,
 				numLP,
-				feesPerDay,bpd,pnl
+				feesPerDay,bpd,sumAPY
 			};
 		});
 		if (this.props.form && this.props.form.values && this.props.form.values.sortby) {
@@ -251,18 +258,17 @@ class PoolsTable extends React.Component {
 							<a
 								target="_blank"
 								rel="noopener noreferrer"
-								href={`https://pools.balancer.exchange/#/pool/${pool.id}`}
+								href={`https://polygon.balancer.fi/#/pool/${pool.id}`}
 							>
 								<button className="ui small inverted floating compact centered button">
 									...{pool.id.slice(-8)}
 								</button>{' '}
 							</a>
-							{button}
+							
 						</td>
 						<td
 							className="mini center aligned selectable"
 							data-label="Assets"
-							onClick={() => history.push(`/pool/${pool.id}`)}
 							style={{
 								display: 'flex',
 								justifyContent: 'center',
@@ -276,7 +282,6 @@ class PoolsTable extends React.Component {
 								<PieChart
 									className="ui tiny circular image"
 									data={pool.chartAssets}
-									onClick={() => history.push(`/pool/${pool.id}`)}
 									style={{ padding: '5%' }}
 								/>
 							</div>
@@ -304,11 +309,19 @@ class PoolsTable extends React.Component {
 						<td className="center aligned" data-label="# of LP's">
 							{pool.numLP}
 						</td>
-						<td className="center aligned" data-label="BAL/day">
-							{pool.bpd}
+						<td className="center aligned" data-label="Rewards APY">
+						<div className="ui" style={{ fontSize: '12px' }}>
+						BAL {numberWithCommas(pool.balAPY)}%
+						</div>
+						<div className="ui" style={{ fontSize: '12px' }}>
+						MATIC {numberWithCommas(pool.maticAPY)}%
+						</div>
+						<div className="ui" style={{ fontSize: '12px' }}>
+						QI {numberWithCommas(pool.qiAPY)}%
+						</div>
 						</td>
-						<td className="center aligned" data-label="P/L">
-							${numberWithCommas(pool.pnl)}
+						<td className="center aligned" data-label="Total APY">
+							{numberWithCommas(pool.sumAPY)}%
 						</td>
 					</tr>
 				);
