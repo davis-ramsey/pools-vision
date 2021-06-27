@@ -131,6 +131,14 @@ class PoolsTable extends React.Component {
 			if (check === 0) return null;
 			const liquidity = newTotalLiquidity(pool, this.props.prices, this.props.caps, this.props.balMultiplier);
 			const id = pool.id;
+			if(id === "0x0297e37f1873d2dab4487aa67cd56b58e2f27875000100000000000000000002") {
+				pool.swapFee = 0.0025;
+				pool.totalSwapFee = parseFloat(pool.totalSwapVolume) * 0.0025
+			}
+			if(id === "0xf461f2240b66d55dcf9059e26c022160c06863bf000100000000000000000006") {
+				pool.swapFee = 0.0025;
+				pool.totalSwapFee = parseFloat(pool.totalSwapVolume) * 0.0025
+			}
 			const chartAssets = renderAssets(pool);
 			const assetText = renderAssetsText(pool);
 			const swapFee = (pool.swapFee * 100).toFixed(2);
@@ -140,6 +148,8 @@ class PoolsTable extends React.Component {
 			 	finalAdj = (liquidity[0] * userLiqOwnership).toFixed(2);
 			const volume = renderVolume(pool, ownership);
 			const fees = renderFees(pool, ownership);
+			let estLiq = 0;
+			for(const token of pool.tokens) if(token.address === '0x2791bca1f2de4661ed88a30c99a7a9449aa84174') estLiq = (parseFloat(token.balance) * pool.tokens.length*ownership).toFixed(2);
 			let days = Math.floor((Math.floor(Date.now() / 1000) - pool.createTime)/86400)
 			let annualBAL = (renderAdjLiquidity(
 				pool,
@@ -165,7 +175,7 @@ class PoolsTable extends React.Component {
 					apy[2] = 0;
 				}
 			const balAPY = apy[0];
-			const feeAPY = apy[1];
+			const feeAPY = (Number((pool.totalSwapFee*1)) / days * 365 *100 / totalLiq).toFixed(2);
 			const totalAPY = apy[2];			
 			const toggleUserHoldings = this.renderToggle(pool, ownership);
 			const numLP = renderNumLP(pool, this.props.moreShares);
@@ -179,6 +189,7 @@ class PoolsTable extends React.Component {
 				swapFee,
 				totalLiq,
 				finalAdj,
+				estLiq,
 				volume,
 				fees,annualBAL,
 				days,
@@ -276,12 +287,18 @@ class PoolsTable extends React.Component {
 						</td>
 						<td className="center aligned" data-label="Total Liquidity">
 							<div className="ui">${numberWithCommas(pool.totalLiq)}</div>
+							<div className="ui" style={{ fontSize: '12px' }}>
+								Est: ${numberWithCommas(pool.estLiq)}
+							</div>
 						</td>
 						<td className="center aligned" data-label="Days Passed">
 							{numberWithCommas(pool.days)}
 						</td>
 						<td className="center aligned" data-label="FPD">
-							${numberWithCommas(pool.feesPerDay)}
+						<div className="ui">${numberWithCommas(pool.feesPerDay)}</div>
+							<div className="ui" style={{ fontSize: '12px' }}>
+								Avg APY: {(pool.feeAPY)}%
+							</div>
 						</td>
 						{pool.toggleUserHoldings}
 						<td className="center aligned" data-label="# of LP's">

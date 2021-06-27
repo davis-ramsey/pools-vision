@@ -47,6 +47,13 @@ class UserTotals extends React.Component {
 		const totalLiquidity = newTotalLiquidity(pool, this.props.prices, this.props.caps, this.props.balMultiplier);
 		const userLiqOwnership = userBalance * pool.totalShares / (lpOwnership * pool.totalShares);
 		if (userBalance !== 0) {
+			let count = 0;
+			for(const token of pool.tokens) {
+				if(token.address === '0x2791bca1f2de4661ed88a30c99a7a9449aa84174') {
+					this.userSum.estLiq.push(parseFloat(token.balance) * pool.tokens.length*userBalance).toFixed(2);
+				count++}
+			}
+			if(count === 0)this.userSum.estLiq.push(parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance)));
 			this.userSum.Liq.push(parseFloat(renderTotalLiquidity(pool, this.props.prices, userBalance)));
 			if (parseFloat(renderVolume(pool, userBalance)) !== 0)
 				this.userSum.Vol += parseFloat(renderVolume(pool, userBalance).split(',').join(''));
@@ -84,6 +91,12 @@ class UserTotals extends React.Component {
 		return sum;
 	}
 
+	renderEstLiq(){
+		let sum = 0;
+		for (let liq of this.userSum.estLiq) sum += liq;
+		return sum;
+	}
+
 	renderAvgApy() {
 		let weightedSum = 0;
 		let sumLiq = 0;
@@ -101,7 +114,8 @@ class UserTotals extends React.Component {
 			Vol: 0,
 			Fees: 0,
 			Bal: 0,
-			AvgAPY: []
+			AvgAPY: [],
+			estLiq: []
 		};
 		const nav = this.props.ownProps.userAddr.location.pathname;
 		if (!nav.includes('/user/')) return null;
@@ -109,7 +123,7 @@ class UserTotals extends React.Component {
 			this.props.pools &&
 			this.props.prices &&
 			this.props.portfolio &&
-			this.props.sumLiq > 138683236 &&
+			this.props.sumLiq > 0 &&
 			this.props.caps[5]
 		)
 			this.props.pools.map((pool) => {
@@ -125,10 +139,10 @@ class UserTotals extends React.Component {
 				</td>
 				<td className="center aligned" data-label="Swap Fee" />
 				<td className="center aligned" data-label="Total Liquidity">
-					${numberWithCommas(this.renderLiq().toFixed(2))}
+				${numberWithCommas(this.renderLiq().toFixed(2))}
 				</td>
 				<td className="center aligned" data-label="24h Volume">
-					${numberWithCommas(this.userSum.Vol.toFixed(2))}
+				Est: ${numberWithCommas(this.renderEstLiq().toFixed(2))}
 				</td>
 				<td className="center aligned" data-label="24h Fees">
 					${numberWithCommas(this.userSum.Fees.toFixed(2))}

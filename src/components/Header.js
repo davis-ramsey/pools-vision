@@ -58,7 +58,7 @@ class Header extends React.Component {
 					Total APY is calculated using 24h fee yield extrapolated to an annualized rate plus yield on weekly
 					BAL distributions. To filter by APY, first select an APY.<br />
 					<br />
-					<b>THIS IS V2</b> <br />
+					<b>THIS IS V2 - POLYGON</b> <br />
 				</div>
 				<HeaderTable />
 			</div>
