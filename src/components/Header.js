@@ -61,7 +61,7 @@ FPD: Average Fees Per Day over pool's lifetime. <br/>
 Avg APY: Average Fee APY since pool creation <br/>
 Total APY: All rewards APY plus Avg. Fee APY<br/>
 					<br />
-					<b>Welcome to Balancer v2 on Polygon!</b> Click a pool address to see that pool on the main UI at https://polygon.balancer.fi/#/<br />
+					<b>Welcome to Balancer v2 on Polygon! For up to date APY's, please refer to the main Balancer UI at https://polygon.balancer.fi/#/</b><br />
 				</div>
 				<HeaderTable />
 			</div>
