@@ -118,7 +118,7 @@ class PoolViewer extends React.Component {
 								target="_blank"
 								rel="noopener noreferrer"
 								href={`https://etherscan.io/tx/${swap.tx}`}
-							>{new Date(swap.timestamp*1000).toLocaleTimeString("en-US")}
+							>{new Date(swap.timestamp*1000).toLocaleTimeString()}
 							</a>
 					</td>
 				</tr>
