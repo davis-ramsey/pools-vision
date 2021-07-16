@@ -29,8 +29,8 @@ class Pools extends React.Component {
 							<th className="center aligned">FPD</th>
 							{this.renderToggle()}
 							<th className="center aligned"># of LP's</th>
-							<th className="center aligned">BAL/day</th>
-							<th className="center aligned">P/L</th>
+							<th className="center aligned">Rewards APR</th>
+							<th className="center aligned">Total APR</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -128,7 +128,7 @@ class PoolViewer extends React.Component {
 
 	render() {
 		if (
-			this.props.pool[this.props.viewPool] && this.props.prices['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'] && this.props.caps[5]
+			this.props.pool[this.props.viewPool] && this.props.caps[5]
 		)
 			return (
 				<div>

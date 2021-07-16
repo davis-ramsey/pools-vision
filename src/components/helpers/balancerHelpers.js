@@ -209,15 +209,15 @@ export const splitLiquidityProviders = (pool) => {
 		for (const token2 of pool.tokens) {
 			if (token1.address !== token2.address) {
 				if (
-					token1.address === '0xba100000625a3754423978a60c9317c58a424e3d' ||
-					token2.address === '0xba100000625a3754423978a60c9317c58a424e3d'
+					token1.address === '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' ||
+					token2.address === '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
 				) {
 					includesBal = true;
 				}
 				if (
-					(token2.address === '0xba100000625a3754423978a60c9317c58a424e3d' &&
+					(token2.address === '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' &&
 						unCapped[0].includes(token1.address)) ||
-					(token1.address === '0xba100000625a3754423978a60c9317c58a424e3d' &&
+					(token1.address === '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' &&
 						unCapped[0].includes(token2.address))
 				)
 					includesUncappedTokenPair = true;
@@ -268,9 +268,9 @@ export const stakerOwnership = (pool, lps) => {
 };
 
 function balPair(token1, weight1, token2, weight2, balMultiplier) {
-	if (token1 === '0xba100000625a3754423978a60c9317c58a424e3d' && unCapped[0].includes(token2))
+	if (token1 === '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' && unCapped[0].includes(token2))
 		return (balMultiplier * weight1 + weight2) / (weight1 + weight2);
-	else if (token2 === '0xba100000625a3754423978a60c9317c58a424e3d' && unCapped[0].includes(token1))
+	else if (token2 === '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' && unCapped[0].includes(token1))
 		return (weight1 + balMultiplier * weight2) / (weight1 + weight2);
 	else return 1;
 }
@@ -324,7 +324,7 @@ export const renderTotalYield = (pool, prices, sumLiq, caps, balMultiplier) => {
 	if (isNaN(liquidity / sumLiq * 125000)) return 0;
 
 	const feeYield = parseFloat(renderYield(pool, prices)) * 365;
-	const priceBAL = prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd;
+	const priceBAL = prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd;
 	const yieldBAL = parseFloat(annualBAL * priceBAL / liquidity * 100);
 	const totalYield = yieldBAL + feeYield;
 	return [ yieldBAL.toFixed(2), feeYield.toFixed(2), totalYield.toFixed(2) ];
@@ -385,10 +385,10 @@ export const renderLifetimeFees = (pool) => {
 };
 
 export const balPerDay = (pool) => {
-	const tier1 = ['0xa6f548df93de924d73be7d25dc02554c6bd66db500020000000000000000000e','0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014','0x0b09dea16768f0799065c475be02919503cb2a3500020000000000000000001a'];
-	const tier2 = ['0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014','0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014','0x96646936b91d6b9d7d0c47c496afbf3d6ec7b6f8000200000000000000000019']
-	const tier3 = ['0xaac98ee71d4f8a156b6abaa6844cdb7789d086ce00020000000000000000001b','0xff083f57a556bfb3bbe46ea1b4fa154b2b1fbe88000200000000000000000030','0xec60a5fef79a92c741cb74fdd6bfc340c0279b01000200000000000000000015','0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027','0xe99481dc77691d8e2456e5f3f61c1810adfc1503000200000000000000000018','0xefaa1604e82e1b3af8430b90192c1b9e8197e377000200000000000000000021']
-	const tier4 = ['0xa02e4b3d18d4e6b8d18ac421fbc3dfff8933c40a00020000000000000000004b','0x61d5dc44849c9c87b0856a2a311536205c96c7fd000100000000000000000001']
+	const tier1 = [];
+	const tier2 = [];
+	const tier3 = []
+	const tier4 = []
 	let balPerDay = 0;
 	for(let pool1 of tier1) if (pool1 === pool.id) balPerDay = balPerDay + 15000/7;
 	for(let pool2 of tier2) if (pool2 === pool.id) balPerDay = balPerDay + 5000/7;

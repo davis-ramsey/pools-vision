@@ -10,29 +10,29 @@ class HeaderTable extends React.Component {
 	}
 
 	renderHeaderTable() {
-		if (this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'])
+		if (this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'])
 			return (
 				<tr key={'first'}>
 					<td className="center aligned" data-label="BAL Price">
-						${this.props.prices['0xba100000625a3754423978a60c9317c58a424e3d'].usd.toFixed(2)}
+						${this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'].usd.toFixed(2)}
 					</td>
 					<td className="center aligned" data-label="24h Volume">
-						${numberWithCommas(this.props.sumVol.toFixed(0))}
+						N/A
 					</td>
 					<td className="center aligned" data-label="24h Fees Earned">
-						${numberWithCommas(this.props.fees.toFixed(0))}
+						N/A
 					</td>
 					<td className="center aligned" data-label="Total Liquidity">
 						${numberWithCommas(this.props.sumTotalLiq.toFixed(0))}
 					</td>
-					<td className="center aligned" data-label="Total Adj. Liquidity">
+					<td className="center aligned" data-label="Lifetime Volume">
 						${numberWithCommas(this.props.sumAdjLiq.toFixed(0))}
 					</td>
-					<td className="center aligned" data-label="Adj. Liquidity w/Staking">
+					<td className="center aligned" data-label="Lifetime Swap Fees">
 						${numberWithCommas(this.props.sumFinal.toFixed(0))}
 					</td>
 					<td className="center aligned" data-label="BAL Multiplier">
-						{0}
+						N/A
 					</td>
 					<td className="center aligned" data-label="Top Tokens & CapFactors">
 						<button
@@ -63,8 +63,8 @@ class HeaderTable extends React.Component {
 							<th className="center aligned">24h Volume</th>
 							<th className="center aligned">24h Fees Earned</th>
 							<th className="center aligned">Total Liquidity</th>
-							<th className="center aligned">Adj. Liquidity</th>
-							<th className="center aligned">Adj. Liquidity w/Staking</th>
+							<th className="center aligned">Lifetime Volume</th>
+							<th className="center aligned">Lifetime Swap Fees</th>
 							<th className="center aligned">BAL Multiplier</th>
 							<th className="center aligned">Top Tokens & CapFactors</th>
 						</tr>

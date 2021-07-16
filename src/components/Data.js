@@ -66,6 +66,7 @@ class Data extends React.Component {
 					await this.props.addShares(pool, 1);
 				}
 				for (const token of pool.tokens) {
+					if(token.address === '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270') token.address = '0x0000000000000000000000000000000000001010'
 					if (this.addresses.indexOf(token.address) === -1) this.addresses.push(token.address);
 					const index = this.addresses.indexOf(token.address);
 					if (!tokenTotalBalance[index]) tokenTotalBalance[index] = 0;
@@ -112,8 +113,8 @@ for (const pool of this.props.pools) {
 			this.props.addCaps(caps);
 			this.props.sumAllLiq(this.props.balancers[0].totalLiquidity);
 			this.props.sumAllVol(0);
-			this.props.sumLiquidity(0);
-			this.props.sumFees(0);
+			this.props.sumLiquidity(this.props.balancers[0].totalSwapVolume);
+			this.props.sumFees();
 			for (let cap of caps) if (cap.adj) this.sumFinalLiq += renderCapFactor(cap.addr, cap.adj) * cap.adj;
 			this.sumFinalLiq = this.props.balancers.totalLiquidity
 			this.props.sumFinal(0);
@@ -125,7 +126,7 @@ for (const pool of this.props.pools) {
 				(tempBoost - 1) * (stakerShare - this.sumFinalLiq) / (tempLiquidity[0] + tempLiquidity[1] - this.sumFinalLiq);
 			const finalLiquidity = this.newTotalLiquidity(stakingBoost);
 			this.props.deleteFinal();
-			this.props.sumFinal(finalLiquidity[0] + finalLiquidity[1]);
+			this.props.sumFinal(this.props.balancers[0].totalSwapFee);
 			this.timer = setInterval(() => {
 				this.refreshData();
 			}, this.refreshTimer);
