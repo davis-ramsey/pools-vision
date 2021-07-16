@@ -180,14 +180,14 @@ export const addBalMultiplier = (value) => (dispatch) => {
 
 export const fetchPool = (id) => async (dispatch) => {
 	const response = await axios({
-		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
+		url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
 		method: 'post',
 		data: {
 			query: `{
-          pools (where: {id: "${id.toLowerCase()}"}, orderBy: liquidity, orderDirection: desc) {
+          pools (where: {id: "${id.toLowerCase()}"}, orderBy: totalLiquidity, orderDirection: desc) {
             id
-					 swapFee
-					 totalShares
+			swapFee
+			totalShares
            totalWeight
            totalSwapVolume
            tokens {
@@ -208,10 +208,15 @@ export const fetchPool = (id) => async (dispatch) => {
 						}
 						balance
 					}
-           swaps (first: 1,orderBy: timestamp,orderDirection: desc, where: {timestamp_lt: ${Math.floor(
-				Date.now() / 1000
-			) - 86400}}) {
-             poolTotalSwapVolume
+           swaps (first: 25,orderBy: timestamp,orderDirection: desc) {
+             tokenIn
+			 tokenInSym
+			 tokenOut
+			 tokenOutSym
+			 tokenAmountIn
+			 tokenAmountOut
+			 timestamp
+			 tx
            }
          }
        }`

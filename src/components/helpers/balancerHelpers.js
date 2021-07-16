@@ -380,8 +380,8 @@ export const renderNumLP = (pool, moreShares) => {
 
 export const renderLifetimeFees = (pool) => {
 	const swapFee = pool.swapFee;
-	const totalVolume = pool.totalSwapFee;
-	return Number((totalVolume*1).toFixed(2));
+	const totalVolume = pool.totalSwapVolume;
+	return Number((totalVolume*swapFee*1).toFixed(2));
 };
 
 export const balPerDay = (pool) => {

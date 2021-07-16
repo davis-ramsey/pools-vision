@@ -5,18 +5,12 @@ import {
 	renderTotalLiquidity,
 	renderVolume,
 	renderFees,
-	renderAdjLiquidity,
 	renderTotalYield,
 	renderNumLP,
 	renderLifetimeFees,
-	balFactor,
-	wrapFactor,
-	totalFactor,
 	numberWithCommas,
 	renderCapFactor,
-	newTotalLiquidity
 } from './helpers/balancerHelpers';
-import { feeFactor } from './helpers/factorCalcs';
 
 class PoolViewer extends React.Component {
 	constructor(props) {
@@ -85,8 +79,47 @@ class PoolViewer extends React.Component {
 					<td className="center aligned" data-label="Value">
 						${this.renderAssetValue(index)}
 					</td>
-					<td className="center aligned" data-label="capFactor">
-						{this.renderCap(output[1])}
+				</tr>
+			);
+		});
+	}
+
+	renderSwapsTable() {
+		const pool = this.props.pool[this.props.viewPool];
+		const swapFee = parseFloat(pool.swapFee)
+		return pool.swaps.map((swap, index) => {
+			const addressIn = swap.tokenIn;
+			const addressOut = swap.tokenOut
+			return (
+				<tr key={index}>
+					<td className="center aligned" data-label="Asset">
+						{swap.tokenInSym}
+					</td>
+					<td className="center aligned" data-label="Amount In">
+						{parseFloat(swap.tokenAmountIn).toFixed(4)}
+					</td>
+					<td className="center aligned" data-label="Value">
+						${(this.props.prices[addressIn].usd*parseFloat(swap.tokenAmountIn)).toFixed(2)}
+					</td>
+					<td className="center aligned" data-label="Asset">
+						{swap.tokenOutSym}
+					</td>
+					<td className="center aligned" data-label="Amount Out">
+						{parseFloat(swap.tokenAmountOut).toFixed(4)}
+					</td>
+					<td className="center aligned" data-label="Value">
+						${(this.props.prices[addressOut].usd*parseFloat(swap.tokenAmountOut)).toFixed(2)}
+					</td>
+					<td className="center aligned" data-label="Fee">
+					${(this.props.prices[addressOut].usd*parseFloat(swap.tokenAmountOut)*swapFee).toFixed(2)}
+					</td>
+					<td className="center aligned" data-label="Time">
+					<a
+								target="_blank"
+								rel="noopener noreferrer"
+								href={`https://etherscan.io/tx/${swap.tx}`}
+							>{new Date(swap.timestamp*1000).toLocaleTimeString()}
+							</a>
 					</td>
 				</tr>
 			);
@@ -95,10 +128,7 @@ class PoolViewer extends React.Component {
 
 	render() {
 		if (
-			this.props.pool[this.props.viewPool] &&
-			this.props.prices['0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'] &&
-			this.props.sumLiq > 138683236 &&
-			this.props.caps[5]
+			this.props.pool[this.props.viewPool] && this.props.caps[5]
 		)
 			return (
 				<div>
@@ -110,11 +140,6 @@ class PoolViewer extends React.Component {
 								<th className="center aligned">Swap Fee</th>
 								<th className="center aligned">24h Volume</th>
 								<th className="center aligned">24h Fees</th>
-								<th className="center aligned">Fee Factor</th>
-								<th className="center aligned">BAL/Ratio Factor</th>
-								<th className="center aligned">Wrap Factor</th>
-								<th className="center aligned">Total Factor</th>
-								<th className="center aligned">Annual BAL</th>
 								<th className="center aligned">Total APY</th>
 								<th className="center aligned">Lifetime Fees</th>
 								<th className="center aligned"># of LP's</th>
@@ -131,22 +156,6 @@ class PoolViewer extends React.Component {
 											)
 										)}
 									</div>
-									<div className="ui" style={{ fontSize: '12px' }}>
-										Adj: ${numberWithCommas(
-											(newTotalLiquidity(
-												this.props.pool[this.props.viewPool],
-												this.props.prices,
-												this.props.caps,
-												this.props.balMultiplier
-											)[0] +
-												newTotalLiquidity(
-													this.props.pool[this.props.viewPool],
-													this.props.prices,
-													this.props.caps,
-													this.props.balMultiplier
-												)[1]).toFixed(2)
-										)}
-									</div>
 								</td>
 								<td className="center aligned" data-label="Swap Fee">
 									{(this.props.pool[this.props.viewPool].swapFee * 100).toFixed(2)}%
@@ -156,35 +165,6 @@ class PoolViewer extends React.Component {
 								</td>
 								<td className="center aligned" data-label="24h Fees">
 									${numberWithCommas(renderFees(this.props.pool[this.props.viewPool]))}
-								</td>
-								<td className="center aligned" data-label="Fee Factor">
-									{feeFactor(this.props.pool[this.props.viewPool].swapFee).toFixed(4)}
-								</td>
-								<td className="center aligned" data-label="Bal Factor">
-									{balFactor(this.props.pool[this.props.viewPool], this.props.balMultiplier).toFixed(
-										4
-									)}
-								</td>
-								<td className="center aligned" data-label="Wrap Factor">
-									{wrapFactor(this.props.pool[this.props.viewPool]).toFixed(4)}
-								</td>
-								<td className="center aligned" data-label="Total Factor">
-									{totalFactor(
-										this.props.pool[this.props.viewPool],
-										this.props.balMultiplier
-									).toFixed(4)}
-								</td>
-								<td className="center aligned" data-label="Annual BAL">
-									{numberWithCommas(
-										renderAdjLiquidity(
-											this.props.pool[this.props.viewPool],
-											this.props.prices,
-											this.props.sumLiq,
-											this.props.caps,
-											1,
-											this.props.balMultiplier
-										).toFixed(0)
-									)}
 								</td>
 								<td className="center aligned" data-label="Total APY">
 									{
@@ -214,10 +194,24 @@ class PoolViewer extends React.Component {
 								<th className="center aligned">Balance</th>
 								<th className="center aligned">Weight</th>
 								<th className="center aligned">Value</th>
-								<th className="center aligned">capFactor</th>
 							</tr>
 						</thead>
 						<tbody>{this.renderAssetTable()}</tbody>
+					</table>
+					<table className="ui selectable inverted striped celled table">
+						<thead>
+							<tr>
+								<th className="center aligned">Asset</th>
+								<th className="center aligned">Amount In</th>
+								<th className="center aligned">Value</th>
+								<th className="center aligned">Asset</th>
+								<th className="center aligned">Amount Out</th>
+								<th className="center aligned">Value</th>
+								<th className="center aligned">Fee</th>
+								<th className="center aligned">Time</th>
+							</tr>
+						</thead>
+						<tbody>{this.renderSwapsTable()}</tbody>
 					</table>
 				</div>
 			);
