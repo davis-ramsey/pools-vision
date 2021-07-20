@@ -94,7 +94,8 @@ export const renderTotalLiquidity = (pool, prices, ownership = 1) => {
 	let total = 0;
 	let missingPrices = false;
 	for (let token of pool.tokens) {
-		const address = token.address;
+		let address = token.address;
+		if(address === '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270') address = '0x0000000000000000000000000000000000001010' //WMATIC to MATIC fix
 		let price = 0;
 		if (prices !== undefined && prices[address] !== undefined && prices[address].usd !== undefined) price = prices[address].usd;
 		const balance = parseFloat(token.balance);
